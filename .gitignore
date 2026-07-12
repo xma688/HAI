@@ -8,6 +8,10 @@ pytest-cache-files-*/
 *.egg-info/
 build/
 dist/
+third_party/**/node_modules/
+third_party/**/.next/
+third_party/**/dist/
+third_party/**/coverage/
 assets/temp/*
 !assets/temp/.gitkeep
 assets/audio/*
