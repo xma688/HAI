@@ -1,0 +1,21 @@
+app:
+  language: zh-CN
+  max_input_chars: 500
+  max_reply_chars: 500
+llm:
+  provider: mock
+  temperature: 0.5
+  timeout_seconds: 30
+  max_retries: 1
+tts:
+  provider: mock
+  output_dir: assets/temp
+  voice: zh-CN-XiaoxiaoNeural
+  timeout_seconds: 30
+avatar:
+  provider: mock
+  reset_after_speech: true
+  default_expression: neutral
+planner:
+  max_gestures: 2
+  enable_cooldown: true

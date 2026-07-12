@@ -1,0 +1,14 @@
+.env
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.tmp/
+pytest-cache-files-*/
+*.egg-info/
+build/
+dist/
+assets/temp/*
+!assets/temp/.gitkeep
+assets/audio/*
+!assets/audio/.gitkeep
