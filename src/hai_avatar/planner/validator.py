@@ -35,6 +35,8 @@ def fallback_llm_response(user_text: str) -> LLMAvatarResponse:
         expression="neutral",
         gestures=["idle"],
         voice_style="neutral",
+        gesture_intensity=0.3,
+        speaking_rate=1.0,
         pause_before_speech_ms=0,
     )
 

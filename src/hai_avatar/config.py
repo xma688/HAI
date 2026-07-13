@@ -19,6 +19,9 @@ class AppSettings(BaseModel):
 
 class LLMSettings(BaseModel):
     provider: str = "mock"
+    model: str = "deepseek-v4-flash"
+    base_url: str = "https://opencode.ai/zen/go/v1"
+    api_key_env: str = "OPENCODE_GO_API_KEY"
     temperature: float = 0.5
     timeout_seconds: int = 30
     max_retries: int = 1
@@ -42,12 +45,21 @@ class PlannerSettings(BaseModel):
     enable_cooldown: bool = True
 
 
+class PersonalizationSettings(BaseModel):
+    enabled: bool = True
+    profile_dir: str = "data/profiles"
+    update_interval: int = 5
+    big_five_learning_rate: float = 0.05
+    gesture_affinity_decay: float = 0.95
+
+
 class Settings(BaseModel):
     app: AppSettings = AppSettings()
     llm: LLMSettings = LLMSettings()
     tts: TTSSettings = TTSSettings()
     avatar: AvatarSettings = AvatarSettings()
     planner: PlannerSettings = PlannerSettings()
+    personalization: PersonalizationSettings = PersonalizationSettings()
 
 
 def _deep_update(base: dict[str, Any], updates: dict[str, Any]) -> dict[str, Any]:
@@ -71,10 +83,15 @@ def load_settings(config_path: Path | None = None) -> Settings:
     import os
 
     env_updates = {
-        "llm": {"provider": os.getenv("LLM_PROVIDER", data.get("llm", {}).get("provider", "mock"))},
+        "llm": {
+            "provider": os.getenv("LLM_PROVIDER", data.get("llm", {}).get("provider", "mock")),
+            "model": os.getenv("LLM_MODEL", data.get("llm", {}).get("model", "deepseek-v4-flash")),
+        },
         "tts": {"provider": os.getenv("TTS_PROVIDER", data.get("tts", {}).get("provider", "mock"))},
         "avatar": {"provider": os.getenv("AVATAR_PROVIDER", data.get("avatar", {}).get("provider", "mock"))},
     }
+    if os.getenv("PERSONALIZATION_ENABLED", "").lower() in ("true", "false"):
+        env_updates["personalization"] = {"enabled": os.getenv("PERSONALIZATION_ENABLED").lower() == "true"}
     settings = Settings.model_validate(_deep_update(data, env_updates))
     settings.tts.output_dir = (PROJECT_ROOT / settings.tts.output_dir).resolve()
     return settings

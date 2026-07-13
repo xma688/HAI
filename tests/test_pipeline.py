@@ -7,13 +7,18 @@ from hai_avatar.config import load_settings
 from hai_avatar.llm.base import LLMProvider
 from hai_avatar.planner.action_planner import ActionPlanner
 from hai_avatar.services.pipeline_service import PipelineService
-from hai_avatar.app import build_mock_pipeline
+from hai_avatar.app import build_mock_pipeline, build_pipeline
 from hai_avatar.schemas import EmotionType, ExpressionType, VoiceStyleType
 from hai_avatar.tts.mock_provider import MockTTSProvider
 
 
 class EmptyReplyLLMProvider(LLMProvider):
-    async def generate(self, user_text: str) -> str:
+    async def generate(
+        self,
+        user_text: str,
+        system_prompt: str = "",
+        conversation_history: list[dict[str, str]] | None = None,
+    ) -> str:
         return json.dumps(
             {
                 "reply_text": "",
@@ -21,6 +26,8 @@ class EmptyReplyLLMProvider(LLMProvider):
                 "expression": "smile",
                 "gestures": ["wave"],
                 "voice_style": "cheerful",
+                "gesture_intensity": 0.5,
+                "speaking_rate": 1.0,
             },
             ensure_ascii=False,
         )
@@ -69,3 +76,16 @@ def test_empty_reply_text_uses_fallback():
     assert result.reply_text
     assert result.avatar_command.emotion == EmotionType.neutral
     assert any("empty reply_text" in warning for warning in result.warnings)
+
+
+def test_build_pipeline_creates_mock_by_default():
+    pipeline = build_pipeline()
+    assert pipeline is not None
+    result = asyncio.run(pipeline.process("你好"))
+    assert result.reply_text
+
+
+def test_build_mock_pipeline_still_works():
+    pipeline = build_mock_pipeline()
+    result = asyncio.run(pipeline.process("你好"))
+    assert result.reply_text
