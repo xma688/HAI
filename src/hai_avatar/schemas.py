@@ -1,5 +1,6 @@
 """Pydantic models and finite control-label enums."""
 
+from datetime import datetime, timezone
 from enum import Enum
 
 from pydantic import BaseModel, Field, field_validator
@@ -55,6 +56,8 @@ class LLMAvatarResponse(BaseModel):
     expression: str
     gestures: list[str] = Field(default_factory=list)
     voice_style: str
+    gesture_intensity: float = Field(default=0.5, ge=0.0, le=1.0)
+    speaking_rate: float = Field(default=1.0, ge=0.5, le=2.0)
     pause_before_speech_ms: int = 0
 
     @field_validator("pause_before_speech_ms")
@@ -92,3 +95,29 @@ class PipelineResult(BaseModel):
     audio_path: str | None
     latency_ms: dict[str, float]
     warnings: list[str] = Field(default_factory=list)
+
+
+class BigFiveTraits(BaseModel):
+    openness: float = Field(default=0.5, ge=0.0, le=1.0)
+    conscientiousness: float = Field(default=0.5, ge=0.0, le=1.0)
+    extraversion: float = Field(default=0.5, ge=0.0, le=1.0)
+    agreeableness: float = Field(default=0.5, ge=0.0, le=1.0)
+    neuroticism: float = Field(default=0.5, ge=0.0, le=1.0)
+    source: str = Field(default="default")
+
+
+class CommunicationPreferences(BaseModel):
+    formality: str = Field(default="neutral")
+    expressiveness_tolerance: float = Field(default=0.7, ge=0.0, le=1.0)
+    gesture_frequency: str = Field(default="moderate")
+    pace: str = Field(default="moderate")
+
+
+class UserProfile(BaseModel):
+    user_id: str = Field(default="default")
+    big_five: BigFiveTraits = Field(default_factory=BigFiveTraits)
+    preferences: CommunicationPreferences = Field(default_factory=CommunicationPreferences)
+    gesture_affinity: dict[str, float] = Field(default_factory=dict)
+    interaction_count: int = Field(default=0)
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))

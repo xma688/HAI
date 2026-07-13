@@ -43,6 +43,8 @@ class ActionPlanner:
             expression=expression,
             gestures=gestures[: self.max_gestures],
             voice_style=voice_style,
+            gesture_intensity=llm_response.gesture_intensity,
+            speaking_rate=llm_response.speaking_rate,
             pause_before_speech_ms=llm_response.pause_before_speech_ms,
         )
         return command, warnings

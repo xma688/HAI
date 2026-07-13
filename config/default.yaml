@@ -4,6 +4,9 @@ app:
   max_reply_chars: 500
 llm:
   provider: mock
+  model: deepseek-v4-flash
+  base_url: https://opencode.ai/zen/go/v1
+  api_key_env: OPENCODE_GO_API_KEY
   temperature: 0.5
   timeout_seconds: 30
   max_retries: 1
@@ -19,3 +22,9 @@ avatar:
 planner:
   max_gestures: 2
   enable_cooldown: true
+personalization:
+  enabled: true
+  profile_dir: data/profiles
+  update_interval: 5
+  big_five_learning_rate: 0.05
+  gesture_affinity_decay: 0.95

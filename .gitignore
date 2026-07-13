@@ -16,3 +16,4 @@ assets/temp/*
 !assets/temp/.gitkeep
 assets/audio/*
 !assets/audio/.gitkeep
+data/
