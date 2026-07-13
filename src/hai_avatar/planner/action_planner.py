@@ -38,7 +38,6 @@ class ActionPlanner:
         gestures = self._apply_cooldown(gestures, warnings)
         if not gestures:
             gestures = [GestureType.idle]
-
         command = AvatarCommand(
             emotion=emotion,
             expression=expression,
