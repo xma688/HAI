@@ -1,140 +1,180 @@
 # Emotion- and Gesture-Aware AI Chat Avatar
 
-这是 Human-AI Interaction 课程项目的基础 Pipeline。当前实现范围是 Phase 0-2：环境检查、项目骨架、完整 Mock Pipeline。真实 LLM、Edge TTS、Live2D/VTube Studio 和 Gradio 界面保留接口，后续阶段再接入。
+情绪与动作驱动的 AI 虚拟聊天代理 — Human-AI Interaction 课程项目。
 
-## 架构
+## 项目概述
 
-```text
-User Text
-  -> LLMProvider
-  -> JSON Parser
-  -> ActionPlanner
-  -> TTSProvider
-  -> AvatarController
-  -> PipelineResult
+用户输入文本 → LLM 生成回复 + 情绪/动作推理 → TTS 合成语音 → 虚拟角色播放语音并做表情动作。核心创新是一个**语义到动作的映射模块**（Action Planner），让 LLM 不仅回答问题，还能判断当前的情绪、语气、表情和动作。
+
+当前已实现完整的 **Mock 管线 + 真实 LLM (opencode/deepseek-v4-flash) + 真实 TTS (Edge TTS) + 个性化层 + 创新层 + Gradio Web UI + 用户实验工具**。唯一未接入的是真实 Live2D Avatar 渲染。
+
+## 三层架构
+
+```
+┌──────────────────────────────────────────────────────────┐
+│ 基础层: LLM / TTS / Avatar / Gradio UI                  │
+│ Mock 模式开箱即用，真实 LLM/TTS 通过配置切换              │
+├──────────────────────────────────────────────────────────┤
+│ 创新层: Action Reasoning                                 │
+│ 7 步推理框架 (情绪→表情→动作→强度→语音→语速→停顿)         │
+│ 对话历史上下文注入，few-shot 示例引导                     │
+├──────────────────────────────────────────────────────────┤
+│ 个性化层: Agent Personalization                          │
+│ UserProfile (Big Five 人格推断 + 偏好学习)                │
+│ Prompt 注入 (画像→自然语言指令) + PostProcessor (参数约束)  │
+└──────────────────────────────────────────────────────────┘
 ```
 
-核心模块都通过接口解耦：
+## Pipeline
 
-- `LLMProvider`: 生成自然语言回复和控制标签
-- `TTSProvider`: 生成音频文件
-- `AvatarController`: 播放音频、切换表情、触发动作
-- `ActionPlanner`: 校验、纠正、标准化标签
-- `PipelineService`: 串联完整执行流程并记录耗时
+```text
+User Text + 对话历史
+  -> [个性化层] ProfileManager 加载/构建用户画像
+  -> [个性化层] PromptBuilder 注入个性化系统指令
+  -> [基础层]   LLMProvider (Mock / OpenAI)
+  -> [基础层]   JSON Parser + Fallback
+  -> [创新层]   ActionPlanner (透传 intensity/rate)
+  -> [个性化层] PostProcessor (画像约束→参数调整)
+  -> [基础层]   TTSProvider (Mock / Edge TTS)
+  -> [基础层]   AvatarController (Mock)
+  -> PipelineResult
+```
 
 ## 目录结构
 
 ```text
-config/                 YAML 配置和 LLM system prompt
-assets/temp/            Mock TTS 运行时音频输出
-src/hai_avatar/         主包
-tests/                  单元测试和集成测试
-scripts/run_mock.py     CLI Mock Demo
+config/                    YAML 配置和 LLM system prompt
+  llm_system_prompt.txt    7 步动作推理框架 + few-shot 示例
+  action_mapping.yaml      动作冷却和默认映射
+  default.yaml             总配置
+scripts/
+  run_mock.py              CLI Demo（快速测试）
+  run_gradio.py            Gradio Web UI 启动器
+  run_experiment.py        用户实验 A/B/C 对比工具
+src/hai_avatar/
+  llm/                     LLM 提供商
+    mock_provider.py       8 场景规则生成器
+    openai_provider.py     真实 API (opencode / deepseek-v4-flash)
+  tts/                     TTS 提供商
+    mock_provider.py       生成频率调制的 WAV
+    edge_tts_provider.py   Microsoft Edge 免费中文 TTS
+  avatar/                  虚拟角色控制
+    mock_controller.py     终端日志模拟
+    vtube_studio_controller.py  占位 (Phase 6 Live2D)
+  planner/                 动作规划与校验
+    action_planner.py      规则校验 + 一致性检查 + 冷却
+    validator.py           JSON 解析 + Fallback
+    mapping.py             YAML 配置加载
+  personalization/         个性化层
+    profile_manager.py     JSON 持久化 + Big Five 关键词推断
+    prompt_builder.py      画像 → 自然语言指令
+    post_processor.py      画像 → AvatarCommand 参数约束
+  services/
+    pipeline_service.py    总管线 (含重试/降级)
+    conversation_service.py  对话历史存储
+  ui/
+    gradio_app.py          Web UI (聊天 + 语音 + 状态显示)
+  schemas.py               所有 Pydantic 数据模型
+  config.py                配置加载 (YAML + 环境变量)
+data/                      运行时数据
+  profiles/                用户画像 JSON
+  experiment_results.csv   用户实验记录
+tests/                     33 个单元/集成测试
 ```
 
-## 环境
+## 快速开始
 
-- Python 3.11 或更高版本
-- 当前基础 Mock 版本不依赖 GPU
-- Mock TTS 生成 WAV，不要求 ffmpeg
-
-Windows:
-
-```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -e .[dev]
-python scripts/run_mock.py
-```
-
-macOS/Linux:
+### 1. 环境
 
 ```bash
+# Python 3.11+
 python -m venv .venv
-source .venv/bin/activate
+source .venv/bin/activate  # macOS/Linux
 pip install -e ".[dev]"
-python scripts/run_mock.py
 ```
 
-如果当前环境已经有依赖，也可以直接设置 `PYTHONPATH=src` 后运行脚本或测试。
+### 2. 配置
 
-## 配置
-
-复制 `.env.example` 为 `.env` 后按需修改：
+```bash
+cp .env.example .env
+# 编辑 .env 选择运行模式
+```
 
 ```text
+# .env  — Mock 模式 (无需任何 API Key)
 LLM_PROVIDER=mock
 TTS_PROVIDER=mock
-AVATAR_PROVIDER=mock
-LOG_LEVEL=INFO
+PERSONALIZATION_ENABLED=true
 ```
-
-默认 YAML 配置位于 `config/default.yaml`。不要把真实 API Key 写入代码或提交到仓库。
-
-## Mock 模式
-
-Mock 模式不需要 API Key、不需要 Live2D 模型，也不需要外部播放器。它会：
-
-- 根据输入场景生成不同回复：greeting、supportive、explanation、confusion、farewell、apology、surprise、fallback
-- 生成一个短 WAV 文件
-- 在终端打印 Avatar 表情、动作、说话状态和音频路径
-
-运行：
-
-```powershell
-$env:PYTHONPATH="src"
-python scripts/run_mock.py "我最近项目压力有点大，不知道怎么开始。"
-```
-
-Windows PowerShell 管道可能会把中文传给外部程序时转码成问号；建议使用上面的命令行参数形式，或直接交互输入。
-
-示例输入：
 
 ```text
-我最近项目压力有点大，不知道怎么开始。
+# .env  — 真实模式 (需要 opencode API Key)
+LLM_PROVIDER=openai
+LLM_MODEL=deepseek-v4-flash
+TTS_PROVIDER=edge_tts
+OPENCODE_GO_API_KEY=your_key_here
+PERSONALIZATION_ENABLED=true
 ```
 
-## 基础层候选仓库
+### 3. 运行
 
-根据 `research_summary.md` 的基础层路线，当前已把 MIT 许可的 Prometheus Avatar SDK 拉入：
+```bash
+# CLI 测试（Mock 模式）
+PYTHONPATH=src python scripts/run_mock.py "我最近项目压力有点大"
 
-```text
-third_party/prometheus-avatar/
+# CLI 测试（真实 LLM）
+LLM_PROVIDER=openai PYTHONPATH=src python scripts/run_mock.py "你好"
+
+# 启动 Web UI
+PYTHONPATH=src python scripts/run_gradio.py
+
+# 真实 LLM + 真实语音
+LLM_PROVIDER=openai TTS_PROVIDER=edge_tts PYTHONPATH=src python scripts/run_gradio.py
 ```
 
-它是 TypeScript / Live2D SDK，可作为 Phase 6 真实 Avatar 层的候选实现参考。当前 Python Pipeline 不直接依赖它，仍然优先保证 Mock 模式稳定可运行。接入记录见 `docs/base_layer_vendor.md`。
+### 4. 用户实验
+
+```bash
+# 随机分配实验模式
+PYTHONPATH=src python scripts/run_experiment.py
+
+# 强制指定模式 (A=纯文本 B=语音 C=完整)
+PYTHONPATH=src python scripts/run_experiment.py --mode C
+
+# 查看统计数据
+PYTHONPATH=src python scripts/run_experiment.py --stats
+```
 
 ## 测试
 
-```powershell
-$env:PYTHONPATH="src"
-pytest
+```bash
+PYTHONPATH=src pytest    # 33 个测试全部通过
 ```
 
-测试覆盖：
+覆盖：JSON 解析/修复、标签降级、截断、冲突纠正、冷却、Mock TTS/Avatar/Pipeline、用户画像构建/加载/更新、Big Five 推断、Prompt 生成、PostProcessor 约束、对话历史累积、完全管线（启用/禁用个性化）。
 
-- 合法 JSON 解析
-- Markdown JSON 修复
-- 未知标签降级
-- 动作数量截断
-- 冲突标签纠正
-- 动作冷却
-- Mock TTS 文件生成
-- Mock Avatar 执行
-- Mock Pipeline 集成场景
+## 枚举标签
+
+| 类别 | 可选值 |
+|------|--------|
+| emotion | neutral, happy, supportive, thoughtful, confused, surprised, serious, apologetic |
+| expression | neutral, smile, soft_smile, thinking, confused, surprised, concerned, serious |
+| gestures | idle, nod, wave, head_tilt, think, explain, agree, small_bow |
+| voice_style | neutral, calm, cheerful, gentle, serious, apologetic |
+
+## 配置项
+
+| 环境变量 | 默认值 | 说明 |
+|---------|--------|------|
+| `LLM_PROVIDER` | mock | mock / openai |
+| `LLM_MODEL` | deepseek-v4-flash | LLM 模型名 |
+| `TTS_PROVIDER` | mock | mock / edge_tts |
+| `AVATAR_PROVIDER` | mock | mock |
+| `OPENCODE_GO_API_KEY` | — | opencode API Key |
+| `PERSONALIZATION_ENABLED` | true | 启用个性画像 |
 
 ## 当前限制
 
-- OpenAIProvider 仅保留接口，占位到 Phase 4
-- EdgeTTSProvider 仅保留接口，占位到 Phase 5
-- Gradio UI 仅保留入口，占位到 Phase 3
-- VTube Studio / Live2D 控制器仅保留接口，占位到 Phase 6
-- Mock Avatar 只模拟播放和动作，不做真实口型同步
-
-## 后续计划
-
-1. Phase 3：实现 Gradio 文本输入、历史、标签显示、音频播放器和请求锁
-2. Phase 4：接入真实 LLM，并实现结构化输出重试
-3. Phase 5：接入 Edge TTS，明确语速/音高只是近似风格
-4. Phase 6：验证并接入真实 Avatar 后端
-5. Phase 7：补充超时、重试、清理策略和更完整 Demo
+- VTube Studio / Live2D Avatar 仅有接口占位，未实现真实渲染
+- ASR 语音输入仅在有 API Key 时可用（通过 Gradio 麦克风触发）
+- Mock Avatar 仅打日志，不做真实口型同步

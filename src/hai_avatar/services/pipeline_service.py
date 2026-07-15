@@ -72,16 +72,20 @@ class PipelineService:
 
         raw_response = ""
         t0 = time.perf_counter()
-        try:
-            raw_response = await self.llm_provider.generate(
-                clean_text,
-                system_prompt=personalized_prompt,
-                conversation_history=history,
-            )
-            logger.info("LLM call succeeded with provider=%s", self.settings.llm.provider)
-        except Exception as exc:
-            logger.exception("LLM provider failed")
-            warnings.append(f"LLM failed and fallback response was used: {exc}")
+        for attempt in range(self.settings.llm.max_retries + 1):
+            try:
+                raw_response = await self.llm_provider.generate(
+                    clean_text,
+                    system_prompt=personalized_prompt,
+                    conversation_history=history,
+                )
+                logger.info("LLM call succeeded with provider=%s", self.settings.llm.provider)
+                break
+            except Exception as exc:
+                logger.warning("LLM attempt %s/%s failed: %s", attempt + 1, self.settings.llm.max_retries + 1, exc)
+                if attempt == self.settings.llm.max_retries:
+                    logger.exception("LLM provider exhausted retries")
+                    warnings.append(f"LLM failed after {self.settings.llm.max_retries + 1} attempts; fallback used: {exc}")
         latency_ms["llm"] = self._elapsed(t0)
 
         t0 = time.perf_counter()
@@ -123,8 +127,20 @@ class PipelineService:
             audio_path = tts_result.audio_path
             logger.info("TTS wrote audio to %s", audio_path)
         except Exception as exc:
-            logger.exception("TTS failed")
-            warnings.append(f"TTS failed; text response is still available: {exc}")
+            logger.exception("TTS failed; falling back to mock audio")
+            warnings.append(f"TTS failed; fallback mock audio used: {exc}")
+            try:
+                from hai_avatar.tts.mock_provider import MockTTSProvider
+
+                mock_tts = MockTTSProvider()
+                output_path = self._next_audio_path(self.settings.tts.output_dir)
+                fallback_result = await mock_tts.synthesize(
+                    llm_response.reply_text, avatar_command.voice_style.value, output_path
+                )
+                audio_path = fallback_result.audio_path
+            except Exception as fallback_exc:
+                logger.exception("Mock TTS fallback also failed")
+                warnings.append(f"Mock TTS fallback also failed: {fallback_exc}")
         latency_ms["tts"] = self._elapsed(t0)
 
         t0 = time.perf_counter()
