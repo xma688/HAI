@@ -1,0 +1,3 @@
+{"sample_id":"ce_support_1","dimension_tags":["fluency","coherency","empathy"],"history":[],"user_text":"我最近项目压力很大，不知道怎么开始。","note":"CharacterEval-derived local sample; not an official CharacterEval score."}
+{"sample_id":"ce_explain_1","dimension_tags":["fluency","coherency","communication"],"history":[],"user_text":"你能解释一下 Action Planner 是怎么工作的吗？","note":"CharacterEval-derived local sample; not an official CharacterEval score."}
+{"sample_id":"ce_consistency_1","dimension_tags":["conversation_consistency","human_likeness"],"history":[["你好！","你好，很高兴见到你。我们可以从一个小目标开始。"]],"user_text":"那我们继续刚才的课程项目。","note":"CharacterEval-derived local sample; not an official CharacterEval score."}

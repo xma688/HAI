@@ -7,7 +7,7 @@ from pathlib import Path
 
 import gradio as gr
 
-from hai_avatar.app import build_mock_pipeline
+from hai_avatar.app import build_pipeline
 from hai_avatar.config import load_settings
 from hai_avatar.schemas import AvatarCommand
 
@@ -41,7 +41,7 @@ def _transcribe_audio(audio_path: str | None) -> str:
 class GradioApp:
     def __init__(self) -> None:
         self.settings = load_settings()
-        self.service = build_mock_pipeline()
+        self.service = build_pipeline(self.settings)
         self._loop = asyncio.new_event_loop()
         self._provider = self.settings.llm.provider
         self._tts_provider = self.settings.tts.provider

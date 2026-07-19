@@ -1,5 +1,7 @@
 """Pydantic models and finite control-label enums."""
 
+from __future__ import annotations
+
 from datetime import datetime, timezone
 from enum import Enum
 
@@ -95,6 +97,9 @@ class PipelineResult(BaseModel):
     audio_path: str | None
     latency_ms: dict[str, float]
     warnings: list[str] = Field(default_factory=list)
+    raw_llm_output: str | None = None
+    avatar_command_before_post: AvatarCommand | None = None
+    user_profile: UserProfile | None = None
 
 
 class BigFiveTraits(BaseModel):

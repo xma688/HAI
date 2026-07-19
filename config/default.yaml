@@ -19,6 +19,8 @@ avatar:
   provider: mock
   reset_after_speech: true
   default_expression: neutral
+  prometheus_output_dir: data/prometheus_avatar
+  prometheus_model_url: https://cdn.jsdelivr.net/gh/guansss/pixi-live2d-display@0.4.0/test/assets/haru/haru_greeter_t03.model3.json
 planner:
   max_gestures: 2
   enable_cooldown: true

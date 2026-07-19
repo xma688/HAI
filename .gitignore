@@ -17,3 +17,4 @@ assets/temp/*
 assets/audio/*
 !assets/audio/.gitkeep
 data/
+evaluation/results/

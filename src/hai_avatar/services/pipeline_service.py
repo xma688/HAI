@@ -34,6 +34,8 @@ class PipelineService:
         profile_manager: Optional[ProfileManager] = None,
         post_processor: Optional[PostProcessor] = None,
         conversation_service: Optional[ConversationService] = None,
+        use_personalized_prompt: bool = True,
+        use_post_processor: bool = True,
     ) -> None:
         self.settings = settings
         self.llm_provider = llm_provider
@@ -43,6 +45,8 @@ class PipelineService:
         self.profile_manager = profile_manager
         self.post_processor = post_processor
         self.conversation_service = conversation_service or ConversationService()
+        self.use_personalized_prompt = use_personalized_prompt
+        self.use_post_processor = use_post_processor
         self._avatar_connected = False
 
     async def process(self, user_text: str, user_id: str = "default") -> PipelineResult:
@@ -107,11 +111,12 @@ class PipelineService:
 
         t0 = time.perf_counter()
         avatar_command, planner_warnings = self.planner.plan(llm_response, clean_text)
+        avatar_command_before_post = avatar_command
         warnings.extend(planner_warnings)
         latency_ms["action_planner"] = self._elapsed(t0)
 
         t0 = time.perf_counter()
-        if self.post_processor and self._personalization_enabled:
+        if self.post_processor and self._personalization_enabled and self.use_post_processor:
             avatar_command = self.post_processor.apply(avatar_command, user_profile)
             latency_ms["post_processor"] = self._elapsed(t0)
         else:
@@ -146,6 +151,9 @@ class PipelineService:
         t0 = time.perf_counter()
         try:
             await self._ensure_avatar_connected()
+            set_reply_text = getattr(self.avatar, "set_reply_text", None)
+            if set_reply_text:
+                await set_reply_text(llm_response.reply_text, avatar_command.voice_style.value)
             await self.avatar.set_expression(avatar_command.expression.value)
             for gesture in avatar_command.gestures:
                 await self.avatar.trigger_gesture(gesture.value)
@@ -182,6 +190,9 @@ class PipelineService:
             audio_path=audio_path,
             latency_ms=latency_ms,
             warnings=warnings,
+            raw_llm_output=raw_response,
+            avatar_command_before_post=avatar_command_before_post,
+            user_profile=user_profile,
         )
 
     def _build_conversation_history(self) -> list[dict[str, str]]:
@@ -197,7 +208,7 @@ class PipelineService:
         return self.profile_manager.get_or_create(user_id)
 
     def _build_personalized_prompt(self, profile: UserProfile) -> str:
-        if not self._personalization_enabled or profile.interaction_count < 1:
+        if not self.use_personalized_prompt or not self._personalization_enabled or profile.interaction_count < 1:
             return ""
         return build_personalized_system_prompt(profile)
 

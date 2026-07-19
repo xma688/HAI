@@ -90,7 +90,7 @@ tests/                     33 个单元/集成测试
 # Python 3.11+
 python -m venv .venv
 source .venv/bin/activate  # macOS/Linux
-pip install -e ".[dev]"
+pip install -e ".[all]"
 ```
 
 ### 2. 配置
@@ -125,11 +125,17 @@ PYTHONPATH=src python scripts/run_mock.py "我最近项目压力有点大"
 # CLI 测试（真实 LLM）
 LLM_PROVIDER=openai PYTHONPATH=src python scripts/run_mock.py "你好"
 
-# 启动 Web UI
+# 启动 Web UI（默认 Mock，可直接检查可视化界面）
 PYTHONPATH=src python scripts/run_gradio.py
 
 # 真实 LLM + 真实语音
 LLM_PROVIDER=openai TTS_PROVIDER=edge_tts PYTHONPATH=src python scripts/run_gradio.py
+
+# 用 Mock 数据驱动 Prometheus Avatar SDK bridge
+AVATAR_PROVIDER=prometheus PYTHONPATH=src python scripts/run_prometheus_smoke.py "我最近项目压力有点大"
+
+# 用真实 API 驱动 Prometheus Avatar SDK bridge
+PYTHONPATH=src python scripts/run_real_api_prometheus.py "你好，请用中文回复我。"
 ```
 
 ### 4. 用户实验
@@ -153,6 +159,27 @@ PYTHONPATH=src pytest    # 33 个测试全部通过
 
 覆盖：JSON 解析/修复、标签降级、截断、冲突纠正、冷却、Mock TTS/Avatar/Pipeline、用户画像构建/加载/更新、Big Five 推断、Prompt 生成、PostProcessor 约束、对话历史累积、完全管线（启用/禁用个性化）。
 
+## Evaluation MVP
+
+评测实现位于 `evaluation/`。根据 `HAI_Evaluation_Implementation_Plan(1).pdf`，当前不把 InCharacter / CharacterEval 包装成完整官方总分：
+
+- InCharacter：没有独立 `AvatarPersona` 前，只能作为 adapted / 诊断实验。
+- CharacterEval：当前先跑 `CharacterEval-derived dialogue metrics` 子集。
+- 主线评测：用户画像、个性化反事实、Action/Voice 规划。
+
+```bash
+# 受控画像反事实 smoke
+PYTHONPATH=src python evaluation/runners/run_counterfactual.py --provider mock --condition full --limit 1
+
+# Action / Voice 金标准 smoke
+PYTHONPATH=src python evaluation/runners/run_action_eval.py --provider mock
+
+# CharacterEval-derived 中文对话维度 smoke
+PYTHONPATH=src python evaluation/runners/run_character_eval_subset.py --provider mock
+```
+
+结果写入 `evaluation/results/<run_id>/`，包括 `manifest.json`、`outputs.jsonl` 和 `metrics.json`。
+
 ## 枚举标签
 
 | 类别 | 可选值 |
@@ -168,10 +195,13 @@ PYTHONPATH=src pytest    # 33 个测试全部通过
 |---------|--------|------|
 | `LLM_PROVIDER` | mock | mock / openai |
 | `LLM_MODEL` | deepseek-v4-flash | LLM 模型名 |
+| `LLM_BASE_URL` | https://opencode.ai/zen/go/v1 | OpenAI-compatible API endpoint |
+| `LLM_API_KEY_ENV` | OPENCODE_GO_API_KEY | API key 环境变量名 |
 | `TTS_PROVIDER` | mock | mock / edge_tts |
 | `AVATAR_PROVIDER` | mock | mock |
 | `OPENCODE_GO_API_KEY` | — | opencode API Key |
 | `PERSONALIZATION_ENABLED` | true | 启用个性画像 |
+| `PROMETHEUS_MODEL_URL` | Haru demo model | Prometheus bridge 使用的 Live2D 模型 URL |
 
 ## 当前限制
 

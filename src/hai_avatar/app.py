@@ -4,6 +4,7 @@ from pathlib import Path
 
 from hai_avatar.avatar.base import AvatarController
 from hai_avatar.avatar.mock_controller import MockAvatarController
+from hai_avatar.avatar.prometheus_controller import PrometheusAvatarController
 from hai_avatar.config import PROJECT_ROOT, load_settings, Settings
 from hai_avatar.llm.base import LLMProvider
 from hai_avatar.llm.mock_provider import MockLLMProvider
@@ -36,7 +37,7 @@ def _build_pipeline(
 
     llm_provider = _create_llm_provider(provider_name, settings)
     tts_provider = _create_tts_provider(settings.tts.provider)
-    avatar_controller = _create_avatar_controller(settings.avatar.provider)
+    avatar_controller = _create_avatar_controller(settings.avatar.provider, settings)
     conversation_service = ConversationService()
 
     planner = ActionPlanner(
@@ -84,31 +85,15 @@ def _create_tts_provider(provider_name: str) -> TTSProvider:
     raise ValueError(f"Unknown TTS provider: {provider_name}")
 
 
-def _create_avatar_controller(provider_name: str) -> AvatarController:
+def _create_avatar_controller(provider_name: str, settings: Settings) -> AvatarController:
     if provider_name == "mock":
         return MockAvatarController()
-    raise ValueError(f"Unknown Avatar provider: {provider_name}")
-
-
-def _create_llm_provider(provider_name: str, settings: Settings) -> LLMProvider:
-    if provider_name == "mock":
-        return MockLLMProvider()
-    if provider_name == "openai":
-        return OpenAIProvider(settings)
-    raise ValueError(f"Unknown LLM provider: {provider_name}")
-
-
-def _create_tts_provider(provider_name: str) -> TTSProvider:
-    if provider_name == "mock":
-        return MockTTSProvider()
-    if provider_name == "edge_tts":
-        from hai_avatar.tts.edge_tts_provider import EdgeTTSProvider
-
-        return EdgeTTSProvider()
-    raise ValueError(f"Unknown TTS provider: {provider_name}")
-
-
-def _create_avatar_controller(provider_name: str) -> AvatarController:
-    if provider_name == "mock":
-        return MockAvatarController()
+    if provider_name == "prometheus":
+        output_dir = settings.avatar.prometheus_output_dir
+        if not output_dir.is_absolute():
+            output_dir = PROJECT_ROOT / output_dir
+        return PrometheusAvatarController(
+            output_dir=output_dir,
+            model_url=settings.avatar.prometheus_model_url,
+        )
     raise ValueError(f"Unknown Avatar provider: {provider_name}")

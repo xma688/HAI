@@ -1,7 +1,7 @@
 import asyncio
 import json
-import tempfile
 from pathlib import Path
+from uuid import uuid4
 
 from hai_avatar.avatar.mock_controller import MockAvatarController
 from hai_avatar.config import load_settings
@@ -20,6 +20,12 @@ from hai_avatar.schemas import (
 )
 from hai_avatar.services.pipeline_service import PipelineService
 from hai_avatar.tts.mock_provider import MockTTSProvider
+
+
+def _test_dir() -> Path:
+    path = Path("data") / "test_tmp" / uuid4().hex
+    path.mkdir(parents=True, exist_ok=True)
+    return path
 
 
 def _make_personalized_pipeline(settings, tmpdir: str) -> PipelineService:
@@ -129,79 +135,79 @@ def test_pace_adjusts_speaking_rate():
 
 
 def test_profile_manager_creates_and_loads():
-    with tempfile.TemporaryDirectory() as tmpdir:
-        mgr = ProfileManager(profile_dir=Path(tmpdir))
-        profile = mgr.get_or_create("user1")
-        assert profile.user_id == "user1"
-        assert profile.interaction_count == 0
-        loaded = mgr.get_or_create("user1")
-        assert loaded.user_id == "user1"
+    tmpdir = _test_dir()
+    mgr = ProfileManager(profile_dir=tmpdir)
+    profile = mgr.get_or_create("user1")
+    assert profile.user_id == "user1"
+    assert profile.interaction_count == 0
+    loaded = mgr.get_or_create("user1")
+    assert loaded.user_id == "user1"
 
 
 def test_profile_manager_updates_big_five_from_text():
-    with tempfile.TemporaryDirectory() as tmpdir:
-        mgr = ProfileManager(profile_dir=Path(tmpdir), learning_rate=0.1)
-        profile = mgr.get_or_create("user1")
-        mgr.update(profile, "我最近压力很大很焦虑", ["supportive"], ["nod"])
-        assert profile.big_five.neuroticism > 0.5
-        assert profile.big_five.source == "inferred"
+    tmpdir = _test_dir()
+    mgr = ProfileManager(profile_dir=tmpdir, learning_rate=0.1)
+    profile = mgr.get_or_create("user1")
+    mgr.update(profile, "我最近压力很大很焦虑", ["supportive"], ["nod"])
+    assert profile.big_five.neuroticism > 0.5
+    assert profile.big_five.source == "inferred"
 
 
 def test_profile_manager_updates_gesture_affinity():
-    with tempfile.TemporaryDirectory() as tmpdir:
-        mgr = ProfileManager(profile_dir=Path(tmpdir))
-        profile = mgr.get_or_create("user1")
-        mgr.update(profile, "你好", ["happy"], ["nod", "wave"])
-        assert profile.gesture_affinity.get("nod", 0) > 0.0
-        assert profile.gesture_affinity.get("wave", 0) > 0.0
+    tmpdir = _test_dir()
+    mgr = ProfileManager(profile_dir=tmpdir)
+    profile = mgr.get_or_create("user1")
+    mgr.update(profile, "你好", ["happy"], ["nod", "wave"])
+    assert profile.gesture_affinity.get("nod", 0) > 0.0
+    assert profile.gesture_affinity.get("wave", 0) > 0.0
 
 
 def test_profile_manager_self_report():
-    with tempfile.TemporaryDirectory() as tmpdir:
-        mgr = ProfileManager(profile_dir=Path(tmpdir))
-        profile = mgr.get_or_create("user1")
-        mgr.set_self_report(profile, {"openness": 0.8, "neuroticism": 0.6})
-        assert profile.big_five.openness == 0.8
-        assert profile.big_five.neuroticism == 0.6
-        assert profile.big_five.source == "self_report"
+    tmpdir = _test_dir()
+    mgr = ProfileManager(profile_dir=tmpdir)
+    profile = mgr.get_or_create("user1")
+    mgr.set_self_report(profile, {"openness": 0.8, "neuroticism": 0.6})
+    assert profile.big_five.openness == 0.8
+    assert profile.big_five.neuroticism == 0.6
+    assert profile.big_five.source == "self_report"
 
 
 def test_profile_manager_delete():
-    with tempfile.TemporaryDirectory() as tmpdir:
-        mgr = ProfileManager(profile_dir=Path(tmpdir))
-        mgr.get_or_create("user1")
-        assert (Path(tmpdir) / "user1.json").exists()
-        mgr.delete("user1")
-        assert not (Path(tmpdir) / "user1.json").exists()
+    tmpdir = _test_dir()
+    mgr = ProfileManager(profile_dir=tmpdir)
+    mgr.get_or_create("user1")
+    assert (tmpdir / "user1.json").exists()
+    mgr.delete("user1")
+    assert not (tmpdir / "user1.json").exists()
 
 
 def test_preferences_update_from_accumulated_big_five():
-    with tempfile.TemporaryDirectory() as tmpdir:
-        mgr = ProfileManager(profile_dir=Path(tmpdir))
-        profile = mgr.get_or_create("user1")
-        profile.big_five.source = "inferred"
-        profile.big_five.neuroticism = 0.8
-        profile.big_five.extraversion = 0.2
-        profile.interaction_count = 6
-        mgr._update_preferences_from_accumulated(profile)
-        assert profile.preferences.expressiveness_tolerance <= 0.7
-        assert profile.preferences.gesture_frequency == "minimal"
-        assert profile.preferences.pace == "slow"
+    tmpdir = _test_dir()
+    mgr = ProfileManager(profile_dir=tmpdir)
+    profile = mgr.get_or_create("user1")
+    profile.big_five.source = "inferred"
+    profile.big_five.neuroticism = 0.8
+    profile.big_five.extraversion = 0.2
+    profile.interaction_count = 6
+    mgr._update_preferences_from_accumulated(profile)
+    assert profile.preferences.expressiveness_tolerance <= 0.7
+    assert profile.preferences.gesture_frequency == "minimal"
+    assert profile.preferences.pace == "slow"
 
 
 def test_mock_pipeline_with_personalization_enabled():
-    with tempfile.TemporaryDirectory() as tmpdir:
-        settings = load_settings()
-        settings.personalization.enabled = True
-        settings.personalization.profile_dir = tmpdir
-        settings.tts.output_dir = Path(tmpdir) / "audio"
-        pipeline = _make_personalized_pipeline(settings, tmpdir)
-        result = asyncio.run(pipeline.process("我最近项目压力有点大"))
-        assert result.reply_text
-        assert result.avatar_command.emotion in set(EmotionType)
-        assert "profile_load" in result.latency_ms
-        assert "post_processor" in result.latency_ms
-        assert "state_update" in result.latency_ms
+    tmpdir = _test_dir()
+    settings = load_settings()
+    settings.personalization.enabled = True
+    settings.personalization.profile_dir = str(tmpdir)
+    settings.tts.output_dir = tmpdir / "audio"
+    pipeline = _make_personalized_pipeline(settings, str(tmpdir))
+    result = asyncio.run(pipeline.process("我最近项目压力有点大"))
+    assert result.reply_text
+    assert result.avatar_command.emotion in set(EmotionType)
+    assert "profile_load" in result.latency_ms
+    assert "post_processor" in result.latency_ms
+    assert "state_update" in result.latency_ms
 
 
 def test_mock_pipeline_with_personalization_disabled():
@@ -252,14 +258,14 @@ def test_mock_provider_uses_conversation_history():
 
 
 def test_mock_pipeline_conversation_history_accumulates():
-    with tempfile.TemporaryDirectory() as tmpdir:
-        settings = load_settings()
-        settings.personalization.profile_dir = tmpdir
-        settings.tts.output_dir = Path(tmpdir) / "audio"
-        pipeline = _make_personalized_pipeline(settings, tmpdir)
-        result1 = asyncio.run(pipeline.process("你好！", user_id="hist_test"))
-        assert result1.reply_text
-        result2 = asyncio.run(pipeline.process("谢谢！", user_id="hist_test"))
-        assert result2.reply_text
-        history = pipeline.conversation_service.last_turns(5)
-        assert len(history) >= 2
+    tmpdir = _test_dir()
+    settings = load_settings()
+    settings.personalization.profile_dir = str(tmpdir)
+    settings.tts.output_dir = tmpdir / "audio"
+    pipeline = _make_personalized_pipeline(settings, str(tmpdir))
+    result1 = asyncio.run(pipeline.process("你好！", user_id="hist_test"))
+    assert result1.reply_text
+    result2 = asyncio.run(pipeline.process("谢谢！", user_id="hist_test"))
+    assert result2.reply_text
+    history = pipeline.conversation_service.last_turns(5)
+    assert len(history) >= 2

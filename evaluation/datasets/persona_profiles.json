@@ -1,0 +1,13 @@
+[
+  {"profile_id": "neutral", "big_five": {"openness": 0.50, "conscientiousness": 0.50, "extraversion": 0.50, "agreeableness": 0.50, "neuroticism": 0.50}},
+  {"profile_id": "O_high", "big_five": {"openness": 0.85, "conscientiousness": 0.50, "extraversion": 0.50, "agreeableness": 0.50, "neuroticism": 0.50}},
+  {"profile_id": "O_low", "big_five": {"openness": 0.15, "conscientiousness": 0.50, "extraversion": 0.50, "agreeableness": 0.50, "neuroticism": 0.50}},
+  {"profile_id": "C_high", "big_five": {"openness": 0.50, "conscientiousness": 0.85, "extraversion": 0.50, "agreeableness": 0.50, "neuroticism": 0.50}},
+  {"profile_id": "C_low", "big_five": {"openness": 0.50, "conscientiousness": 0.15, "extraversion": 0.50, "agreeableness": 0.50, "neuroticism": 0.50}},
+  {"profile_id": "E_high", "big_five": {"openness": 0.50, "conscientiousness": 0.50, "extraversion": 0.85, "agreeableness": 0.50, "neuroticism": 0.50}},
+  {"profile_id": "E_low", "big_five": {"openness": 0.50, "conscientiousness": 0.50, "extraversion": 0.15, "agreeableness": 0.50, "neuroticism": 0.50}},
+  {"profile_id": "A_high", "big_five": {"openness": 0.50, "conscientiousness": 0.50, "extraversion": 0.50, "agreeableness": 0.85, "neuroticism": 0.50}},
+  {"profile_id": "A_low", "big_five": {"openness": 0.50, "conscientiousness": 0.50, "extraversion": 0.50, "agreeableness": 0.15, "neuroticism": 0.50}},
+  {"profile_id": "N_high", "big_five": {"openness": 0.50, "conscientiousness": 0.50, "extraversion": 0.50, "agreeableness": 0.50, "neuroticism": 0.85}},
+  {"profile_id": "N_low", "big_five": {"openness": 0.50, "conscientiousness": 0.50, "extraversion": 0.50, "agreeableness": 0.50, "neuroticism": 0.15}}
+]

@@ -38,6 +38,11 @@ class AvatarSettings(BaseModel):
     provider: str = "mock"
     reset_after_speech: bool = True
     default_expression: str = "neutral"
+    prometheus_output_dir: Path = Path("data/prometheus_avatar")
+    prometheus_model_url: str = (
+        "https://cdn.jsdelivr.net/gh/guansss/pixi-live2d-display@0.4.0/test/assets/haru/"
+        "haru_greeter_t03.model3.json"
+    )
 
 
 class PlannerSettings(BaseModel):
@@ -82,13 +87,23 @@ def load_settings(config_path: Path | None = None) -> Settings:
 
     import os
 
+    default_prometheus_model_url = data.get("avatar", {}).get(
+        "prometheus_model_url",
+        "https://cdn.jsdelivr.net/gh/guansss/pixi-live2d-display@0.4.0/test/assets/haru/"
+        "haru_greeter_t03.model3.json",
+    )
     env_updates = {
         "llm": {
             "provider": os.getenv("LLM_PROVIDER", data.get("llm", {}).get("provider", "mock")),
             "model": os.getenv("LLM_MODEL", data.get("llm", {}).get("model", "deepseek-v4-flash")),
+            "base_url": os.getenv("LLM_BASE_URL", data.get("llm", {}).get("base_url", "https://opencode.ai/zen/go/v1")),
+            "api_key_env": os.getenv("LLM_API_KEY_ENV", data.get("llm", {}).get("api_key_env", "OPENCODE_GO_API_KEY")),
         },
         "tts": {"provider": os.getenv("TTS_PROVIDER", data.get("tts", {}).get("provider", "mock"))},
-        "avatar": {"provider": os.getenv("AVATAR_PROVIDER", data.get("avatar", {}).get("provider", "mock"))},
+        "avatar": {
+            "provider": os.getenv("AVATAR_PROVIDER", data.get("avatar", {}).get("provider", "mock")),
+            "prometheus_model_url": os.getenv("PROMETHEUS_MODEL_URL") or default_prometheus_model_url,
+        },
     }
     if os.getenv("PERSONALIZATION_ENABLED", "").lower() in ("true", "false"):
         env_updates["personalization"] = {"enabled": os.getenv("PERSONALIZATION_ENABLED").lower() == "true"}
