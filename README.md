@@ -201,7 +201,7 @@ PYTHONPATH=src python evaluation/runners/run_character_eval_subset.py --provider
 | `AVATAR_PROVIDER` | mock | mock |
 | `OPENCODE_GO_API_KEY` | — | opencode API Key |
 | `PERSONALIZATION_ENABLED` | true | 启用个性画像 |
-| `PROMETHEUS_MODEL_URL` | Haru demo model | Prometheus bridge 使用的 Live2D 模型 URL |
+| `PROMETHEUS_MODEL_URL` | Shizuku demo model | Prometheus bridge 使用的 Live2D 模型 URL |
 
 ## 当前限制
 

@@ -9,16 +9,29 @@ from hai_avatar.config import load_settings
 from hai_avatar.logging_config import configure_logging
 
 
+def _select_available_api_key_env() -> str | None:
+    for name in ("OPENCODE_GO_API_KEY", "DEEPSEEK_API_KEY", "OPENAI_API_KEY"):
+        if os.getenv(name):
+            return name
+    return None
+
+
 async def main_async(user_text: str) -> None:
     settings = load_settings()
     settings.llm.provider = "openai"
     settings.tts.provider = os.getenv("TTS_PROVIDER", "mock")
     settings.avatar.provider = "prometheus"
 
-    api_key_name = settings.llm.api_key_env
+    api_key_name = _select_available_api_key_env() or settings.llm.api_key_env
+    settings.llm.api_key_env = api_key_name
     if not os.getenv(api_key_name):
         raise SystemExit(
-            f"Missing {api_key_name}. Put your API key in .env, then rerun this script."
+            "Missing API key. Put one of OPENCODE_GO_API_KEY, DEEPSEEK_API_KEY, or OPENAI_API_KEY "
+            "in .env, then rerun this script."
+        )
+    if api_key_name != "OPENCODE_GO_API_KEY" and not os.getenv("LLM_BASE_URL"):
+        raise SystemExit(
+            f"{api_key_name} is set, but LLM_BASE_URL is not. Add the OpenAI-compatible endpoint to .env."
         )
 
     pipeline = build_pipeline(settings)

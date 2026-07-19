@@ -42,6 +42,7 @@ class PrometheusAvatarController(AvatarController):
         self.output_dir = output_dir
         self.model_url = model_url
         self.state_path = self.output_dir / "avatar-state.js"
+        self.state_json_path = self.output_dir / "avatar-state.json"
         self.html_path = self.output_dir / "index.html"
         self.state: dict[str, Any] = {
             "connected": False,
@@ -114,6 +115,10 @@ class PrometheusAvatarController(AvatarController):
             + ";\n",
             encoding="utf-8",
         )
+        self.state_json_path.write_text(
+            json.dumps(self.state, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
         self.html_path.write_text(self._html(), encoding="utf-8")
 
     def _html(self) -> str:
@@ -128,7 +133,11 @@ class PrometheusAvatarController(AvatarController):
   <style>
     :root { color-scheme: dark; font-family: Inter, "Microsoft YaHei", sans-serif; }
     body { margin: 0; min-height: 100vh; background: #101014; color: #f4f4f5; display: grid; grid-template-columns: minmax(420px, 1fr) 380px; }
-    #avatar { width: 100%; height: 100vh; background: #08080b; }
+    #avatar { width: 100%; height: 100vh; background: #08080b; transform-origin: 50% 70%; animation: idleFloat 4s ease-in-out infinite; }
+    #avatar.nod { animation: nodMotion 700ms ease-in-out, idleFloat 4s ease-in-out infinite 700ms; }
+    #avatar.wave { animation: waveMotion 900ms ease-in-out, idleFloat 4s ease-in-out infinite 900ms; }
+    #avatar.head_tilt { animation: tiltMotion 900ms ease-in-out, idleFloat 4s ease-in-out infinite 900ms; }
+    #avatar.think, #avatar.explain { animation: explainMotion 900ms ease-in-out, idleFloat 4s ease-in-out infinite 900ms; }
     aside { padding: 20px; border-left: 1px solid #2a2a32; background: #17171d; overflow: auto; }
     h1 { font-size: 20px; margin: 0 0 14px; }
     .row { margin: 12px 0; }
@@ -137,6 +146,11 @@ class PrometheusAvatarController(AvatarController):
     .pill { display: inline-block; padding: 3px 8px; border: 1px solid #3f3f46; border-radius: 999px; margin: 2px; }
     button { border: 0; padding: 10px 14px; border-radius: 8px; background: #00d4aa; color: #07100e; font-weight: 700; cursor: pointer; }
     pre { white-space: pre-wrap; background: #0d0d11; padding: 10px; border-radius: 8px; color: #d4d4d8; }
+    @keyframes idleFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+    @keyframes nodMotion { 0%,100% { transform: rotate(0deg); } 35% { transform: rotate(2deg) translateY(10px); } 65% { transform: rotate(-1deg) translateY(-4px); } }
+    @keyframes waveMotion { 0%,100% { transform: rotate(0deg); } 25% { transform: rotate(4deg); } 50% { transform: rotate(-4deg); } 75% { transform: rotate(3deg); } }
+    @keyframes tiltMotion { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(-7deg); } }
+    @keyframes explainMotion { 0%,100% { transform: translateX(0); } 35% { transform: translateX(10px); } 70% { transform: translateX(-6px); } }
   </style>
   <script src="./avatar-state.js"></script>
 </head>
@@ -154,12 +168,8 @@ class PrometheusAvatarController(AvatarController):
   <script type="module">
     import { createAvatar } from 'https://esm.sh/@prometheusavatar/core@0.8.0';
 
-    const state = window.HAI_AVATAR_STATE || {};
-    document.getElementById('reply').textContent = state.reply_text || '(no reply yet)';
-    document.getElementById('expression').textContent = `${state.expression} -> ${state.prometheus_emotion}`;
-    document.getElementById('gestures').innerHTML = (state.gestures || []).map(g => `<span class="pill">${g}</span>`).join(' ') || '(none)';
-    document.getElementById('audio').textContent = `${state.voice_style || 'neutral'} | ${state.audio_path || '(no audio)'}`;
-    document.getElementById('events').textContent = (state.events || []).join('\\n');
+    let state = window.HAI_AVATAR_STATE || {};
+    let lastUpdatedAt = '';
 
     let avatar = null;
     try {
@@ -173,6 +183,8 @@ class PrometheusAvatarController(AvatarController):
       if (state.reply_text) {
         avatar.processText(state.reply_text);
       }
+      renderState(state);
+      animateGestures(state.gestures || []);
     } catch (error) {
       document.getElementById('avatar').innerHTML = `<pre style="padding:20px;color:#fca5a5">Prometheus SDK failed to load. Check browser network/CDN access and Live2D runtime scripts.\\n${error}</pre>`;
       console.error(error);
@@ -181,9 +193,52 @@ class PrometheusAvatarController(AvatarController):
     document.getElementById('speakBtn').onclick = async () => {
       if (avatar && state.reply_text) {
         avatar.setEmotion(state.prometheus_emotion || 'neutral');
+        animateGestures(state.gestures || []);
         await avatar.speak(state.reply_text);
       }
     };
+
+    function renderState(nextState) {
+      document.getElementById('reply').textContent = nextState.reply_text || '(no reply yet)';
+      document.getElementById('expression').textContent = `${nextState.expression} -> ${nextState.prometheus_emotion}`;
+      document.getElementById('gestures').innerHTML = (nextState.gestures || []).map(g => `<span class="pill">${g}</span>`).join(' ') || '(none)';
+      document.getElementById('audio').textContent = `${nextState.voice_style || 'neutral'} | ${nextState.audio_path || '(no audio)'}`;
+      document.getElementById('events').textContent = (nextState.events || []).join('\\n');
+    }
+
+    function animateGestures(gestures) {
+      const el = document.getElementById('avatar');
+      const sequence = gestures.filter(g => g && g !== 'idle');
+      sequence.forEach((gesture, index) => {
+        setTimeout(() => {
+          el.classList.remove('nod', 'wave', 'head_tilt', 'think', 'explain', 'agree', 'small_bow');
+          void el.offsetWidth;
+          el.classList.add(gesture);
+          setTimeout(() => el.classList.remove(gesture), 950);
+        }, index * 850);
+      });
+    }
+
+    async function refreshState() {
+      try {
+        const response = await fetch(`./avatar-state.json?t=${Date.now()}`, { cache: 'no-store' });
+        const nextState = await response.json();
+        if (nextState.updated_at && nextState.updated_at !== lastUpdatedAt) {
+          state = nextState;
+          lastUpdatedAt = nextState.updated_at;
+          renderState(state);
+          if (avatar) {
+            avatar.setEmotion(state.prometheus_emotion || 'neutral');
+            if (state.reply_text) avatar.processText(state.reply_text);
+          }
+          animateGestures(state.gestures || []);
+        }
+      } catch (error) {
+        console.warn('Failed to refresh avatar state', error);
+      }
+    }
+
+    setInterval(refreshState, 1200);
   </script>
 </body>
 </html>
