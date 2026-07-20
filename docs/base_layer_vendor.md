@@ -1,6 +1,6 @@
 # 基础层候选仓库接入记录
 
-本文记录 `research_summary.md` 中基础层候选仓库的接入决策，避免后续把外部 SDK 和当前 Python 主控 Pipeline 混在一起。
+本文记录 `docs/research_summary.md` 中基础层候选仓库的接入决策，避免后续把外部 SDK 和当前 Python 主控 Pipeline 混在一起。
 
 ## 已拉入仓库
 
@@ -18,7 +18,7 @@ third_party/prometheus-avatar/
 
 ## 为什么选择 Prometheus Avatar
 
-`research_summary.md` 同时推荐了 `handcrafted-persona-engine` 和 `Prometheus Avatar SDK`。本次先拉入 Prometheus，原因是：
+`docs/research_summary.md` 同时推荐了 `handcrafted-persona-engine` 和 `Prometheus Avatar SDK`。本次先拉入 Prometheus，原因是：
 
 - 仓库中有明确 MIT License，课程项目复用风险较低。
 - README 明确提供 SDK、Live2D、emotion、lip-sync、TTS 和 agent integration 入口。

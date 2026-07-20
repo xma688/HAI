@@ -11,18 +11,35 @@ from hai_avatar.schemas import LLMAvatarResponse
 
 
 def parse_llm_avatar_response(raw_text: str) -> LLMAvatarResponse:
-    """Parse JSON, including Markdown-wrapped JSON, into LLMAvatarResponse."""
+    """Parse JSON, Markdown-wrapped JSON, or plain text into LLMAvatarResponse."""
 
     errors: list[str] = []
     for candidate in (raw_text, _extract_json_object(raw_text)):
         if not candidate:
             continue
         try:
-            data: dict[str, Any] = json.loads(candidate)
+            data: Any = json.loads(candidate)
+            if not isinstance(data, dict):
+                return _plain_text_response(str(data))
             return LLMAvatarResponse.model_validate(data)
         except (json.JSONDecodeError, ValidationError) as exc:
             errors.append(str(exc))
+    if raw_text.strip():
+        return _plain_text_response(raw_text.strip())
     raise LLMResponseParseError("; ".join(errors) or "No JSON object found in LLM response.")
+
+
+def _plain_text_response(reply_text: str) -> LLMAvatarResponse:
+    return LLMAvatarResponse(
+        reply_text=reply_text,
+        emotion="neutral",
+        expression="neutral",
+        gestures=["idle"],
+        voice_style="neutral",
+        gesture_intensity=0.3,
+        speaking_rate=1.0,
+        pause_before_speech_ms=0,
+    )
 
 
 def fallback_llm_response(user_text: str) -> LLMAvatarResponse:

@@ -6,7 +6,7 @@
 
 用户输入文本 → LLM 生成回复 + 情绪/动作推理 → TTS 合成语音 → 虚拟角色播放语音并做表情动作。核心创新是一个**语义到动作的映射模块**（Action Planner），让 LLM 不仅回答问题，还能判断当前的情绪、语气、表情和动作。
 
-当前已实现完整的 **Mock 管线 + 真实 LLM (opencode/deepseek-v4-flash) + 真实 TTS (Edge TTS) + 个性化层 + 创新层 + Gradio Web UI + 用户实验工具**。唯一未接入的是真实 Live2D Avatar 渲染。
+当前已实现完整的 **Mock 管线 + 真实 LLM (opencode/deepseek-v4-flash) + 真实 TTS (Edge TTS) + Prometheus/Live2D 浏览器桥接 + 个性化层 + 创新层 + Gradio Web UI + 用户实验工具**。
 
 ## 三层架构
 
@@ -154,18 +154,18 @@ PYTHONPATH=src python scripts/run_experiment.py --stats
 ## 测试
 
 ```bash
-PYTHONPATH=src pytest    # 33 个测试全部通过
+PYTHONPATH=src pytest    # 36 个测试全部通过
 ```
 
 覆盖：JSON 解析/修复、标签降级、截断、冲突纠正、冷却、Mock TTS/Avatar/Pipeline、用户画像构建/加载/更新、Big Five 推断、Prompt 生成、PostProcessor 约束、对话历史累积、完全管线（启用/禁用个性化）。
 
 ## Evaluation MVP
 
-评测实现位于 `evaluation/`。根据 `HAI_Evaluation_Implementation_Plan(1).pdf`，当前不把 InCharacter / CharacterEval 包装成完整官方总分：
+评测实现位于 `evaluation/`。根据 `docs/HAI_Evaluation_Implementation_Plan(1).pdf`，当前支持两条 benchmark 路线：
 
-- InCharacter：没有独立 `AvatarPersona` 前，只能作为 adapted / 诊断实验。
-- CharacterEval：当前先跑 `CharacterEval-derived dialogue metrics` 子集。
-- 主线评测：用户画像、个性化反事实、Action/Voice 规划。
+- CharacterEval：使用官方 GitHub 数据生成 HAI 回复，并输出 `generation.json` / `generation_trans.json`；随后用本地 `morecry/BaichuanCharRM` 跑 CharacterRM 官方 reward-model 评分。
+- InCharacter：使用官方 BFI 问卷和计分 key，对固定 HAI AvatarPersona 做 self-report 评分；这是 BFI self-report 变体，不是完整 interview + evaluator-LLM 流程。
+- 主线评测：仍保留用户画像、个性化反事实、Action/Voice 规划和后续真人实验。
 
 ```bash
 # 受控画像反事实 smoke
@@ -174,11 +174,37 @@ PYTHONPATH=src python evaluation/runners/run_counterfactual.py --provider mock -
 # Action / Voice 金标准 smoke
 PYTHONPATH=src python evaluation/runners/run_action_eval.py --provider mock
 
-# CharacterEval-derived 中文对话维度 smoke
+# CharacterEval-derived 本地中文对话维度 smoke
 PYTHONPATH=src python evaluation/runners/run_character_eval_subset.py --provider mock
+
+# 准备 PDF 指定的两个官方 benchmark 的 adapted 子集
+# 需要先把官方仓库放在 .tmp/CharacterEval 和 .tmp/InCharacter
+PYTHONPATH=src python evaluation/adapters/prepare_official_benchmark_data.py --character-limit 20 --incharacter-limit 10
+
+# CharacterEval 官方数据 adapted 实验
+PYTHONPATH=src python evaluation/runners/run_official_character_eval.py --provider mock --limit 2
+
+# InCharacter BFI 官方题库 adapted 实验
+PYTHONPATH=src python evaluation/runners/run_incharacter_bfi_adapted.py --provider mock --limit 2
+
+# InCharacter BFI self-report 计分方法；真实 API 需要显式允许 benchmark 数据外发
+PYTHONPATH=src python evaluation/runners/run_incharacter_bfi_self_report.py --provider openai --allow-external-data-export
+
+# 生成可视化 HTML 报告
+PYTHONPATH=src python evaluation/reports/build_benchmark_report.py --runs <run_dir_1> <run_dir_2> --out evaluation/results/benchmark_report
+
+# 下载 CharacterEval 官方 CharacterRM 权重（约 25GB，默认写入 .tmp/BaichuanCharRM）
+PYTHONPATH=src python scripts/download_charrm.py
+
+# CharacterEval 官方 CharacterRM 评分
+PYTHONPATH=src python evaluation/runners/run_charactereval_charrm.py --run-dir <charactereval_run_dir> --reward-model-path <local_BaichuanCharRM_dir>
+
+# 若 .env 中 API 可连通，且你确认允许外部 API 接收 benchmark 上下文：
+PYTHONPATH=src python evaluation/runners/run_official_character_eval.py --provider openai --allow-external-data-export --limit 20
 ```
 
 结果写入 `evaluation/results/<run_id>/`，包括 `manifest.json`、`outputs.jsonl` 和 `metrics.json`。
+CharacterEval 跑完 CharacterRM 后还会生成 `charrm_evaluation.json` 和 `charrm_metrics.json`；报告目录包含 `benchmark_report.html`、`metrics_summary.csv` 和 PNG 图表。
 
 ## 枚举标签
 
@@ -201,10 +227,10 @@ PYTHONPATH=src python evaluation/runners/run_character_eval_subset.py --provider
 | `AVATAR_PROVIDER` | mock | mock |
 | `OPENCODE_GO_API_KEY` | — | opencode API Key |
 | `PERSONALIZATION_ENABLED` | true | 启用个性画像 |
-| `PROMETHEUS_MODEL_URL` | Shizuku demo model | Prometheus bridge 使用的 Live2D 模型 URL |
+| `PROMETHEUS_MODEL_URL` | Mao official Live2D model | Prometheus bridge 使用的 Live2D 模型 URL |
 
 ## 当前限制
 
-- VTube Studio / Live2D Avatar 仅有接口占位，未实现真实渲染
+- Prometheus/Live2D 已通过浏览器 bridge 接入；模型 motion 能力取决于所选 Live2D 模型
 - ASR 语音输入仅在有 API Key 时可用（通过 Gradio 麦克风触发）
 - Mock Avatar 仅打日志，不做真实口型同步

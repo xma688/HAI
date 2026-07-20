@@ -130,10 +130,22 @@ class PrometheusAvatarController(AvatarController):
   <title>HAI Prometheus Avatar Bridge</title>
   <script src="https://cdn.jsdelivr.net/gh/dylanNew/live2d/webgl/Live2D/lib/live2d.min.js"></script>
   <script src="https://cubism.live2d.com/sdk-web/cubismcore/live2dcubismcore.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pixi.js@6.5.10/dist/browser/pixi.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/pixi-live2d-display@0.4.0/dist/index.min.js"></script>
   <style>
     :root { color-scheme: dark; font-family: Inter, "Microsoft YaHei", sans-serif; }
     body { margin: 0; min-height: 100vh; background: #101014; color: #f4f4f5; display: grid; grid-template-columns: minmax(420px, 1fr) 380px; }
-    #avatar { width: 100%; height: 100vh; background: #08080b; transform-origin: 50% 70%; animation: idleFloat 4s ease-in-out infinite; }
+    #avatar { position: relative; width: 100%; height: 100vh; background: #08080b; overflow: hidden; transform-origin: 50% 70%; animation: idleFloat 4s ease-in-out infinite; }
+    #avatar canvas { display: block; width: 100%; height: 100%; }
+    #avatarStatus { position: absolute; left: 16px; top: 16px; max-width: min(620px, calc(100% - 32px)); padding: 10px 12px; border: 1px solid #303038; border-radius: 8px; background: rgba(13,13,17,.86); color: #d4d4d8; font: 12px/1.45 ui-monospace, SFMono-Regular, Consolas, monospace; white-space: pre-wrap; pointer-events: none; }
+    #avatarStatus.ok { color: #a7f3d0; }
+    #avatarStatus.error { color: #fca5a5; }
+    #fallbackAvatar { position: absolute; inset: 0; display: none; place-items: center; }
+    #fallbackAvatar .figure { width: min(32vw, 220px); aspect-ratio: 1 / 1.45; border-radius: 45% 45% 38% 38%; background: linear-gradient(180deg, #ffd9c7 0 28%, #6ee7b7 28% 100%); box-shadow: 0 28px 80px rgba(0,212,170,.16); transform-origin: 50% 80%; animation: idleFloat 3s ease-in-out infinite; }
+    #fallbackAvatar .face { width: 58%; height: 30%; margin: 18% auto 0; border-radius: 45%; background: #ffe8dc; position: relative; }
+    #fallbackAvatar .face::before, #fallbackAvatar .face::after { content: ""; position: absolute; top: 42%; width: 9%; height: 9%; border-radius: 50%; background: #202026; }
+    #fallbackAvatar .face::before { left: 31%; }
+    #fallbackAvatar .face::after { right: 31%; }
     #avatar.nod { animation: nodMotion 700ms ease-in-out, idleFloat 4s ease-in-out infinite 700ms; }
     #avatar.wave { animation: waveMotion 900ms ease-in-out, idleFloat 4s ease-in-out infinite 900ms; }
     #avatar.head_tilt { animation: tiltMotion 900ms ease-in-out, idleFloat 4s ease-in-out infinite 900ms; }
@@ -155,50 +167,108 @@ class PrometheusAvatarController(AvatarController):
   <script src="./avatar-state.js"></script>
 </head>
 <body>
-  <div id="avatar"></div>
+  <div id="avatar">
+    <div id="avatarStatus">initializing avatar bridge...</div>
+    <div id="fallbackAvatar"><div class="figure"><div class="face"></div></div></div>
+  </div>
   <aside>
     <h1>HAI Avatar Bridge</h1>
     <button id="speakBtn">Speak latest reply</button>
+    <div class="row"><div class="label">Render Status</div><div id="renderStatus" class="value"></div></div>
     <div class="row"><div class="label">Reply</div><div id="reply" class="value"></div></div>
     <div class="row"><div class="label">Expression</div><div id="expression" class="value"></div></div>
     <div class="row"><div class="label">Gestures</div><div id="gestures" class="value"></div></div>
     <div class="row"><div class="label">Voice / Audio</div><div id="audio" class="value"></div></div>
     <div class="row"><div class="label">Events</div><pre id="events"></pre></div>
   </aside>
-  <script type="module">
-    import { createAvatar } from 'https://esm.sh/@prometheusavatar/core@0.8.0';
-
+  <script>
     let state = window.HAI_AVATAR_STATE || {};
     let lastUpdatedAt = '';
-
-    let avatar = null;
-    try {
-      avatar = await createAvatar({
-        container: document.getElementById('avatar'),
-        modelUrl: state.model_url,
-        ttsOptions: { lang: 'zh-CN', rate: 1.0, pitch: 1.0, volume: 1.0 },
-        backgroundColor: 0x08080b,
-      });
-      avatar.setEmotion(state.prometheus_emotion || 'neutral');
-      if (state.reply_text) {
-        avatar.processText(state.reply_text);
-      }
-      renderState(state);
-      animateGestures(state.gestures || []);
-    } catch (error) {
-      document.getElementById('avatar').innerHTML = `<pre style="padding:20px;color:#fca5a5">Prometheus SDK failed to load. Check browser network/CDN access and Live2D runtime scripts.\\n${error}</pre>`;
-      console.error(error);
-    }
-
-    document.getElementById('speakBtn').onclick = async () => {
-      if (avatar && state.reply_text) {
-        avatar.setEmotion(state.prometheus_emotion || 'neutral');
-        animateGestures(state.gestures || []);
-        await avatar.speak(state.reply_text);
-      }
+    let app = null;
+    let model = null;
+    let mouthTimer = null;
+    let lipSyncActive = false;
+    let lipSyncStartedAt = 0;
+    let gestureState = { type: null, startedAt: 0, duration: 0 };
+    let gestureQueue = [];
+    let lastGestureSignature = '';
+    const paramAliases = {
+      angleX: ['ParamAngleX', 'PARAM_ANGLE_X'],
+      angleY: ['ParamAngleY', 'PARAM_ANGLE_Y'],
+      angleZ: ['ParamAngleZ', 'PARAM_ANGLE_Z'],
+      bodyAngleX: ['ParamBodyAngleX', 'PARAM_BODY_ANGLE_X'],
+      eyeLOpen: ['ParamEyeLOpen', 'PARAM_EYE_L_OPEN'],
+      eyeROpen: ['ParamEyeROpen', 'PARAM_EYE_R_OPEN'],
+      eyeLSmile: ['ParamEyeLSmile', 'PARAM_EYE_L_SMILE'],
+      eyeRSmile: ['ParamEyeRSmile', 'PARAM_EYE_R_SMILE'],
+      browLY: ['ParamBrowLY', 'PARAM_BROW_L_Y'],
+      browRY: ['ParamBrowRY', 'PARAM_BROW_R_Y'],
+      mouthOpen: ['ParamMouthOpenY', 'PARAM_MOUTH_OPEN_Y', 'ParamA'],
+      mouthForm: ['ParamMouthForm', 'PARAM_MOUTH_FORM'],
+    };
+    const emotionParams = {
+      neutral: { eyeLOpen: 1, eyeROpen: 1, mouthForm: 0 },
+      happy: { eyeLOpen: .82, eyeROpen: .82, eyeLSmile: 1, eyeRSmile: 1, mouthForm: 1 },
+      sad: { eyeLOpen: .62, eyeROpen: .62, browLY: -.5, browRY: -.5, mouthForm: -.3 },
+      surprised: { eyeLOpen: 1.25, eyeROpen: 1.25, browLY: .8, browRY: .8, mouthOpen: .7 },
+      thinking: { eyeLOpen: .72, eyeROpen: .9, browLY: .25, browRY: -.15, angleX: 12 },
     };
 
+    document.addEventListener('DOMContentLoaded', () => {
+      renderState(state);
+      initAvatar().catch(showError);
+    });
+
+    document.getElementById('speakBtn').onclick = async () => {
+      if (!state.reply_text) return;
+      setEmotion(state.prometheus_emotion || 'neutral');
+      animateGestures(state.gestures || [], true);
+      speakWithBrowser(state.reply_text);
+    };
+
+    async function initAvatar() {
+      setStatus('checking Live2D runtimes...');
+      if (!window.PIXI) throw new Error('PIXI was not loaded. Check cdn.jsdelivr.net access for pixi.js.');
+      if (!window.PIXI.live2d?.Live2DModel) {
+        throw new Error('pixi-live2d-display was not loaded. Check cdn.jsdelivr.net access for pixi-live2d-display.');
+      }
+      if (!window.Live2D && !window.Live2DCubismCore) {
+        throw new Error('No Live2D runtime was loaded. Check live2d.min.js or Live2DCubismCore network access.');
+      }
+      disableModelAudio();
+
+      const container = document.getElementById('avatar');
+      setStatus(`loading model: ${state.model_url || '(missing model_url)'}`);
+      app = new PIXI.Application({
+        width: container.clientWidth,
+        height: container.clientHeight,
+        backgroundColor: 0x08080b,
+        antialias: true,
+        resolution: window.devicePixelRatio || 1,
+        autoDensity: true,
+      });
+      container.insertBefore(app.view, document.getElementById('avatarStatus'));
+
+      model = await PIXI.live2d.Live2DModel.from(state.model_url);
+      stripModelMotionSounds(model);
+      app.stage.addChild(model);
+      fitModel();
+      try { model.motion?.('Idle', 0, { loop: true }); } catch (_) {}
+      try { model.motion?.('idle', 0, { loop: true }); } catch (_) {}
+      app.ticker.add(applyLive2DOverlays, null, PIXI.UPDATE_PRIORITY?.LOW ?? -25);
+      setEmotion(state.prometheus_emotion || 'neutral');
+      animateGestures(state.gestures || [], true);
+      setStatus(`model loaded: ${Math.round(model.width)}x${Math.round(model.height)}`, 'ok');
+
+      window.addEventListener('resize', () => {
+        if (!app) return;
+        app.renderer.resize(container.clientWidth, container.clientHeight);
+        fitModel();
+      });
+    }
+
     function renderState(nextState) {
+      document.getElementById('renderStatus').textContent = document.getElementById('avatarStatus').textContent;
       document.getElementById('reply').textContent = nextState.reply_text || '(no reply yet)';
       document.getElementById('expression').textContent = `${nextState.expression} -> ${nextState.prometheus_emotion}`;
       document.getElementById('gestures').innerHTML = (nextState.gestures || []).map(g => `<span class="pill">${g}</span>`).join(' ') || '(none)';
@@ -206,9 +276,15 @@ class PrometheusAvatarController(AvatarController):
       document.getElementById('events').textContent = (nextState.events || []).join('\\n');
     }
 
-    function animateGestures(gestures) {
+    function animateGestures(gestures, force = false) {
       const el = document.getElementById('avatar');
       const sequence = gestures.filter(g => g && g !== 'idle');
+      const signature = sequence.join('|');
+      if (signature && (force || signature !== lastGestureSignature)) {
+        lastGestureSignature = signature;
+        gestureQueue = sequence.slice();
+        startNextGesture();
+      }
       sequence.forEach((gesture, index) => {
         setTimeout(() => {
           el.classList.remove('nod', 'wave', 'head_tilt', 'think', 'explain', 'agree', 'small_bow');
@@ -219,6 +295,207 @@ class PrometheusAvatarController(AvatarController):
       });
     }
 
+    function fitModel() {
+      if (!app || !model) return;
+      const width = app.renderer.width / (window.devicePixelRatio || 1);
+      const height = app.renderer.height / (window.devicePixelRatio || 1);
+      const scale = Math.min(width / model.width, height / model.height) * 0.86;
+      model.scale.set(scale);
+      if (model.anchor) {
+        model.anchor.set(0.5, 0.5);
+        model.x = width / 2;
+        model.y = height / 2;
+      } else {
+        model.x = (width - model.width) / 2;
+        model.y = (height - model.height) / 2;
+      }
+    }
+
+    function setEmotion(emotion) {
+      if (!model) return;
+      const params = emotionParams[emotion] || emotionParams.neutral;
+      Object.entries(params).forEach(([name, value]) => setParamAny(paramAliases[name] || [name], value));
+    }
+
+    function setParamAny(ids, value) {
+      let applied = false;
+      ids.forEach((id) => {
+        if (setParam(id, value)) applied = true;
+      });
+      return applied;
+    }
+
+    function setParam(id, value) {
+      const core = model?.internalModel?.coreModel;
+      if (!core) return;
+      try {
+        if (typeof core.getParameterIndex === 'function' && core.getParameterIndex(id) >= 0) {
+          core.setParameterValueById(id, value);
+          return true;
+        }
+      } catch (_) {}
+      try {
+        if (typeof core.setParameterValueById === 'function') {
+          core.setParameterValueById(id, value);
+          return true;
+        }
+      } catch (_) {}
+      try {
+        if (typeof core.setParamFloat === 'function') {
+          core.setParamFloat(id, value);
+          return true;
+        }
+      } catch (_) {}
+      return false;
+    }
+
+    function speakWithBrowser(text) {
+      window.speechSynthesis?.cancel();
+      startTextLipSync();
+      const fallbackDurationMs = Math.min(7000, Math.max(1200, text.length * 170));
+      if ('SpeechSynthesisUtterance' in window) {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'zh-CN';
+        utterance.rate = 1;
+        utterance.pitch = 1;
+        utterance.onend = stopTextLipSync;
+        utterance.onerror = stopTextLipSync;
+        window.speechSynthesis.speak(utterance);
+        setTimeout(() => {
+          if (lipSyncActive && !window.speechSynthesis?.speaking) stopTextLipSync();
+        }, fallbackDurationMs);
+      } else {
+        setTimeout(stopTextLipSync, fallbackDurationMs);
+      }
+    }
+
+    function startTextLipSync() {
+      stopTextLipSync();
+      lipSyncActive = true;
+      lipSyncStartedAt = performance.now();
+      mouthTimer = setInterval(() => {
+        if (!lipSyncActive) return;
+        const elapsed = (performance.now() - lipSyncStartedAt) / 1000;
+        const value = .18 + Math.abs(Math.sin(elapsed * 14)) * .55 + Math.random() * .12;
+        setParamAny(paramAliases.mouthOpen, Math.min(.9, value));
+      }, 80);
+    }
+
+    function stopTextLipSync() {
+      if (mouthTimer) clearInterval(mouthTimer);
+      mouthTimer = null;
+      lipSyncActive = false;
+      setParamAny(paramAliases.mouthOpen, 0);
+    }
+
+    function startNextGesture() {
+      const next = gestureQueue.shift();
+      if (!next) {
+        gestureState = { type: null, startedAt: 0, duration: 0 };
+        return;
+      }
+      gestureState = {
+        type: next,
+        startedAt: performance.now(),
+        duration: next === 'wave' ? 1100 : 850,
+      };
+      playModelMotion(next);
+      setTimeout(startNextGesture, gestureState.duration + 120);
+    }
+
+    function playModelMotion(gesture) {
+      if (!model?.motion) return;
+      const motionMap = {
+        wave: ['TapBody', 'tap_body', 'pinch_in'],
+        nod: ['TapBody', 'flick_head', 'tap_body'],
+        agree: ['TapBody', 'flick_head', 'tap_body'],
+        small_bow: ['TapBody', 'tap_body'],
+        head_tilt: ['TapBody', 'flick_head'],
+        think: ['TapBody', 'shake'],
+        explain: ['TapBody', 'tap_body'],
+      };
+      const groups = motionMap[gesture] || [];
+      for (const group of groups) {
+        try {
+          const result = model.motion(group, 0);
+          setStatus(`model loaded; motion ${group} for gesture ${gesture}`, 'ok');
+          if (result?.catch) result.catch(() => {});
+          break;
+        } catch (_) {}
+      }
+    }
+
+    function disableModelAudio() {
+      try {
+        if (PIXI.live2d?.SoundManager) {
+          PIXI.live2d.SoundManager.volume = 0;
+        }
+      } catch (_) {}
+    }
+
+    function stripModelMotionSounds(target) {
+      const seen = new Set();
+      const visit = (value) => {
+        if (!value || typeof value !== 'object' || seen.has(value)) return;
+        seen.add(value);
+        delete value.Sound;
+        delete value.sound;
+        Object.values(value).forEach(visit);
+      };
+      visit(target?.internalModel?.settings);
+      visit(target?.internalModel?.settings?.json);
+      visit(target?.internalModel?.motions);
+    }
+
+    function applyLive2DOverlays() {
+      if (!model) return;
+      if (lipSyncActive) {
+        const elapsed = (performance.now() - lipSyncStartedAt) / 1000;
+        const mouth = .16 + Math.abs(Math.sin(elapsed * 13.5)) * .62;
+        setParamAny(paramAliases.mouthOpen, mouth);
+      }
+      if (!gestureState.type) return;
+
+      const elapsed = performance.now() - gestureState.startedAt;
+      const progress = Math.min(1, elapsed / gestureState.duration);
+      const pulse = Math.sin(progress * Math.PI);
+      const shake = Math.sin(progress * Math.PI * 5) * pulse;
+      const type = gestureState.type;
+
+      if (type === 'nod' || type === 'agree' || type === 'small_bow') {
+        setParamAny(paramAliases.angleY, -18 * pulse);
+        setParamAny(paramAliases.angleZ, 3 * shake);
+      } else if (type === 'wave') {
+        setParamAny(paramAliases.angleZ, 12 * shake);
+        setParamAny(paramAliases.bodyAngleX, 8 * shake);
+        setParamAny(paramAliases.angleX, 10 * shake);
+      } else if (type === 'head_tilt' || type === 'think' || type === 'explain') {
+        setParamAny(paramAliases.angleZ, -14 * pulse);
+        setParamAny(paramAliases.angleX, 8 * pulse);
+      }
+
+      if (progress >= 1) {
+        gestureState = { type: null, startedAt: 0, duration: 0 };
+        setParamAny(paramAliases.angleX, 0);
+        setParamAny(paramAliases.angleY, 0);
+        setParamAny(paramAliases.angleZ, 0);
+        setParamAny(paramAliases.bodyAngleX, 0);
+      }
+    }
+
+    function setStatus(message, kind = '') {
+      const status = document.getElementById('avatarStatus');
+      status.textContent = message;
+      status.className = kind;
+      document.getElementById('renderStatus').textContent = message;
+    }
+
+    function showError(error) {
+      console.error(error);
+      setStatus(`Live2D avatar failed. ${error?.message || error}`, 'error');
+      document.getElementById('fallbackAvatar').style.display = 'grid';
+    }
+
     async function refreshState() {
       try {
         const response = await fetch(`./avatar-state.json?t=${Date.now()}`, { cache: 'no-store' });
@@ -227,11 +504,8 @@ class PrometheusAvatarController(AvatarController):
           state = nextState;
           lastUpdatedAt = nextState.updated_at;
           renderState(state);
-          if (avatar) {
-            avatar.setEmotion(state.prometheus_emotion || 'neutral');
-            if (state.reply_text) avatar.processText(state.reply_text);
-          }
-          animateGestures(state.gestures || []);
+          setEmotion(state.prometheus_emotion || 'neutral');
+          animateGestures(state.gestures || [], true);
         }
       } catch (error) {
         console.warn('Failed to refresh avatar state', error);

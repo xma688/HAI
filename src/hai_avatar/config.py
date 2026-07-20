@@ -40,8 +40,8 @@ class AvatarSettings(BaseModel):
     default_expression: str = "neutral"
     prometheus_output_dir: Path = Path("data/prometheus_avatar")
     prometheus_model_url: str = (
-        "https://cdn.jsdelivr.net/gh/guansss/pixi-live2d-display@0.4.0/test/assets/shizuku/"
-        "shizuku.model.json"
+        "https://cdn.jsdelivr.net/gh/Live2D/CubismWebSamples@develop/Samples/Resources/Mao/"
+        "Mao.model3.json"
     )
 
 
@@ -89,8 +89,8 @@ def load_settings(config_path: Path | None = None) -> Settings:
 
     default_prometheus_model_url = data.get("avatar", {}).get(
         "prometheus_model_url",
-        "https://cdn.jsdelivr.net/gh/guansss/pixi-live2d-display@0.4.0/test/assets/shizuku/"
-        "shizuku.model.json",
+        "https://cdn.jsdelivr.net/gh/Live2D/CubismWebSamples@develop/Samples/Resources/Mao/"
+        "Mao.model3.json",
     )
     env_updates = {
         "llm": {

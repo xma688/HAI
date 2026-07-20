@@ -20,6 +20,15 @@ ui = ["gradio>=4.0"]
 edge-tts = ["edge-tts>=7.0"]
 llm = ["openai>=1.0"]
 dev = ["pytest>=8.0"]
+benchmark = [
+    "huggingface_hub>=0.20",
+    "transformers==4.36.2",
+    "torch>=2.0.1",
+    "sentencepiece>=0.1.99",
+    "accelerate>=0.21",
+    "matplotlib>=3.8",
+    "pandas>=2.0",
+]
 all = ["gradio>=4.0", "edge-tts>=7.0", "openai>=1.0", "pytest>=8.0"]
 
 [project.scripts]

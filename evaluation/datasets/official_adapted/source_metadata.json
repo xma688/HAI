@@ -1,0 +1,21 @@
+{
+  "CharacterEval": {
+    "repo": "https://github.com/morecry/CharacterEval",
+    "commit": "c3d44a6fc1790cc8c4b2fd7c01f0c72930655e0c",
+    "files": [
+      "data/test_data.jsonl",
+      "data/character_profiles.json",
+      "data/id2metric.jsonl"
+    ],
+    "prepared_records": 20
+  },
+  "InCharacter": {
+    "repo": "https://github.com/Neph0s/InCharacter",
+    "commit": "f554202a94d4a83dc5407245bb18981899e872e6",
+    "files": [
+      "data/questionnaires/BFI.json"
+    ],
+    "prepared_records": 10
+  },
+  "reporting_boundary": "Adapted local HAI runs; do not report as official benchmark overall scores."
+}
