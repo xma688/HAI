@@ -8,7 +8,7 @@ from pathlib import Path
 import gradio as gr
 
 from hai_avatar.app import build_pipeline
-from hai_avatar.config import load_settings
+from hai_avatar.config import Settings, load_settings
 from hai_avatar.schemas import AvatarCommand
 
 logger = logging.getLogger(__name__)
@@ -39,8 +39,8 @@ def _transcribe_audio(audio_path: str | None) -> str:
 
 
 class GradioApp:
-    def __init__(self) -> None:
-        self.settings = load_settings()
+    def __init__(self, settings: Settings | None = None) -> None:
+        self.settings = settings or load_settings()
         self.service = build_pipeline(self.settings)
         self._loop = asyncio.new_event_loop()
         self._provider = self.settings.llm.provider
@@ -159,8 +159,8 @@ class GradioApp:
         demo.launch(server_name="0.0.0.0", server_port=port)
 
 
-def create_app() -> gr.Blocks:
-    return GradioApp().create_interface()
+def create_app(settings: Settings | None = None) -> gr.Blocks:
+    return GradioApp(settings).create_interface()
 
 
 if __name__ == "__main__":

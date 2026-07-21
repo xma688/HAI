@@ -82,6 +82,9 @@ def _create_tts_provider(provider_name: str) -> TTSProvider:
         from hai_avatar.tts.edge_tts_provider import EdgeTTSProvider
 
         return EdgeTTSProvider()
+    if provider_name == "moss_tts":
+        from hai_avatar.tts.moss_tts_provider import MossTTSProvider
+        return MossTTSProvider()
     raise ValueError(f"Unknown TTS provider: {provider_name}")
 
 

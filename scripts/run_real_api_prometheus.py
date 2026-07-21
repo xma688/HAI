@@ -19,7 +19,7 @@ def _select_available_api_key_env() -> str | None:
 async def main_async(user_text: str) -> None:
     settings = load_settings()
     settings.llm.provider = "openai"
-    settings.tts.provider = os.getenv("TTS_PROVIDER", "mock")
+    settings.tts.provider = "moss_tts" #os.getenv("TTS_PROVIDER", "mock")
     settings.avatar.provider = "prometheus"
 
     api_key_name = _select_available_api_key_env() or settings.llm.api_key_env
