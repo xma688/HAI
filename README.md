@@ -19,7 +19,7 @@
 │ 7 步推理框架 (情绪→表情→动作→强度→语音→语速→停顿)         │
 │ 对话历史上下文注入，few-shot 示例引导                     │
 ├──────────────────────────────────────────────────────────┤
-│ 个性化层: Agent Personalization                          │
+│ 个性化层: Profile-based Personalization                  │
 │ UserProfile (Big Five 人格推断 + 偏好学习)                │
 │ Prompt 注入 (画像→自然语言指令) + PostProcessor (参数约束)  │
 └──────────────────────────────────────────────────────────┘
@@ -36,7 +36,7 @@ User Text + 对话历史
   -> [创新层]   ActionPlanner (透传 intensity/rate)
   -> [个性化层] PostProcessor (画像约束→参数调整)
   -> [基础层]   TTSProvider (Mock / Edge TTS)
-  -> [基础层]   AvatarController (Mock)
+  -> [基础层]   AvatarController (Mock / Prometheus Live2D)
   -> PipelineResult
 ```
 
@@ -60,7 +60,9 @@ src/hai_avatar/
     edge_tts_provider.py   Microsoft Edge 免费中文 TTS
   avatar/                  虚拟角色控制
     mock_controller.py     终端日志模拟
-    vtube_studio_controller.py  占位 (Phase 6 Live2D)
+    prometheus_controller.py  Live2D 状态、音频与动作桥接
+    bridge_server.py         本地浏览器 bridge 静态服务
+    vtube_studio_controller.py  VTube Studio 占位实现
   planner/                 动作规划与校验
     action_planner.py      规则校验 + 一致性检查 + 冷却
     validator.py           JSON 解析 + Fallback
@@ -79,7 +81,7 @@ src/hai_avatar/
 data/                      运行时数据
   profiles/                用户画像 JSON
   experiment_results.csv   用户实验记录
-tests/                     33 个单元/集成测试
+tests/                     单元与集成测试
 ```
 
 ## 快速开始
@@ -128,8 +130,12 @@ LLM_PROVIDER=openai PYTHONPATH=src python scripts/run_mock.py "你好"
 # 启动 Web UI（默认 Mock，可直接检查可视化界面）
 PYTHONPATH=src python scripts/run_gradio.py
 
-# 真实 LLM + 真实语音
-LLM_PROVIDER=openai TTS_PROVIDER=edge_tts PYTHONPATH=src python scripts/run_gradio.py
+# Prometheus 模式会自动启动本地 bridge，并嵌入 Live2D 页面
+AVATAR_PROVIDER=prometheus PYTHONPATH=src python scripts/run_gradio.py
+
+# 真实 LLM + 真实语音 + Live2D
+LLM_PROVIDER=openai TTS_PROVIDER=edge_tts AVATAR_PROVIDER=prometheus \
+  PYTHONPATH=src python scripts/run_gradio.py
 
 # 用 Mock 数据驱动 Prometheus Avatar SDK bridge
 AVATAR_PROVIDER=prometheus PYTHONPATH=src python scripts/run_prometheus_smoke.py "我最近项目压力有点大"
@@ -154,7 +160,7 @@ PYTHONPATH=src python scripts/run_experiment.py --stats
 ## 测试
 
 ```bash
-PYTHONPATH=src pytest    # 36 个测试全部通过
+PYTHONPATH=src pytest    # 当前 41 个测试全部通过
 ```
 
 覆盖：JSON 解析/修复、标签降级、截断、冲突纠正、冷却、Mock TTS/Avatar/Pipeline、用户画像构建/加载/更新、Big Five 推断、Prompt 生成、PostProcessor 约束、对话历史累积、完全管线（启用/禁用个性化）。
@@ -223,14 +229,26 @@ CharacterEval 跑完 CharacterRM 后还会生成 `charrm_evaluation.json` 和 `c
 | `LLM_MODEL` | deepseek-v4-flash | LLM 模型名 |
 | `LLM_BASE_URL` | https://opencode.ai/zen/go/v1 | OpenAI-compatible API endpoint |
 | `LLM_API_KEY_ENV` | OPENCODE_GO_API_KEY | API key 环境变量名 |
-| `TTS_PROVIDER` | mock | mock / edge_tts |
-| `AVATAR_PROVIDER` | mock | mock |
+| `TTS_PROVIDER` | mock | mock / edge_tts / moss_tts |
+| `AVATAR_PROVIDER` | mock | mock / prometheus |
 | `OPENCODE_GO_API_KEY` | — | opencode API Key |
 | `PERSONALIZATION_ENABLED` | true | 启用个性画像 |
 | `PROMETHEUS_MODEL_URL` | Mao official Live2D model | Prometheus bridge 使用的 Live2D 模型 URL |
+| `GRADIO_SERVER_NAME` | 127.0.0.1 | Gradio 监听地址；默认仅本机可访问 |
+| `GRADIO_SERVER_PORT` | 7860 | Gradio 端口 |
+| `AVATAR_BRIDGE_HOST` | 127.0.0.1 | Live2D bridge 监听地址 |
+| `AVATAR_BRIDGE_PORT` | 7861 | Live2D bridge 端口 |
 
 ## 当前限制
 
 - Prometheus/Live2D 已通过浏览器 bridge 接入；模型 motion 能力取决于所选 Live2D 模型
 - ASR 语音输入仅在有 API Key 时可用（通过 Gradio 麦克风触发）
 - Mock Avatar 仅打日志，不做真实口型同步
+- Edge TTS 需要安装 `edge-tts` 和系统命令 `ffmpeg`；缺失或失败时会降级为 Mock WAV
+
+## 0.2.0 行为说明
+
+- 当前仍是单管线编排，不采用 agent/subagent 拆分：LLM 一次生成回复及控制字段，再由确定性的 Planner、个性化后处理、TTS 和 Avatar 顺序执行。
+- 浏览器会话的短期历史和动作冷却彼此隔离，“清空对话”也会同步清除后端会话状态。
+- `gesture_intensity`、`speaking_rate` 和停顿参数会校验范围，并实际传到 Live2D/TTS；不完整的结构化输出使用安全默认值。
+- Prometheus bridge 会按轮次替换动作、播放本轮音频并驱动口型，不再永久累积旧动作。
