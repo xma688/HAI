@@ -84,3 +84,20 @@ def test_gesture_cooldown_replaces_repeated_gesture():
     assert first.gestures == [GestureType.wave]
     assert second.gestures != [GestureType.wave]
     assert warnings
+
+
+def test_gesture_cooldown_is_isolated_by_context():
+    planner = ActionPlanner(enable_cooldown=True)
+    response = LLMAvatarResponse(
+        reply_text="x",
+        emotion="happy",
+        expression="smile",
+        gestures=["wave"],
+        voice_style="neutral",
+    )
+    first, _ = planner.plan(response, context_id="session-a")
+    other_session, warnings = planner.plan(response, context_id="session-b")
+
+    assert first.gestures == [GestureType.wave]
+    assert other_session.gestures == [GestureType.wave]
+    assert warnings == []

@@ -26,8 +26,8 @@ class MockAvatarController(AvatarController):
         self.current_expression = expression
         self._record(f"[Avatar] Expression -> {expression}")
 
-    async def trigger_gesture(self, gesture: str) -> None:
-        self._record(f"[Avatar] Gesture -> {gesture}")
+    async def trigger_gesture(self, gesture: str, intensity: float = 0.5) -> None:
+        self._record(f"[Avatar] Gesture -> {gesture} (intensity={intensity:.2f})")
         if gesture != "idle":
             await asyncio.sleep(0.05)
 

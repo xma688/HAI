@@ -1,4 +1,5 @@
 import asyncio
+import wave
 from pathlib import Path
 from uuid import uuid4
 
@@ -32,8 +33,14 @@ def test_mock_avatar_executes_command():
     assert avatar.current_expression == "neutral"
 
 
-def test_prometheus_controller_writes_bridge_files():
-    output_dir = Path("data/test_tmp/prometheus-controller")
+def test_prometheus_controller_writes_bridge_files(tmp_path):
+    output_dir = tmp_path / "prometheus-controller"
+    audio_path = tmp_path / "mock.wav"
+    with wave.open(str(audio_path), "wb") as wav_file:
+        wav_file.setnchannels(1)
+        wav_file.setsampwidth(2)
+        wav_file.setframerate(16_000)
+        wav_file.writeframes(b"\x00\x00" * 800)
     avatar = PrometheusAvatarController(
         output_dir=output_dir,
         model_url="https://example.com/model.model3.json",
@@ -43,13 +50,23 @@ def test_prometheus_controller_writes_bridge_files():
         await avatar.connect()
         await avatar.set_reply_text("你好", "calm")
         await avatar.set_expression("soft_smile")
-        await avatar.trigger_gesture("nod")
+        await avatar.trigger_gesture("nod", intensity=0.8)
         await avatar.start_speaking()
-        await avatar.play_audio("assets/temp/mock.wav")
+        await avatar.play_audio(str(audio_path))
         await avatar.stop_speaking()
+        assert avatar.state["gestures"] == ["nod"]
+        assert avatar.state["gesture_intensity"] == 0.8
+        assert avatar.state["audio_url"].startswith("./audio/")
+        await avatar.reset_to_idle()
+        assert avatar.state["reply_text"] == "你好"
+        await avatar.clear_session_state()
 
     asyncio.run(run())
     assert (output_dir / "index.html").exists()
     state = (output_dir / "avatar-state.js").read_text(encoding="utf-8")
     assert "HAI_AVATAR_STATE" in state
-    assert "soft_smile" in state
+    assert "session cleared" in state
+    assert avatar.state["gestures"] == []
+    assert avatar.state["reply_text"] == ""
+    assert avatar.state["audio_url"] is None
+    assert avatar.state["events"] == ["session cleared"]

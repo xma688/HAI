@@ -37,9 +37,10 @@ async def main_async() -> None:
     records = []
     for sample in samples:
         pipeline = build_pipeline(settings)
+        session_id = sample["sample_id"]
         for user_text, assistant_text in sample.get("history", []):
-            pipeline.conversation_service.add_turn(user_text, assistant_text)
-        result = await pipeline.process(sample["user_text"], user_id=sample["sample_id"])
+            pipeline.conversation_service.add_turn(session_id, user_text, assistant_text)
+        result = await pipeline.process(sample["user_text"], user_id=session_id)
         records.append({"sample": sample, "result": result.model_dump(mode="json")})
     append_jsonl(run_dir / "outputs.jsonl", records)
     metrics = score_dialogue_records(records)
