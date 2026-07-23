@@ -551,7 +551,7 @@ class PrometheusAvatarController(AvatarController):
 
       const playExclusively = async () => {
         if (!force && document.visibilityState !== 'visible') return;
-        await playAudioFile(audioUrl, turnId);
+        await playAudioFile(audioUrl, turnId, force);
       };
       Promise.resolve().then(() => {
         if (navigator.locks?.request) {
@@ -573,9 +573,11 @@ class PrometheusAvatarController(AvatarController):
       return true;
     }
 
-    async function playAudioFile(audioUrl, turnId) {
+    async function playAudioFile(audioUrl, turnId, manualReplay = false) {
       if (currentAudio) stopStateAudio(false);
-      const audio = new Audio(`${audioUrl}?turn=${encodeURIComponent(turnId)}`);
+      const audio = new Audio(
+        `${audioUrl}?turn=${encodeURIComponent(turnId)}&manual=${manualReplay ? '1' : '0'}`,
+      );
       currentAudio = audio;
       await new Promise((resolve) => {
         let finished = false;
