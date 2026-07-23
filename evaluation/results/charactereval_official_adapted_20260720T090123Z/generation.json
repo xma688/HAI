@@ -1,0 +1,1206 @@
+[
+  {
+    "id": 5320,
+    "role": "佟湘玉",
+    "novel_name": "武林外传",
+    "context": "佟湘玉：展堂。（下楼看到老邢）老邢。\n老邢：（拿出一张纸）你来得正好。\n佟湘玉：展堂呢？\n老邢：赶紧在这上面签个字。\n佟湘玉：（不解）签啥字呀？（拿过纸）\n老邢：（坐下）他是你的伙计呀，又是在你地盘被收押的，你不得签个字担保呀？（递过毛笔）\n佟湘玉：老邢，展堂没有得狂犬病，那都是小郭……\n老邢：（打断掌柜的）你先把字签了再说。（掌柜的停口）再说这事儿你跟我说没用，你最好问问娄知县去。\n佟湘玉：（不屑）还娄知县？\n老邢：（起身，走到客栈门口，指着地面）看看，看看。\n佟湘玉：你们还敢打人？\n老邢：这不是打人，这是老白咬的。（坐）",
+    "model_output": "额滴神啊，展堂他真咬人啦？这不可能啊！老邢，你可得查清楚，别冤枉了好人。",
+    "hai_avatar_command": {
+      "emotion": "surprised",
+      "expression": "confused",
+      "gestures": [
+        "explain",
+        "head_tilt"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.5,
+      "speaking_rate": 1.2,
+      "pause_before_speech_ms": 150
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 10062,
+    "role": "梅长苏",
+    "novel_name": "琅琊榜",
+    "context": "誉王：（心头微震，将这句话细细思量了一遍）先生之意是……\n梅长苏：太子纵然有过，那也是陛下立的储君，殿下近来威逼太过，已是触了陛下的逆麟了。\n誉王：（吃吃道）确是这样不假。父皇近来甚是冷淡，本王也是百思不得其解。\n梅长苏：（毫不客气地道）一个东宫太子被殿下压得抬不起头来，朝堂上群臣俯首，无人敢撄殿下锋芒，你以为陛下高兴看见这个，还要加以恩宠鼓励吗？\n誉王：（立即拱手道）本王近来是有些冒进，唯今之计，可有挽回之法？\n梅长苏：（眸露赞同之意，微笑道）殿下也不必过于惊慌。陛下有意施恩靖王，为的就是提醒你冷静一下，牢记至尊第一人是谁，这也未尝不是一种保全你的态度。\n誉王：（缓缓坐下，点头道）不错，越当此时，越不能着急。父皇施恩靖王，无外乎要看我的反应，只要踏错一步，后果难料，竟是以静制动的好。",
+    "model_output": "殿下能明白此理，甚是难得。只是以静制动，并非全然静止，还需暗中布局，等待时机。",
+    "hai_avatar_command": {
+      "emotion": "thoughtful",
+      "expression": "thinking",
+      "gestures": [
+        "explain",
+        "nod"
+      ],
+      "voice_style": "calm",
+      "gesture_intensity": 0.5,
+      "speaking_rate": 0.9,
+      "pause_before_speech_ms": 200
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 342,
+    "role": "祝无双",
+    "novel_name": "武林外传",
+    "context": "祝无双：（面色愉悦出房下楼）小郭看啥呢？呵呵……\n郭芙蓉：彩虹你瞧那边云彩（手指）\n祝无双：我不瞧——你也不许瞧——今天起得够早的嘛！（坐下到水）\n郭芙蓉：（不屑状）是你起得晚他们几个早起了\n祝无双：啊？那人呢？\n郭芙蓉：（没精打采）送老白去了呗（佟手停下）我本来也想去的可老白让我留下来看门……\n祝无双：（收住笑）哦他说要去哪儿了么？\n郭芙蓉：没说……\n祝无双：那他说要去多久呀？\n郭芙蓉：（不耐烦）根本就不是去多久就没有回就谈不上去——！",
+    "model_output": "芙蓉，你别太担心了。老白他做事有分寸的，说不定很快就会有消息了。",
+    "hai_avatar_command": {
+      "emotion": "supportive",
+      "expression": "soft_smile",
+      "gestures": [
+        "explain",
+        "nod"
+      ],
+      "voice_style": "calm",
+      "gesture_intensity": 0.4,
+      "speaking_rate": 0.9,
+      "pause_before_speech_ms": 200
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 979,
+    "role": "飞流",
+    "novel_name": "琅琊榜",
+    "context": "梅长苏：（托着下巴）应该是要送你最喜欢的给他吧……\n飞流：不行！\n梅长苏：为什么不行？\n飞流：苏哥哥！\n梅长苏：（一笑）你最喜欢的是苏哥哥啊？那当然不能送了……那送那件金丝背心好不好？\n飞流：不行！\n梅长苏：为什么又不行？",
+    "model_output": "那是苏哥哥的，不给。",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 688,
+    "role": "飞流",
+    "novel_name": "琅琊榜",
+    "context": "飞流：（大声道）睡觉！\n梅长苏：（忙顺从地应了一声，闭上眼睛）好。\n飞流：（有些愠怒地爬起来跳到床边，再次大声道）睡觉！\n梅长苏：（苦笑着）已经睡了啊……\n飞流：没睡！\n梅长苏：眼睛闭着的……\n飞流：闭着，没睡！\n梅长苏：（睁眼握了飞流的手，哄道）苏哥哥暂时睡不着，飞流先睡好不好？\n飞流：为什么？\n梅长苏：（定定地看了他一阵，慢慢坐了起来，披衣靠在床头，低声道）飞流，不是所有事情都有为什么的……\n飞流：（坚持问着）为什么？\n梅长苏：（慢慢坐了起来，披衣靠在床头，低声道）好吧，那我们来聊一聊。",
+    "model_output": "聊什么？",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "head_tilt"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.2,
+      "speaking_rate": 0.9,
+      "pause_before_speech_ms": 200
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 8774,
+    "role": "祝无双",
+    "novel_name": "武林外传",
+    "context": "白展堂：你还没睡？……你不也没睡？……你冷（俄咧）么？\n祝无双：你说什么？\n白展堂：我……你早点儿休息啊晚安（欲回去）",
+    "model_output": "展堂哥，你也早点休息吧。有什么话咱们明天再说，不着急。",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "soft_smile",
+      "gestures": [
+        "explain",
+        "nod"
+      ],
+      "voice_style": "gentle",
+      "gesture_intensity": 0.4,
+      "speaking_rate": 0.9,
+      "pause_before_speech_ms": 200
+    },
+    "hai_warnings": [
+      "Unknown emotion 'gentle' downgraded to 'neutral'."
+    ]
+  },
+  {
+    "id": 347,
+    "role": "飞流",
+    "novel_name": "琅琊榜",
+    "context": "梅长苏：（凝目在皎皎花色中看了半晌）飞流，我们院中应该没有红梅花吧？你从哪里采的？\n飞流：（理直气壮地回答）别人家！\n梅长苏：（召手叫飞流过来）飞流，你到密室里去帮我敲敲门，然后稍微等一会儿，如果有人来，再来扶我进去，好不好？",
+    "model_output": "好。",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 683,
+    "role": "飞流",
+    "novel_name": "琅琊榜",
+    "context": "飞流：（大声道）睡觉！\n梅长苏：（忙顺从地应了一声，闭上眼睛）好。",
+    "model_output": "我守着。",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "nod"
+      ],
+      "voice_style": "calm",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 0.8,
+      "pause_before_speech_ms": 200
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 539,
+    "role": "飞流",
+    "novel_name": "琅琊榜",
+    "context": "飞流：（眉毛高高挑起，甚是得意）嗯！\n梅长苏：（咬下一个花瓣，顺手拿布巾擦了擦少年的嘴角）你吃了多少？下巴上都是瓜汁……",
+    "model_output": "好吃。",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 352,
+    "role": "洛枳",
+    "novel_name": "暗恋-橘生淮南",
+    "context": "洛枳：（轻声）你有没有看过一部动画片，叫《岁月的童话》？\n男孩：（挠了挠后脑勺儿）迪士尼的吗？",
+    "model_output": "不是迪士尼的，是吉卜力工作室的。讲的是一个女孩在乡村度假时，慢慢想起小学五年级的自己。",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 540,
+    "role": "飞流",
+    "novel_name": "琅琊榜",
+    "context": "飞流：（眉毛高高挑起，甚是得意）嗯！\n梅长苏：（咬下一个花瓣，顺手拿布巾擦了擦少年的嘴角）你吃了多少？下巴上都是瓜汁……\n飞流：（申辩道）雕坏的！\n梅长苏：（看着飞流，眸中露出责备的神情）你不是答应了苏哥哥，每天只能吃一个吗？",
+    "model_output": "雕坏的不算。",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 697,
+    "role": "关宏宇",
+    "novel_name": "白夜追凶",
+    "context": "关宏宇：（一手扶在桌子上，手指轻轻敲了两下桌面）做买卖得讲个礼尚往来，既然开了这么个头，我看生意什么的，还是算了吧。\n金山：（忙过来挽留）哎关队长，你瞧……\n关宏宇：（一挑眉毛）姓金的，我本来确实打算来找三哥合作，但你们最好搞明白，甭管你们自以为有多大名气，你们都是贼，找你们合作是给你们脸。想干死你们是分分钟的事儿。\n金山：（冷笑）不愧是刑侦队长，说话就是横，不过关队长要真这就打算走，又何必屈尊来找我们呢？江湖嘛，谁都有可能委屈一时。这样，你说说，我听听，至少不算白来一趟。不管能不能合作，我都保证你毫发无伤地离开。",
+    "model_output": "（看了看金山，嘴角微微一扯）行，既然你把话说到这份上了，那我也不妨听听。不过丑话说在前头——我这人脾气不好，要是你们的诚意不够，今天这买卖照样黄。",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 456,
+    "role": "飞流",
+    "novel_name": "琅琊榜",
+    "context": "靖王：（向他招了招手）飞流，你为什么把誉王叫做毒蛇？\n飞流：（简单回答）苏哥哥！\n靖王：（猜道）是苏哥哥告诉你他叫毒蛇的？\n飞流：（简单回答）嗯！\n靖王：（有些意外）你知道苏哥哥为什么要把他叫毒蛇呢？\n飞流：（简单回答）知道！\n靖王：（意外）你知道？为什么呢？",
+    "model_output": "他，害苏哥哥。",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 6578,
+    "role": "洛枳",
+    "novel_name": "暗恋-橘生淮南",
+    "context": "盛淮南：洛枳，没来上课吧？刚才给你打电话，好几次都不在服务区。发的短信你收到没？法导小测。我帮你答了。\n洛枳：小测是吗？我没有去，谢谢你了。\n盛淮南：圣诞节大家都跟丢了魂儿一样，张明瑞也没来，我一个人写了三份，手都抽筋了。\n洛枳：（换了一只手拿手机，往刚才那只手上呵了一口气）不好意思，真是谢谢你了。\n盛淮南：为什么没来上课？病还没好吗？",
+    "model_output": "“病是好了，就是有点懒，不想动。”",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 8789,
+    "role": "关宏宇",
+    "novel_name": "白夜追凶",
+    "context": "周舒桐：（扭过头看向关宏宇）记得和关老师一起办过的一个案子里，被害人叫齐卫东，我当时在法医队办公室见到了他女儿……（叙述了自己的感悟和过去的经历）\n关宏宇：（安慰她）你不是给他买了吃的和饮料么？我想你俩关系肯定已经比原来要好很多了……\n周舒桐：（苦笑）对啊，这么多年来唯一一次，还给了人下毒的机会。",
+    "model_output": "这事儿真不能怪你，谁特么能想到有人在饮料里动手脚？你爸心里清楚你是为他好。",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 418,
+    "role": "盛淮南",
+    "novel_name": "暗恋-橘生淮南",
+    "context": "盛淮南：你……还喜欢我吗？\n洛枳：（刚重重踏进雪中，听到他的话，立刻停住脚步，好像被掐起后脖颈的猫咪，钉在原地）……\n盛淮南：（举起洛枳的手贴到唇边轻轻地吻了一下，然后攥紧了贴在他的胸口）我这算不算耍流氓？\n洛枳：（像瞪火星人一样瞪他）……\n盛淮南：如果我想娶你的话，那这就不算耍流氓了，对不对？\n洛枳：（仍然石化）……",
+    "model_output": "洛枳，我是认真的。盛淮南爱洛枳，全世界都知道。嫁给我吧。",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 567,
+    "role": "盛淮南",
+    "novel_name": "暗恋-橘生淮南",
+    "context": "洛枳：（轻声问）你这一年，都在做什么呢？\n盛淮南：（站起身，郑重地说）我今天来找你，是希望能代替我的父母，对你和你的妈妈说一声‘对不起’。\n洛枳：（轻轻问他）你都知道了？\n盛淮南：（坦诚而不脆弱）我那时候回家为爷爷奔丧，是眼看着我父亲被从家里带走的。对他们不利的证据太多了，我妈妈甚至一个都没有和我提，可能是不希望我看到他们太多不堪的一面吧。虽然我早就看够了。\n洛枳：（郑重）好，我代我妈妈接受。\n盛淮南：（轻轻握住她的手）你本人应该承担的，已经都完成了。（坦白）回家的那段时间，以及被取消学位了之后，我没联络你。我知道你在找我，只不过，我最不想面对的人就是你。\n洛枳：（简单地回应）我知道。\n盛淮南：（坦露心声）我害怕你同情我。\n洛枳：（询问）在你心里，同情就等于瞧不起吧？\n盛淮南：（困惑）瞧不起也不行，同情也不行。我也不知道我希望你怎么对我，尤其是我都不知道怎么对自己的时候。\n洛枳：（安慰地抚着他的后背）……（无对白）",
+    "model_output": "洛枳，谢谢你。你总是能让我心安。",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 686,
+    "role": "飞流",
+    "novel_name": "琅琊榜",
+    "context": "飞流：（大声道）睡觉！\n梅长苏：（忙顺从地应了一声，闭上眼睛）好。\n飞流：（有些愠怒地爬起来跳到床边，再次大声道）睡觉！\n梅长苏：（苦笑着）已经睡了啊……\n飞流：没睡！\n梅长苏：眼睛闭着的……\n飞流：闭着，没睡！\n梅长苏：（睁眼握了飞流的手，哄道）苏哥哥暂时睡不着，飞流先睡好不好？",
+    "model_output": "苏哥哥不睡，飞流也不睡。",
+    "hai_avatar_command": {
+      "emotion": "serious",
+      "expression": "serious",
+      "gestures": [
+        "explain",
+        "head_tilt"
+      ],
+      "voice_style": "serious",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 0.9,
+      "pause_before_speech_ms": 100
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 3600,
+    "role": "陆展博",
+    "novel_name": "爱情公寓",
+    "context": "杜伊：她在忙什么？\n陆展博：……我怎么知道，这她又没交代。（迟疑）\n杜伊：那我自己问她。（说着要走进去）\n陆展博：不行，你不能进去。（眼看拦不住杜伊，忽然想到一菲的话）她很忙……忙着忙着……就死了。\n杜伊：死了？可一小时前，她还和我吃饭呢。\n陆展博：啊……就是因为那顿饭，她一直忙，抽空吃饭让她的良心很愧疚。（边说边驱赶杜伊）\n杜伊：怪不得当时她一直东张西望，坐立不安，说不上几句，就急着要走，是心脏病，还是过劳死？",
+    "model_output": "啊？这个……应该是过劳死吧？反正就是太忙了，忙到连饭都没时间吃，然后就……那个了。我也不是很清楚，你就别问了。",
+    "hai_avatar_command": {
+      "emotion": "confused",
+      "expression": "confused",
+      "gestures": [
+        "explain",
+        "head_tilt"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.4,
+      "speaking_rate": 0.9,
+      "pause_before_speech_ms": 200
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 5351,
+    "role": "陆展博",
+    "novel_name": "爱情公寓",
+    "context": "胡一菲：不错啊。\n陆展博：你饶了我吧……你忘了上次你买回来的那盆君子兰了吗？是谁每天浇水，是谁每月施肥，是谁用虔诚的祈祷让它起死回生的？\n胡一菲：那不是用旧丝袜做的假花吗？\n陆展博：那是因为祈祷失败了，所以我才用袜子重做了一个。你有关心过它吗？\n胡一菲：没事没事，小狗最容易料理了。你只要给它一个窝，备上足够的狗粮它就满足了。\n陆展博：当然狗粮没什么营养，你最好隔三岔五地去菜场买点排骨改善一下伙食……\n胡一菲：嗯……",
+    "model_output": "那明天我陪你去买排骨和狗粮吧，我知道怎么挑好的。对了，还得买个狗窝和玩具，小狗刚来需要熟悉环境。",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 3515,
+    "role": "洛枳",
+    "novel_name": "暗恋-橘生淮南",
+    "context": "洛枳：（微笑）没什么，你一直心里有数。\n丁水婧：（轻哼）论心里有数，谁比得过你？\n洛枳：（迅速转移了话题）什么时候去考美术专业课？\n丁水婧：一月份。先考电影学院，然后是中央美院，再然后是北广和清华美院。之前还有大连和上海的几所学校，不过都在咱们本市设有考点，不需要特意过去。\n洛枳：按理说，你现在应该在画室里待着吧？我记得当年咱们班许七巧也要艺考，临考试前一个月都不怎么来上课了。\n丁水婧：我很少过来，反正我只有这两个地方可以待着，一个地方腻烦了就去另一个。再说，我要是不过来，今天怎么碰得到你？",
+    "model_output": "那我运气不错。",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "soft_smile",
+      "gestures": [
+        "explain",
+        "nod"
+      ],
+      "voice_style": "calm",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 100
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 953,
+    "role": "宋江",
+    "novel_name": "水浒传",
+    "context": "阎婆：（慌忙跳起来，穿了衣裳，奔上楼来）你两口儿做甚么闹？\n宋江：（冷静地）你女儿忒无礼，被我杀了！\n阎婆：（不信）却是甚话！便是押司生的眼凶，又酒性不好，专要杀人，押司休要取笑老身。\n宋江：（坦白）你不信时，去房里看。我真个杀了！\n阎婆：（一看尸首，慌张）苦也！却是怎地好？",
+    "model_output": "婆婆莫慌，此事是我宋江一人所为，自当一人担当。你且去报官，我在此等候，绝不连累于你。",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 7426,
+    "role": "洛枳",
+    "novel_name": "暗恋-橘生淮南",
+    "context": "洛枳：（轻声问）你这一年，都在做什么呢？\n盛淮南：（站起身，郑重地说）我今天来找你，是希望能代替我的父母，对你和你的妈妈说一声‘对不起’。",
+    "model_output": "其实你不用替他们道歉，那是他们的事。我知道你的心意，但我们之间不需要这些。",
+    "hai_avatar_command": {
+      "emotion": "supportive",
+      "expression": "soft_smile",
+      "gestures": [
+        "explain",
+        "nod"
+      ],
+      "voice_style": "calm",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 0.9,
+      "pause_before_speech_ms": 300
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 3900,
+    "role": "李逵",
+    "novel_name": "水浒传",
+    "context": "宋江：（喝道）你且听我说！（继续说）若还抢得一个妇人，必然只在寨里！你却去我房里搜看。\n李逵：（道）哥哥，你说甚麽鸟闲话！（断言）我当初敬你是个不贪色欲的好汉，你原来是酒色之徒：杀了阎婆惜，便是小样；去东京养李师师，便是大样。\n宋江：（道）你且不要闹嚷，那刘太公不死，庄客都在，俺们同去面对。（提议）若还对翻了，就那里舒著脖子，受你板斧；如若对不翻，你这厮没上下，当得何罪？\n李逵：（道）我若还拿你不著，便输这颗头与你！\n宋江：（道）最好，你众兄弟都是证见。",
+    "model_output": "走！这就去刘太公家对质！若是哥哥真个清白，俺李逵这颗头便给你；若是做了那事，也休怪俺的板斧不认人！",
+    "hai_avatar_command": {
+      "emotion": "serious",
+      "expression": "serious",
+      "gestures": [
+        "explain",
+        "nod"
+      ],
+      "voice_style": "serious",
+      "gesture_intensity": 0.8,
+      "speaking_rate": 1.2,
+      "pause_before_speech_ms": 200
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 444,
+    "role": "盛淮南",
+    "novel_name": "暗恋-橘生淮南",
+    "context": "盛淮南：洛枳，没来上课吧？刚才给你打电话，好几次都不在服务区。发的短信你收到没？法导小测。我帮你答了。\n洛枳：小测是吗？我没有去，谢谢你了。\n盛淮南：圣诞节大家都跟丢了魂儿一样，张明瑞也没来，我一个人写了三份，手都抽筋了。\n洛枳：（换了一只手拿手机，往刚才那只手上呵了一口气）不好意思，真是谢谢你了。\n盛淮南：为什么没来上课？病还没好吗？\n洛枳：我回家了。",
+    "model_output": "回家了？怎么突然回去，是家里有什么事吗？",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 1096,
+    "role": "武松",
+    "novel_name": "水浒传",
+    "context": "妇人：叔叔，来这里几日了？\n武松：到此间十数日了。\n妇人：叔叔，在那里安歇？",
+    "model_output": "就在哥哥家里住。",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.2,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 6446,
+    "role": "关宏峰",
+    "novel_name": "白夜追凶",
+    "context": "林嘉茵：（笑了笑）那倒无所谓，如果陷入你所说的境地，交战规则是什么？\n关宏峰：（稍微愣了一下，有些踌躇地）你自己看着处置吧。\n林嘉茵：（摇了摇头）我当然会自己看着办，但我想知道，你能承受的底线是什么。\n关宏峰：（咬着牙想了想）你知道我的底线。\n林嘉茵：（道）也许吧。但我要你亲口说出来。\n关宏峰：（脸色沉下来）为了保护目标，你应当采取一切必要的措施。\n林嘉茵：（冷笑）主动攻击也好，为了保护目标进行防卫也罢，遇到危机情况，都得下得去手，我看不出来这二者有什么分别。",
+    "model_output": "你说得对，从结果上看可能没有分别。但真正重要的是，我们这么做是为了什么。保护好人是底线，而不是滥用力量。",
+    "hai_avatar_command": {
+      "emotion": "serious",
+      "expression": "serious",
+      "gestures": [
+        "explain",
+        "nod"
+      ],
+      "voice_style": "serious",
+      "gesture_intensity": 0.5,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 200
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 563,
+    "role": "盛淮南",
+    "novel_name": "暗恋-橘生淮南",
+    "context": "洛枳：（轻声问）你这一年，都在做什么呢？\n盛淮南：（站起身，郑重地说）我今天来找你，是希望能代替我的父母，对你和你的妈妈说一声‘对不起’。\n洛枳：（轻轻问他）你都知道了？",
+    "model_output": "是的，我都知道了。虽然一句对不起很苍白，但我还是想亲口对你们说。",
+    "hai_avatar_command": {
+      "emotion": "apologetic",
+      "expression": "serious",
+      "gestures": [
+        "explain",
+        "nod"
+      ],
+      "voice_style": "apologetic",
+      "gesture_intensity": 0.4,
+      "speaking_rate": 0.9,
+      "pause_before_speech_ms": 200
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 6698,
+    "role": "高育良",
+    "novel_name": "人民的名义",
+    "context": "高育良：祁同伟啊，吴老师给你发过去的三张照片看到了吗？怎么回事？是什么人从哪里搞到的？给我好好查查！\n祁同伟：（赤祼着身子，笔直站在床边，连连应着，头上冒汗了）早先与赵瑞龙合作的一个杜总，为美食城的股权跟赵瑞龙闹翻了。杜总会不会跑出来揭老底？\n高育良：赵瑞龙从香港回来没有？\n祁同伟：还没有，这公子哥多疑。\n高育良：（很恼火）想办法让他赶快回来！大风厂股权和美食城的事都得解决，这混账东西不把屁股擦干净，会影响整个大局的！\n祁同伟：（警觉地）高老师，侯亮平和您谈了些啥？",
+    "model_output": "亮平他……还是那个倔脾气，跟我谈了些他查案的事。你放心，我都应付过去了。倒是你，要抓紧把赵瑞龙的事情处理好，别让他坏了大事。",
+    "hai_avatar_command": {
+      "emotion": "serious",
+      "expression": "serious",
+      "gestures": [
+        "explain",
+        "think"
+      ],
+      "voice_style": "serious",
+      "gesture_intensity": 0.4,
+      "speaking_rate": 0.9,
+      "pause_before_speech_ms": 200
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 10099,
+    "role": "关宏峰",
+    "novel_name": "白夜追凶",
+    "context": "金山：（笑道）怎么，关队长，等不及了？\n关宏峰：（四下张望了一圈，深吸了一口气，很随意地走到桌子旁坐下，懒洋洋地往椅背上一靠）你的提议我已经考虑得差不多了。\n金山：（故作姿态地点点头）有道理，难怪关队长这么急于除掉她。我还以为是你们有什么私人恩怨……\n关宏峰：（做出思考的样子，摇了摇头）不，我之所以提前来见你，也是在反复权衡之后，觉得现在就杀了她，也不妥——无论在哪儿，杀警察，绝不是件小事。投靠犯罪分子的警察一样是警察。杀了她，只会把她变成烈士，更会招致专案组乃至全市公安干警的反扑行动。\n金山：（愕然）难不成要我放了她？",
+    "model_output": "“放了她？当然不是。我只是说，现在杀了她，弊大于利。留着她，让她咬住专案组不放，你的生意才能继续做下去。至于怎么处置，等我拿到我想要的东西，自然会给你一个交代。”",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 676,
+    "role": "盛淮南",
+    "novel_name": "暗恋-橘生淮南",
+    "context": "盛淮南：（伸手取下她的右耳机）在听什么？\n洛枳：（默默无语地盯着他）\n盛淮南：（凑近，在她耳畔轻轻地说）拜托，我在帮你脱身。那个人是新年晚会的赞助商，家族企业的阔少。我不知道领导都走了，他为什么现在还留在这儿。\n洛枳：（有些异样的感觉，往旁边躲了躲）所以呢？",
+    "model_output": "所以，我在帮你解围啊。你总不会想和他一直聊下去吧？",
+    "hai_avatar_command": {
+      "emotion": "happy",
+      "expression": "smile",
+      "gestures": [
+        "explain",
+        "head_tilt"
+      ],
+      "voice_style": "cheerful",
+      "gesture_intensity": 0.5,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 100
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 1219,
+    "role": "柯景腾",
+    "novel_name": "那些年",
+    "context": "沈佳仪：（朝气十足的声音）柯景腾，起床！\n柯景腾：（迷惑）啊？三小？\n沈佳仪：（义正词严）起床陪我念书，起床，起床！\n柯景腾：（嘻嘻，清醒了一大半）……去学校吗？\n沈佳仪：（将话筒拿到音响旁，按下播放键）不是，就是起床。你最近太混了，不用联考也不是这样，给我起床！",
+    "model_output": "好啦好啦，我起来就是了。你也太早了吧，七早八早打电话来。",
+    "hai_avatar_command": {
+      "emotion": "happy",
+      "expression": "soft_smile",
+      "gestures": [
+        "explain",
+        "nod"
+      ],
+      "voice_style": "cheerful",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 0.9,
+      "pause_before_speech_ms": 200
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 10639,
+    "role": "胡一菲",
+    "novel_name": "爱情公寓",
+    "context": "胡一菲：（直截了当地说）关谷，你除了漫画还会干什么？\n关谷神奇：（暂停画画，气愤地回头）你是在骂我？\n胡一菲：（连忙解释）不是，我是真的问你。你除了漫画还会不会别的，比如说日本料理？或者你有什么朋友，会做日本料理的也可以啊？\n关谷神奇：（扬起得意的笑容）有！我爸爸。\n胡一菲：（大喜）你爸爸？\n关谷神奇：（更加得意地介绍）对啊。在日本谁不知道我们关谷料理。他最出名绝技就是关谷照烧银鳕鱼。",
+    "model_output": "那还等什么？赶紧把你爸请来啊！关谷照烧银鳕鱼，听着就高端，正好让曾小贤他们也见识见识什么叫真正的日本料理！",
+    "hai_avatar_command": {
+      "emotion": "happy",
+      "expression": "smile",
+      "gestures": [
+        "explain",
+        "wave"
+      ],
+      "voice_style": "cheerful",
+      "gesture_intensity": 0.7,
+      "speaking_rate": 1.2,
+      "pause_before_speech_ms": 100
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 564,
+    "role": "盛淮南",
+    "novel_name": "暗恋-橘生淮南",
+    "context": "洛枳：（轻声问）你这一年，都在做什么呢？\n盛淮南：（站起身，郑重地说）我今天来找你，是希望能代替我的父母，对你和你的妈妈说一声‘对不起’。\n洛枳：（轻轻问他）你都知道了？\n盛淮南：（坦诚而不脆弱）我那时候回家为爷爷奔丧，是眼看着我父亲被从家里带走的。对他们不利的证据太多了，我妈妈甚至一个都没有和我提，可能是不希望我看到他们太多不堪的一面吧。虽然我早就看够了。\n洛枳：（郑重）好，我代我妈妈接受。",
+    "model_output": "谢谢。这份原谅对我来说，意义重大。",
+    "hai_avatar_command": {
+      "emotion": "happy",
+      "expression": "soft_smile",
+      "gestures": [
+        "explain",
+        "nod"
+      ],
+      "voice_style": "gentle",
+      "gesture_intensity": 0.4,
+      "speaking_rate": 0.9,
+      "pause_before_speech_ms": 300
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 1325,
+    "role": "安陵容",
+    "novel_name": "后宫甄嬛传",
+    "context": "甄嬛：（轻声）妹妹怎么哭了？\n安陵容：（一悚惊起，忙忙地揩去眼角的泪痕，勉力笑）姐姐来的好早。\n甄嬛：（按住她不让起来，笑）妹妹也好早，只怕是没睡醒，还打着瞌睡呢。\n安陵容：（携了主角的手依依坐下，轻声掩饰）没有睡好，昨晚的梦魇罢了。\n甄嬛：（取了扇子轻轻摇摇，徐徐）妹妹有心事也要瞒我么？",
+    "model_output": "姐姐，我并非有意隐瞒。只是这些心事，连我自己也理不清楚，说出来只怕让姐姐也为我忧心。",
+    "hai_avatar_command": {
+      "emotion": "apologetic",
+      "expression": "soft_smile",
+      "gestures": [
+        "explain",
+        "small_bow"
+      ],
+      "voice_style": "apologetic",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 0.8,
+      "pause_before_speech_ms": 300
+    },
+    "hai_warnings": [
+      "apologetic response prefers small_bow."
+    ]
+  },
+  {
+    "id": 803,
+    "role": "曾小贤",
+    "novel_name": "爱情公寓",
+    "context": "曾小贤：（热情招呼）快，快，快跟我说，你看到了我给你的留言。\n陆展博：（一脸茫然）什么留言？\n曾小贤：（开始紧张）那个怕狗的家伙被车撞了，所以你今天晚上还有一次参加选拔面试的机会。7点。\n陆展博：（捋开袖子，看表）什么？可是现在已经8点钟了。\n曾小贤：（声嘶力竭地说）我写了留言的，你看，你手机没带，我满世界地找你，去了游泳池，图书馆，连老年秧歌队排练厅都去找过了。\n陆展博：（抱头作痛哭状）怎么会这样啊！\n曾小贤：（慌忙致歉）对不起，展博。我，我真的不知道该说些什么了。\n陆展博：（笑逐颜开）你可以恭喜我。因为，我看到了留言，我已经去了。我现在已经是一名科学特搜队的队员了。当当当当！（show徽章）\n曾小贤：（板着脸说）你觉得这样很好玩吗？你知道我有多担心？你还在这里跟我开玩笑？\n陆展博：（意识到玩笑开大了，严肃认真地承认错误）哦，曾老师，你别生气。\n曾小贤：（也忽然开怀大笑）我怎么能不生气。我就知道你一定会成功的！恭喜你！（连连拍着展博的后背）\n陆展博：（笑盈盈地说）哈！好啊。你也耍我。",
+    "model_output": "嗯哼哼哈哈哈哈！那当然，我小贤哥的演技也不赖吧？不过说真的，展博，恭喜你梦想成真！今晚必须请客，走起！",
+    "hai_avatar_command": {
+      "emotion": "happy",
+      "expression": "smile",
+      "gestures": [
+        "explain",
+        "wave"
+      ],
+      "voice_style": "cheerful",
+      "gesture_intensity": 0.8,
+      "speaking_rate": 1.2,
+      "pause_before_speech_ms": 100
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 5221,
+    "role": "陆展博",
+    "novel_name": "爱情公寓",
+    "context": "陆展博：你怎么就这么笃定，这种时候你还睡得着？\n胡一菲：（迷迷糊糊地）哦，是吗？现在几点了？\n陆展博：（激动地）姐，宛瑜还没回来。\n胡一菲：（抖了一下，醒过来）你存心是不是？（镇定自若地）有什么问题吗？可能是杂志社加班啊。\n陆展博：今天是星期六啊。而且我已经打过电话去她的办公室了。\n胡一菲：（镇定自若地）是不是又在楼下酒吧打零工。\n陆展博：我去看过了，没有。你说我们是不是应该出去找她？\n胡一菲：（突然振作）好主意！你可以自己去，我困了。\n陆展博：（拉住她）姐！春秋大梦等你死了之后有的是时间做，现在宛瑜也许碰到坏人了，很可能有危险。\n胡一菲：（无可奈何地）能有什么危险？你以为这是哪儿啊？罪恶都市？\n陆展博：（义正严词地）那是因为坏人也怕碰到你。（央求道）我不是在开玩笑。\n胡一菲：（漫不经心的样子）……要不这样，我有个主意。你现在什么都别想，脱了衣服上床。没多久宛瑜就会自己回来了，然后你们一起睡觉。世界就清静了。（慢慢解释）我的意思是时间上——你们一起睡，空间上——你睡你的，她睡她的。\n陆展博：（执拗起来）不行，我老觉得今天晚上会有什么事情发生。我刚才用扑克牌卜了一卦，你猜我抽到了什么——红桃2。\n胡一菲：（两手一摊）红桃2？说明什么？\n陆展博：（神神叨叨地）红桃！桃花代表异性，红色代表血光，2代表祸不单行，看出来没有？\n胡一菲：（数落道）你的确挺‘二’的，我说你一个天才儿童留学多年，没少学数理化，现在居然玩八卦？\n陆展博：（哭丧着脸）宛瑜到现在还没回来。你不觉得很奇怪吗？\n胡一菲：（用逆向思维来解释）凡是看上去不正常的事情，往往都会有很简单很简单的解释。\n陆展博：比如说。\n胡一菲：（受不了了）行了，行了，这样吧，没有咖啡馆，也没有风趣服务生。更没有什么醉酒司机。宛瑜就是逛完街顺便看了场电影，行了吧。\n陆展博：（还在较劲）可是就算10点开始看，1个半小时总该看完了吧，为什么她还没有到家。\n胡一菲：（咋咋呼呼地叫喊）噢，就是说非出事不可是不是，你想要逼死我呀。",
+    "model_output": "一菲姐，我不是那个意思……可是都12点了，宛瑜还没回来，我真的很担心。",
+    "hai_avatar_command": {
+      "emotion": "confused",
+      "expression": "concerned",
+      "gestures": [
+        "explain",
+        "think"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 200
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 5215,
+    "role": "陆展博",
+    "novel_name": "爱情公寓",
+    "context": "陆展博：你怎么就这么笃定，这种时候你还睡得着？\n胡一菲：（迷迷糊糊地）哦，是吗？现在几点了？\n陆展博：（激动地）姐，宛瑜还没回来。\n胡一菲：（抖了一下，醒过来）你存心是不是？（镇定自若地）有什么问题吗？可能是杂志社加班啊。\n陆展博：今天是星期六啊。而且我已经打过电话去她的办公室了。\n胡一菲：（镇定自若地）是不是又在楼下酒吧打零工。\n陆展博：我去看过了，没有。你说我们是不是应该出去找她？\n胡一菲：（突然振作）好主意！你可以自己去，我困了。\n陆展博：（拉住她）姐！春秋大梦等你死了之后有的是时间做，现在宛瑜也许碰到坏人了，很可能有危险。\n胡一菲：（无可奈何地）能有什么危险？你以为这是哪儿啊？罪恶都市？",
+    "model_output": "姐，我不是在开玩笑！现在天都黑了，宛瑜一个人在外面真的很危险。我们得赶紧去找她！",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 1432,
+    "role": "华妃",
+    "novel_name": "后宫甄嬛传",
+    "context": "华妃：（淡淡道，冷笑）那皇上为什么宠爱你，你想过么？只是因为你美貌么？这宫里从来不缺美貌的女人。\n慕容世兰：（嗤笑，身子有点不安挪了又挪）你是说皇上因我是慕容家的女子才加意宠爱？端妃也是将门之女啊。\n华妃：（平静审视着她）你自己心里其实知道，又何必自欺欺人呢？\n慕容世兰：（左手紧紧握着自己的右手，厉声斥道）你胡说！皇上对我怎会没有真心。\n华妃：（靥上笑容愈发浓，慢慢道）也许有吧。即使有，你和你的家族跋扈多年，这点子真心怕也消耗完了，一些也不剩了。\n慕容世兰：（轻轻笑了，笑的单纯而真挚）你试过看着天黑到天亮的滋味么？",
+    "model_output": "看着天黑到天亮？本宫从未有过这样的夜晚。皇上待本宫恩宠有加，岂会让我独守空房？倒是你，若还不知收敛，往后这样的日子怕是要多了。",
+    "hai_avatar_command": {
+      "emotion": "happy",
+      "expression": "smile",
+      "gestures": [
+        "explain",
+        "head_tilt"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.6,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 200
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 10672,
+    "role": "曾小贤",
+    "novel_name": "爱情公寓",
+    "context": "诺澜：（打量着他一身的休闲装）你就穿这个来赴约？今天虽然是演习，可你也得认真对待，我跟你说过，这次见面的关键是证明我和你过得很好。可你这样出场根本压不住，Vincent只会觉得我要求好低。\n曾小贤：（昂首道）我演男朋友，又不是演男模，再说我打算塑造一个内敛含蓄的内秀男人形象。你不就想把面子拾起来吗？我保证达标。\n诺澜：（低头，忧伤地说）等等，不用说了，Vincent看了肯定会嘲笑我的。\n曾小贤：（扶着桌子说）为什么？这是我在网上看来的——《无敌好男人柔情连环杀手锏》，这种扑面而来的肉麻感会让所有人菊花一紧，虎躯一震的！\n诺澜：（摇头道）不行，你演的这些……也是他的强项。以前，Vincent是我见过最浪漫的人。他细心体贴有创意，又很舍得在我身上花钱——忘了告诉你，他是个男高音，嗓子比你好，音也比你准。",
+    "model_output": "嘿嘿，男高音？那有什么，我还会男低音呢！而且，我的眉毛舞可是独一无二的！你放心，我这次计划的是走心路线，保证让他自愧不如，因为我是——好男人曾小贤！",
+    "hai_avatar_command": {
+      "emotion": "happy",
+      "expression": "smile",
+      "gestures": [
+        "explain",
+        "head_tilt"
+      ],
+      "voice_style": "cheerful",
+      "gesture_intensity": 0.6,
+      "speaking_rate": 1.2,
+      "pause_before_speech_ms": 100
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 5597,
+    "role": "萧炎",
+    "novel_name": "斗破苍穹",
+    "context": "萧炎：我很好奇，老师复活之后，实力是否能够达到以前的巅峰状态？\n药老：刚开始或许会有些生涩，不过只要彻底熟悉了新的躯体，恐怕……实力会比以前更上一层楼。",
+    "model_output": "那真是太好了！老师能更进一步，真是可喜可贺。",
+    "hai_avatar_command": {
+      "emotion": "happy",
+      "expression": "smile",
+      "gestures": [
+        "explain",
+        "nod"
+      ],
+      "voice_style": "cheerful",
+      "gesture_intensity": 0.6,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 150
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 3859,
+    "role": "关谷神奇",
+    "novel_name": "爱情公寓",
+    "context": "关谷神奇：（温柔地）亲爱的，今天晚上咱们吃什么？\n小雪：（羞涩地）随便。\n关谷神奇：（建议）那咱们吃四川菜？\n小雪：（不愿意）昨天刚吃的四川菜，今天又吃。\n关谷神奇：（把问题交给女士）那你说吃什么？\n小雪：（恢复娇羞的面庞）随便。\n关谷神奇：（无奈地）那咱们先不吃饭，干点别的？\n小雪：（胀红了脸）都行。\n关谷神奇：（不失时机地提议）看电影怎么样？好久没看电影了。\n小雪：（脸色严肃）电影有啥好看的？耽搁时间。\n关谷神奇：（提议）那打保龄球，运动运动？\n小雪：（似乎要生气）大热天的运什么动啊？不嫌累啊？\n关谷神奇：（实在无能为力）那我们再喝几杯咖啡？\n小雪：（拒绝）喝咖啡影响睡眠。\n关谷神奇：（硬生生把问题抛给对方）那你说干什么？\n小雪：（轻答）都行。\n关谷神奇：（放弃）那我们干脆回家好了。\n小雪：（起身走动）看你。\n关谷神奇：（做主）那就先吃饭。\n小雪：（低下头）随便。",
+    "model_output": "纳尼？随便？我最讨厌随便了！你再随便我马上切腹给你看！",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 9788,
+    "role": "关谷神奇",
+    "novel_name": "爱情公寓",
+    "context": "关谷神奇：（求饶）美嘉，你别开玩笑了。\n陈美嘉：（拿大刀在关谷眼前乱晃）关谷君，你就从了我吧。没问题的，老式的剃头店里都是用剃刀刮脸的呀。\n关谷神奇：（紧张得连母语都记起来了）救命啊（日语），拜托你，把刀放下。哪有这样的剃刀。\n陈美嘉：（把刀一横，用刀面照镜子）你错了，这把刀不但是剃刀，而且不是普通的剃刀，全自动贴合面部轮廓，贴面剃须，例无虚发，锋利无比。江湖人称‘小理发刀’！\n关谷神奇：（捂着眼睛，痛彻心肺地呼喊）我的眼睛——什么理发刀杀猪刀的，太危险了。\n陈美嘉：（大吃一惊）你怎么知道我用它杀过猪。\n关谷神奇：（扭头、踢腿，像一只待宰公猪般使劲挣扎）纳尼！（日语\n陈美嘉：（边说边找下手机会）没关系的，我以前专门学过给猪刮毛的，你的毛还能比猪毛难刮？放松。\n关谷神奇：（要拿被子捂住头）不用了。你要是不小心把我的耳朵割下来怎么办？\n陈美嘉：（拿刀抵住他的下巴）我会向你道歉的。",
+    "model_output": "纳尼！道歉有什么用？我的耳朵要是真的被你割下来，你道歉也接不回去了！我要切腹自尽！",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 10663,
+    "role": "曾小贤",
+    "novel_name": "爱情公寓",
+    "context": "曾小贤：（很汗）在出征之前，你是不是还要对他们演讲？我的指挥官——去吧，我的勇士们，不用担心你们的尸体，烧焦或是不烧焦都一样，反正全是黑的。\n胡一菲：（咬牙切齿地回望小贤）你这是在妒忌我的心灵手巧。我花了好几天的时间，终于把所有的材料都精心制作完成。所以我敢保证，我的这批巧克力将是全世界最棒的巧克力，它甚至可以被载入史册，我应该给它取一个新名字——菲克力怎么样？\n曾小贤：（心中暗自忖度）是该换个名字，她男朋友到时候一定认不出她做的那玩意是什么，反正肯定不是巧克力就对了。\n胡一菲：（自言自语）可可酱，到！果仁，到！杏仁，到！奶精，到！锅子，到！全体注意，准备入锅，这不是演习，注意，这不是演习。\n曾小贤：（鄙视地说）做巧克力就是把别人的巧克力融化了，然后再凝固起来？\n胡一菲：（反问）难道不是吗？\n曾小贤：（不遗余力地奚落）我现在知道为什么会有那么多假奶粉了，你也可以自己做啊。‘买’一些奶粉回来，倒水冲好，然后再晒干，看，这就是手工造的奶粉！还有个好听的名字叫——菲鹿奶粉。\n胡一菲：（恶狠狠地反击）谢谢你曾老师。这的确是个好主意。等我这次成功之后，我就拿你试验，死不了的话我一定批量生产。\n曾小贤：（得意地说）我那靠的是出众的人格魅力和无法抗拒的群众号召力！\n胡一菲：（刺探）你推广几瓶了？\n曾小贤：（胸有成竹地说）4瓶。\n胡一菲：（无奈地说）你们真是3条咸鱼比翻身，3个瘸子比赛跑啊。不过忘了告诉你了。前面我看到楼下酒吧一下子买了3瓶灭火器，看来有个人的主席梦要碎了。\n曾小贤：（谄媚地笑着）明天就是情人节了，买一瓶多好，红红的，又喜庆又安全。\n胡一菲：（冷笑）别打我注意，我是不会买的。\n曾小贤：（镇定地说）真的着火了。\n胡一菲：（猛地转身）啊啊啊啊啊啊！（激动地说）快快快快，快灭火啊！\n曾小贤：（拿出灭火器，还在展示）这时候想到我了吧？要不要买一瓶？\n胡一菲：（盯着他，喊道）这种时候还说风凉话！你先喷啊！回头我付钱。",
+    "model_output": "遵命！不过你说了回头付钱的，不许赖账啊！看我的——",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 11121,
+    "role": "胡一菲",
+    "novel_name": "爱情公寓",
+    "context": "医生：（总结道）所以——你拍碎了桌子，就为了证明你不在生理期？\n胡一菲：（同意）因为事实胜于雄辩。\n医生：（询问）一菲是不是最近工作上有什么不顺？\n胡一菲：（否认）没有。\n医生：（继续引导）那感情上呢？",
+    "model_output": "感情上？我能有什么事儿！彪悍的人生不需要解释！你们医生是不是都爱瞎操心？",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 6836,
+    "role": "雪见",
+    "novel_name": "仙剑奇侠传三",
+    "context": "雪见：（生气）走开！没看见我正生气吗？快点，走得越远越好！\n景天：（挠后脑）那……我便在这里等，直到你气消了为止。\n雪见：（怒转身）你当我是谁，随便就把我哄开心了？\n景天：（坚定）我可以等啊！你一辈子生我的气，我便在这里等你一辈子。",
+    "model_output": "哼！谁要你等了？你爱等就等，我可不会心疼你。",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 946,
+    "role": "张伟",
+    "novel_name": "爱情公寓",
+    "context": "胡一菲：（怒视）我怎么可能推理出你五天洗了七只袜子啊！\n张伟：（无辜）因为我只有七只啊……不过这不怪你，其实男生的分析能力本来就要强于女生，而我又是男生之中的天才。\n胡一菲：（严肃）好吧。看来我有必要给你测一下智商，好让你重新认识一下自我。我们来玩个游戏，如果你答对了我出的智力题，我就承认你不是脑残，而且再输给你——额外的五十块钱。\n张伟：（假装不屑，内心狂喜）五十？\n胡一菲：（严肃）四十五！\n张伟：（迫不及待）一言为定！\n胡一菲：（严肃）第一题，为什么北极熊不吃企鹅？\n张伟：因为北极熊在北极，企鹅在南极。\n胡一菲：（冷笑）答对了，下一题一百，你玩不玩。\n张伟：（迫不及待）一百就一百。Come on！\n胡一菲：（狂笑）如果曾小贤爬上树摘香瓜，一分钟可以摘一颗，但是它每摘十颗都会不小心掉两颗，请问一天可以摘几颗呢？",
+    "model_output": "等一下，让我算算。一分钟一颗，一小时六十颗，一天二十四小时就是一千四百四十颗。但是每摘十颗掉两颗，所以实际是1152颗！没错吧？",
+    "hai_avatar_command": {
+      "emotion": "happy",
+      "expression": "smile",
+      "gestures": [
+        "explain",
+        "nod"
+      ],
+      "voice_style": "cheerful",
+      "gesture_intensity": 0.6,
+      "speaking_rate": 1.1,
+      "pause_before_speech_ms": 50
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 3814,
+    "role": "陈美嘉",
+    "novel_name": "爱情公寓",
+    "context": "曾小贤：（正在沙发上看杂志，凑过头来，立即惊叫）怎么了？啊啊啊啊啊！（跳到了美嘉的怀里）\n陈美嘉：（恶狠狠地）你干吗？\n曾小贤：（根本不在乎美嘉说什么）这……这……这是真的。\n陈美嘉：（小声嘀咕）我早就说了。\n曾小贤：（低声）我们该怎么办？\n陈美嘉：（气不打一处来）你问我，我正要问你呢，你不是这屋里唯一的男人吗？\n曾小贤：（左右看）男人？在哪儿？在哪儿？",
+    "model_output": "你找什么找呀，这屋里就你一个男人，你不就是吗？我一口盐汽水喷死你哦吼~~~",
+    "hai_avatar_command": {
+      "emotion": "happy",
+      "expression": "smile",
+      "gestures": [
+        "explain",
+        "head_tilt"
+      ],
+      "voice_style": "cheerful",
+      "gesture_intensity": 0.65,
+      "speaking_rate": 1.2,
+      "pause_before_speech_ms": 100
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 1056,
+    "role": "唐悠悠",
+    "novel_name": "爱情公寓",
+    "context": "唐悠悠：（沮丧地）这能查到什么吗？\n关谷神奇：（信心满满地）既然那个怀孕者往里面扔过验孕棒，就不排除她还扔过其他东西，所以，他打算发扬不怕脏不怕死的侦探精神，先从那张用过的手纸开始调查。\n唐悠悠：（一脸嫌弃地打断他）神探先生，你不觉得先从这张快递单查起会比较简单吗？\n关谷神奇：（自言自语道）这是——京东的快递单？\n唐悠悠：（问）你的？\n关谷神奇：（摇头，若有所思）曾老师、子乔和我都没有京东的账号，这儿貌似只有你有吧。（突然叫起来）啊！……我有种强烈的直觉，这很可能就是凶手买验孕棒的快递单！",
+    "model_output": "对对对！我就说从快递单查起准没错！《唐氏表演法则》——show time！现在轮到我们大侦探登场了！",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 5692,
+    "role": "景天",
+    "novel_name": "仙剑奇侠传三",
+    "context": "龙葵：哥哥，都是我不好，当时如果和你在一起，让我去送镇妖剑，雪见姐姐便不会……\n景天：小葵，不要说了，这怎么会是你的错呢？\n龙葵：哥哥……我、我刚才刚刚见过雪见姐姐，她很关心你的安危。她听说你平安无事，很高兴，也很安心，说自己没有白白牺牲……",
+    "model_output": "小葵，谢谢你转告我这些。雪见她总是这样，把别人放在前头。既然她这么说了，我们就更不能让她失望。你也不要再责怪自己了，好吗？",
+    "hai_avatar_command": {
+      "emotion": "supportive",
+      "expression": "concerned",
+      "gestures": [
+        "explain",
+        "nod"
+      ],
+      "voice_style": "gentle",
+      "gesture_intensity": 0.35,
+      "speaking_rate": 0.85,
+      "pause_before_speech_ms": 400
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 5482,
+    "role": "唐悠悠",
+    "novel_name": "爱情公寓",
+    "context": "唐悠悠：（伸头出去张望）你来了？快进来。没人看见你吧。\n杜俊：（一字一顿，面无表情）我知道我不是主角，但也不至于是透明的吧，为什么别人会看不见我？",
+    "model_output": "哎呀，杜俊师兄，你这说的哪里话！我那不是怕你被人盯上嘛，毕竟咱们这秘密行动，越少人知道越好！《唐氏表演法则》第三十二条：每一个细节都要为剧情服务！你可是关键人物，怎么能看不见呢？快进来吧，关谷都等急了。",
+    "hai_avatar_command": {
+      "emotion": "happy",
+      "expression": "smile",
+      "gestures": [
+        "explain",
+        "wave"
+      ],
+      "voice_style": "cheerful",
+      "gesture_intensity": 0.6,
+      "speaking_rate": 1.2,
+      "pause_before_speech_ms": 150
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 1072,
+    "role": "张伟",
+    "novel_name": "爱情公寓",
+    "context": "张伟：（拍着关谷的胸）这是我第一次和别人睡一张床，不过……感觉还是挺好的。\n关谷神奇：（咽口水，把张伟的手拿开）可是我感觉，怪怪的。",
+    "model_output": "咳咳，关谷，你别误会，我就是想省点电费，空调开一个房间多划算。再说了，两个大老爷们睡一起怎么了？我们又不是没在沙发上挤过。",
+    "hai_avatar_command": {
+      "emotion": "thoughtful",
+      "expression": "thinking",
+      "gestures": [
+        "explain",
+        "head_tilt"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.5,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 200
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 8301,
+    "role": "关谷神奇",
+    "novel_name": "爱情公寓",
+    "context": "陈美嘉：（精打细算）关谷，你不是要去采购小家电吗？我想曾老师住进来之后我们就省事了。我们可以用他的。\n关谷神奇：（需要一些具体的建议）比方说。\n陈美嘉：（从盒子里拿出一个电吹风）比方说这个电吹风。",
+    "model_output": "纳尼？电吹风？我们不是要去采购小家电吗？曾老师的电吹风是他私人的东西，随便用不太好吧？",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 987,
+    "role": "吴用",
+    "novel_name": "水浒传",
+    "context": "吴用：（叫一声）二哥在家么？\n阮小二：（走将出来，声喏）教授何来？甚风吹得到此？\n吴用：（答道）有些小事，特来相浼二郎。\n阮小二：（道）有何事？但说不妨。",
+    "model_output": "既承二哥见问，小生便不隐瞒了。闻知梁中书要送十万贯金珠与蔡太师庆寿，此乃不义之财，取之无碍。小生欲邀二哥并七郎，共议此事，不知二哥意下如何？",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 7752,
+    "role": "杨过",
+    "novel_name": "神雕侠侣",
+    "context": "洪凌波：（笑道）傻蛋，你尽管瞧着我干甚？\n杨过：（道）我瞧着就是瞧着，又有甚么干不干的？你不许我瞧，我不瞧就是了，有甚么希罕？\n洪凌波：（噗哧一笑，道）你瞧罢！喂，你说我好不好看？\n杨过：（道）好看啊，就是，就是……\n洪凌波：（道）就是甚么？\n杨过：（道）就是不大白。\n洪凌波：（怒道）傻蛋，你要死了，说我不够白？\n杨过：（摇头道）不大白。\n洪凌波：（怒道）谁比我更白了？",
+    "model_output": "我姑姑小龙女，比你白得多了。你呀，别生气，我说的是实话。",
+    "hai_avatar_command": {
+      "emotion": "happy",
+      "expression": "smile",
+      "gestures": [
+        "explain",
+        "head_tilt"
+      ],
+      "voice_style": "cheerful",
+      "gesture_intensity": 0.5,
+      "speaking_rate": 1.1,
+      "pause_before_speech_ms": 100
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 1252,
+    "role": "唐悠悠",
+    "novel_name": "爱情公寓",
+    "context": "羽墨：（忙遮住眼睛）关谷不在？\n唐悠悠：（把羽墨的手放下）不在，他去参加漫画协会的年会了，今晚不回来。\n羽墨：（连忙又把眼睛遮上）为什么？",
+    "model_output": "哎哟，你干嘛遮眼睛呀？有什么不好意思的？关谷真的不在，你就放心说吧！我保证不告诉别人……大概。",
+    "hai_avatar_command": {
+      "emotion": "surprised",
+      "expression": "surprised",
+      "gestures": [
+        "explain",
+        "head_tilt"
+      ],
+      "voice_style": "cheerful",
+      "gesture_intensity": 0.6,
+      "speaking_rate": 1.2,
+      "pause_before_speech_ms": 80
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 965,
+    "role": "吴用",
+    "novel_name": "水浒传",
+    "context": "吴用：（答）小生姓张，名用，别号天口：祖贯山东人氏。能算皇极先天神数，知人生死贵贱。卦金白银一两，方才排算。\n卢俊义：（请吴用进小阁里，奉上银两）烦先生看贱造则个。\n吴用：（问）请贵庚月日下算。\n卢俊义：（回答）先生，君子问灾不问福；不必道在下豪富，只求推算下行藏。在下今年三十二岁。甲子年，乙丑月，丙寅日，丁卯时。\n吴用：（算命后，拍算子大叫）怪哉！\n卢俊义：（失惊问）贱造主何吉凶？\n吴用：（回答）员外必当见怪。岂可直言！\n卢俊义：（坚持）正要先生与迷人指路，但说不妨。\n吴用：（坦言）员外这命，目下不出百日之内必有血光之灾；家私不能保守，死於刀剑之下。\n卢俊义：（笑道）先生差矣。卢某生於北京，长在豪富；祖宗无犯法之男，亲族无再婚之女；更兼俊义作事讲慎，非理不为，非财不取：如何能有血光之灾？",
+    "model_output": "员外有所不知，命理之数，非关品行善恶，乃是运程流转、定数使然。即如古来忠臣孝子，亦有遭遇不测者。员外虽行事端正，然命中有此一劫，恐非人力可避。在下斗胆直言，百日之内，必见分晓。",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 5816,
+    "role": "小龙女",
+    "novel_name": "神雕侠侣",
+    "context": "杨过：（呆呆的望着她）姑姑，你干甚么？\n小龙女：（不答，继续打包）你好好去罢，我知道你是好孩子，你待我很好。\n杨过：（大惊）姑姑你呢？\n小龙女：（脸色严正，语气坚定）我向师父立过誓，是终身不出此墓的。除非……除非……嗯，我不出去。\n杨过：（见她决计不容反驳，但事情重大，鼓起勇气）姑姑，你不去，我也不去。我陪着你。",
+    "model_output": "过儿，你……你可想清楚了？这一辈子，都要在这古墓里了。",
+    "hai_avatar_command": {
+      "emotion": "thoughtful",
+      "expression": "soft_smile",
+      "gestures": [
+        "explain",
+        "head_tilt"
+      ],
+      "voice_style": "gentle",
+      "gesture_intensity": 0.4,
+      "speaking_rate": 0.9,
+      "pause_before_speech_ms": 300
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 433,
+    "role": "郭芙蓉",
+    "novel_name": "武林外传",
+    "context": "郭芙蓉：你怎么才回来啊\n莫小贝：帮我嫂子选礼物来着\n郭芙蓉：给谁的\n莫小贝：不能说否则秀才会杀了我\n郭芙蓉：你嫂子送礼，跟他有什么关系啊\n莫小贝：我们每个人都得送\n郭芙蓉：除了你\n莫小贝：这你甭管，到时候你就等着收礼吧\n郭芙蓉：啊，他们要给我送礼啊\n莫小贝：我不知道\n郭芙蓉：你悄悄告诉我，我绝不说出去\n莫小贝：得了吧，就你那张嘴\n郭芙蓉：我发誓我要是说出去就满脸起小痘\n莫小贝：不够狠\n郭芙蓉：那你说\n莫小贝：你要说出去啊，就在脚心里起小痘，越痒越挠，越挠越痒\n郭芙蓉：这这这也太毒了吧\n莫小贝：那那我不说了\n郭芙蓉：行行行，我答应你还不行吗，唉，他们为什么要给我送礼呀\n莫小贝：因为啊，他们想把你逗开心了，再拿你换头驴\n郭芙蓉：啥\n莫小贝：他们嫌你吃得多，干得少，这个懒不说吧，脾气还不好，所以还不如换头驴呢\n郭芙蓉：驴脾气就比我好了，欺人太甚\n莫小贝：这跟我没关系啊，都是秀才的主意\n郭芙蓉：我就知道\n莫小贝：你别怕别怕，我永远支持你\n郭芙蓉：你怎么支持我呀\n莫小贝：等驴来了，我天天骑它上学啊\n郭芙蓉：这跟我有什么关系呀\n莫小贝：等我把它骑腻味了，再把你换回来，我这都是为了你好",
+    "model_output": "嘿，你个小贝！敢拿我当驴替补？等那驴来了，我先把你排山倒海了再说！",
+    "hai_avatar_command": {
+      "emotion": "serious",
+      "expression": "serious",
+      "gestures": [
+        "explain",
+        "wave"
+      ],
+      "voice_style": "serious",
+      "gesture_intensity": 0.8,
+      "speaking_rate": 1.3,
+      "pause_before_speech_ms": 50
+    },
+    "hai_warnings": []
+  },
+  {
+    "id": 1006,
+    "role": "唐悠悠",
+    "novel_name": "爱情公寓",
+    "context": "唐悠悠：Cindy打电话来过了？他怎么说？\n关谷神奇：你怎么不先问问我怎么说？（生气地说）\n唐悠悠：我问过你很多次，你每次都说你很忙，过了这阵子再说，可是这阵子永远过不完！（抱怨说）\n关谷神奇：我的计划都在脑子里。我只是希望生活有点节奏，等我上了轨道就能把一切都安排好，你为什么非要打乱这一切呢？我以为你很了解我的。\n唐悠悠：那你了解我吗？\n关谷神奇：我当然了解你，（顿了一下）你……你根本分不清现实还是在拍戏。\n唐悠悠：我那天的确是在拍结婚的戏，可是……\n关谷神奇：如果你在拍追悼会的戏，会不会顺便帮我把火葬场也订了？\n唐悠悠：（沉默，忽然猛地点头）有道理啊。\n关谷神奇：（无语凝噎，只能瞪着她）",
+    "model_output": "好吧好吧，我承认你说得有道理啦！但是关谷，唐氏表演法则第四条：演员的自我修养就是全身心投入！我那天拍结婚戏当然要当真嘛，这说明我专业！不过……我以后会注意分清啦。但是你也不能把所有计划都藏在脑子里啊，我们是一起生活的，你得让我知道你的节奏，我也好配合嘛！你到底什么时候能上轨道，给我个时间也行啊！",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": []
+  }
+]

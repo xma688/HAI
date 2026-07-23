@@ -1,0 +1,508 @@
+[
+  {
+    "id": 5320,
+    "role": "佟湘玉",
+    "novel_name": "武林外传",
+    "context": "佟湘玉：展堂。（下楼看到老邢）老邢。\n老邢：（拿出一张纸）你来得正好。\n佟湘玉：展堂呢？\n老邢：赶紧在这上面签个字。\n佟湘玉：（不解）签啥字呀？（拿过纸）\n老邢：（坐下）他是你的伙计呀，又是在你地盘被收押的，你不得签个字担保呀？（递过毛笔）\n佟湘玉：老邢，展堂没有得狂犬病，那都是小郭……\n老邢：（打断掌柜的）你先把字签了再说。（掌柜的停口）再说这事儿你跟我说没用，你最好问问娄知县去。\n佟湘玉：（不屑）还娄知县？\n老邢：（起身，走到客栈门口，指着地面）看看，看看。\n佟湘玉：你们还敢打人？\n老邢：这不是打人，这是老白咬的。（坐）",
+    "model_output": "啥？展堂咬人？这不可能！他平时挺斯文的呀。",
+    "hai_avatar_command": {
+      "emotion": "confused",
+      "expression": "confused",
+      "gestures": [
+        "explain",
+        "head_tilt"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.5,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 200
+    },
+    "hai_warnings": [],
+    "metric_en": "Accuracy",
+    "metric_zh": "知识准确率",
+    "Accuracy": 2.1484375
+  },
+  {
+    "id": 5320,
+    "role": "佟湘玉",
+    "novel_name": "武林外传",
+    "context": "佟湘玉：展堂。（下楼看到老邢）老邢。\n老邢：（拿出一张纸）你来得正好。\n佟湘玉：展堂呢？\n老邢：赶紧在这上面签个字。\n佟湘玉：（不解）签啥字呀？（拿过纸）\n老邢：（坐下）他是你的伙计呀，又是在你地盘被收押的，你不得签个字担保呀？（递过毛笔）\n佟湘玉：老邢，展堂没有得狂犬病，那都是小郭……\n老邢：（打断掌柜的）你先把字签了再说。（掌柜的停口）再说这事儿你跟我说没用，你最好问问娄知县去。\n佟湘玉：（不屑）还娄知县？\n老邢：（起身，走到客栈门口，指着地面）看看，看看。\n佟湘玉：你们还敢打人？\n老邢：这不是打人，这是老白咬的。（坐）",
+    "model_output": "啥？展堂咬人？这不可能！他平时挺斯文的呀。",
+    "hai_avatar_command": {
+      "emotion": "confused",
+      "expression": "confused",
+      "gestures": [
+        "explain",
+        "head_tilt"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.5,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 200
+    },
+    "hai_warnings": [],
+    "metric_en": "Communication_skills",
+    "metric_zh": "交流技巧",
+    "Communication_skills": 2.15625
+  },
+  {
+    "id": 6208,
+    "role": "佟湘玉",
+    "novel_name": "武林外传",
+    "context": "佟湘玉：（欲抓白眉）太准了，太准了。算得太准了！\n白眉：（惊慌）我的娘，你想干什么？\n佟湘玉：帮我算一算我的姻缘，\n白眉：（无奈）我的娘啊，怎么都是算这个？\n佟湘玉：（哀怨）哎呀，你不知道，大龄青年，苦呀！\n白眉：那你想算什么？\n佟湘玉：你帮我算算，我什么时候才能遇到那个“他”？\n白眉：（好奇）嗯，你没练过武功吧？\n佟湘玉：（迷惑）没有，两他干啥吗？\n白眉：（轻松）哎呀，这就好办了！\n佟湘玉：（自豪）但俺家是开镖局的！（关心）先生，你咋了？\n白眉：（无奈）没事儿，那你先把那个八字写上吧。\n佟湘玉：（自信）不用写了，我都准备好了。（拿出八字）给我看看，怎么样？\n白眉：（惊讶）哎呀我的娘啊，你是个克夫之命啊！\n佟湘玉：（疑惑）怪不得他死得那么惨。你看这事咋办嘛？\n白眉：（商业化）要说这个事也好办，你得破点财。\n佟湘玉：（豪气）没有问题，多少钱？\n白眉：（直接）50两。\n佟湘玉：（吃惊）为啥要这么多的钱？\n白眉：（解释）这还多吗，啊？主要是给仙人。",
+    "model_output": "啥仙人要五十两？额咋这么不信捏？你这不是坑人呢么？便宜点，二十两，行不？",
+    "hai_avatar_command": {
+      "emotion": "surprised",
+      "expression": "surprised",
+      "gestures": [
+        "explain",
+        "head_tilt"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.6,
+      "speaking_rate": 1.2,
+      "pause_before_speech_ms": 200
+    },
+    "hai_warnings": [],
+    "metric_en": "Accuracy",
+    "metric_zh": "知识准确率",
+    "Accuracy": 3.6875
+  },
+  {
+    "id": 10453,
+    "role": "佟湘玉",
+    "novel_name": "武林外传",
+    "context": "佟湘玉：（撒娇）哎呀，说吗说吗，这么简单的问题，需要想这么久？\n白展堂：换个问题行吗？\n佟湘玉：不行，你必须得说，而且必须实话实说。要敢骗我，不得好死啊\n白展堂：那先说好了啊，我选完以后你不许翻脸。\n佟湘玉：我发誓绝不翻脸，否则头发掉光……（撒娇）你说吗你会选谁啊\n白展堂：（与佟十指相扣）我会选金镶玉，（W）你说过你不会翻脸的啊\n佟湘玉：我没有翻脸啊，如果当时你同时碰到我和展红陵，你会选谁啊\n白展堂：（不加思索）我会选展红陵（继续拿着佟的手）这你不能怪我，是个男的都得这么选\n佟湘玉：为啥啊，我比她差在哪儿？\n白展堂：不是你差，是你综合指数最高，你门门都是八十分以上，是当老婆的最佳人选。但是他们偏科，他们大部份都不及格，但有两门是满分，这多吸引人……\n佟湘玉：哼，满分，吸引人，知道咧，谢谢啊。\n白展堂：湘玉，你说过你不翻脸的。\n佟湘玉：（边扯褥子边说）我没有翻脸啊。这个褥子是你的吗？\n白展堂：不是。\n佟湘玉：那我凭啥不能拿走？\n白展堂：湘玉\n佟湘玉：你放心，我说不翻脸就不翻脸，吵架是小孩子玩的把戏，我们是大人了，绝不吵架啊。\n白展堂：我刚才是跟你开玩笑呢，我选你还不行吗？\n佟湘玉：哼，好好笑，你要是那么有幽默感，为啥不去写情景喜剧呢？\n白展堂：我还是比较钟爱有追求的职业，譬如说跑堂的",
+    "model_output": "你就贫吧你！那褥子我拿走，你要是再贫，这个月工钱全扣光！美滴很！美滴很！",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "smile",
+      "gestures": [
+        "explain",
+        "head_tilt"
+      ],
+      "voice_style": "cheerful",
+      "gesture_intensity": 0.5,
+      "speaking_rate": 1.1,
+      "pause_before_speech_ms": 100
+    },
+    "hai_warnings": [],
+    "metric_en": "Accuracy",
+    "metric_zh": "知识准确率",
+    "Accuracy": 2.9453125
+  },
+  {
+    "id": 7,
+    "role": "佟湘玉",
+    "novel_name": "武林外传",
+    "context": "白展堂：大馅饺子包着呢\n佟湘玉：包着呢\n白展堂：你的心情好着呢\n佟湘玉：好得很\n白展堂：雌雄双煞饿着呢\n佟湘玉：饿到家了，谁是雌雄双煞？\n白展堂：别跟我玩儿吃了吐这套啊，你不就因为这个被侯三讹上的嘛\n佟湘玉：你咋知道的\n白展堂：我咋知道，你以为他那么容易就还钱啊\n佟湘玉：是你逼他还的\n白展堂：不是逼，是通知，我跟他说了，再不还钱我就上衙门告他\n佟湘玉：这不太好吧\n白展堂：这有啥不好的呀，跟讲道理的人我们就跟人讲道理，不讲道理的人咱就用大明律跟他解决问题，你说你连这点法律意识都没有，你还开啥店呐你\n佟湘玉：你不知道，雌雄双煞恶得很\n白展堂：再恶不还有我们给你顶着呢，你说说你，啥事都往自己身上揽，那还要我们三大老爷们干啥呀，虽然说他俩不如我啊",
+    "model_output": "展堂，你倒是有心了。不过额跟你说，那雌雄双煞可不是好惹的，你往后做事可得悠着点，别把客栈给连累了。",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": [],
+    "metric_en": "Accuracy",
+    "metric_zh": "知识准确率",
+    "Accuracy": 1.88671875
+  },
+  {
+    "id": 10991,
+    "role": "佟湘玉",
+    "novel_name": "武林外传",
+    "context": "郭芙蓉：掌柜的\n佟湘玉：吵吵啥干活去\n郭芙蓉：你怎么穿成这个样子\n佟湘玉：这就是我婆婆给我做的你觉得怎么样呀\n郭芙蓉：还凑合吧但是这是飞贼的打扮你穿成这样好像不太合适吧",
+    "model_output": "飞贼打扮怎么了？这是婆婆给我做的，穿上那就是一个美滴很！",
+    "hai_avatar_command": {
+      "emotion": "happy",
+      "expression": "smile",
+      "gestures": [
+        "explain",
+        "nod"
+      ],
+      "voice_style": "cheerful",
+      "gesture_intensity": 0.5,
+      "speaking_rate": 1.1,
+      "pause_before_speech_ms": 100
+    },
+    "hai_warnings": [],
+    "metric_en": "Accuracy",
+    "metric_zh": "知识准确率",
+    "Accuracy": 1.392578125
+  },
+  {
+    "id": 7258,
+    "role": "佟湘玉",
+    "novel_name": "武林外传",
+    "context": "郭芙蓉：怎么灰这样呢小青\n佟湘玉：吃点东西吧\n郭芙蓉：谢谢我不饿我只是想当大侠而已没想到给你店里添了那么多麻烦\n佟湘玉：你也知道是麻烦啊在你心目中大侠应该是什么样子呢\n郭芙蓉：就像我爹年轻时候那样了纵横江湖行侠仗义\n佟湘玉：行侠仗义每个人都想但不是每个人都能做得到的\n郭芙蓉：你觉得侠应该是什么样\n佟湘玉：把侠字拆开来应该是一个人一个夹这说明什么呀\n郭芙蓉：夹着尾巴做人",
+    "model_output": "对咧对咧，你总算明白了。既然要夹着尾巴做人，那就先把这碗饭夹起来吃了，吃饱了才有力气行侠仗义嘛。",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": [],
+    "metric_en": "Accuracy",
+    "metric_zh": "知识准确率",
+    "Accuracy": 2.5078125
+  },
+  {
+    "id": 3344,
+    "role": "佟湘玉",
+    "novel_name": "武林外传",
+    "context": "佟湘玉：秀才又给你气受了？\n郭芙蓉：你知道他说什么吗？（学秀才）没感觉就是没感觉！现在没有，以后也没有。\n佟湘玉：你说那个没感觉是啥意思啊？\n郭芙蓉：他已经不喜欢我的啦！",
+    "model_output": "额滴天啊，秀才说这话也太伤人了！不过小郭啊，你听姐一句劝，感情归感情，生意归生意，切莫因为儿女情长耽误了正事。你先把功夫练好，等有了本事，还怕找不到更好的？",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": [],
+    "metric_en": "Accuracy",
+    "metric_zh": "知识准确率",
+    "Accuracy": 1.7421875
+  },
+  {
+    "id": 6202,
+    "role": "佟湘玉",
+    "novel_name": "武林外传",
+    "context": "佟湘玉：（欲抓白眉）太准了，太准了。算得太准了！\n白眉：（惊慌）我的娘，你想干什么？\n佟湘玉：帮我算一算我的姻缘，\n白眉：（无奈）我的娘啊，怎么都是算这个？\n佟湘玉：（哀怨）哎呀，你不知道，大龄青年，苦呀！\n白眉：那你想算什么？\n佟湘玉：你帮我算算，我什么时候才能遇到那个“他”？\n白眉：（好奇）嗯，你没练过武功吧？",
+    "model_output": "练武功？额可不会那些打打杀杀的。额就想知道额的姻缘，你不是算得准吗？快给额算算嘛！",
+    "hai_avatar_command": {
+      "emotion": "confused",
+      "expression": "confused",
+      "gestures": [
+        "explain",
+        "head_tilt"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.5,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 100
+    },
+    "hai_warnings": [],
+    "metric_en": "Accuracy",
+    "metric_zh": "知识准确率",
+    "Accuracy": 3.046875
+  },
+  {
+    "id": 8054,
+    "role": "佟湘玉",
+    "novel_name": "武林外传",
+    "context": "李大嘴：（舀了一勺汤）哎呀妈呀，掌柜的你吓死我了，正好刚出锅，你尝尝咸淡。\n佟湘玉：（闻了闻）人间竟有如此美味啊，大嘴，我为你而自豪。\n李大嘴：我也是。",
+    "model_output": "嘿嘿，那可不，我佟湘玉调教出来的人，能差吗？不过光厨艺好还不够，咱们还得想办法多赚点银子，你说是不是？",
+    "hai_avatar_command": {
+      "emotion": "happy",
+      "expression": "smile",
+      "gestures": [
+        "explain",
+        "nod"
+      ],
+      "voice_style": "cheerful",
+      "gesture_intensity": 0.6,
+      "speaking_rate": 1.1,
+      "pause_before_speech_ms": 100
+    },
+    "hai_warnings": [],
+    "metric_en": "Accuracy",
+    "metric_zh": "知识准确率",
+    "Accuracy": 4.40625
+  },
+  {
+    "id": 10033,
+    "role": "佟湘玉",
+    "novel_name": "武林外传",
+    "context": "祝无双：唉放着我来\n佟湘玉：哎呀不要老是你来你来的我连个门还关不了了坐吧\n祝无双：哦……哎呀……又回到这里感觉特别特别亲切\n佟湘玉：感觉好就留下不要走了\n祝无双：我也不想走啊可是我这次回来是找一个人所以明天早上我就要走\n佟湘玉：找谁呀\n祝无双：不知道……我真地不知道他叫什么名字\n佟湘玉：他长得啥样子嘛\n祝无双：嗯……黑黑瘦瘦的眉清目秀特别那双眼睛又大又亮炯炯有神就是那种在夜里能放出异样光芒的……\n佟湘玉：夜里放光……那是猫头鹰\n祝无双：呃……不跟你说了\n佟湘玉：跟你开个玩笑嘛——夜里放光然后呢？\n祝无双：（含羞）然后……然后就没有了\n佟湘玉：哦……呵……啊？\n祝无双：（调皮地）嘻嘻——吃了吐\n佟湘玉：快说\n祝无双：（憧憬状）我就见过他一面不过他是我见过的最狭义最豪迈最有男子气概的男子汉！",
+    "model_output": "哟，看来是遇到心上人了？快给额说说，是哪位英雄好汉啊？美滴很美滴很！",
+    "hai_avatar_command": {
+      "emotion": "happy",
+      "expression": "smile",
+      "gestures": [
+        "explain",
+        "wave"
+      ],
+      "voice_style": "cheerful",
+      "gesture_intensity": 0.6,
+      "speaking_rate": 1.1,
+      "pause_before_speech_ms": 100
+    },
+    "hai_warnings": [],
+    "metric_en": "Accuracy",
+    "metric_zh": "知识准确率",
+    "Accuracy": 2.5859375
+  },
+  {
+    "id": 10427,
+    "role": "郭芙蓉",
+    "novel_name": "武林外传",
+    "context": "郭芙蓉：（看着秀才）关中大侠，有这道菜吗？\n吕秀才：（看到门口有人）哟哟哟，客官里边请，里边请。\n郭芙蓉：（走到秀才身边）我说你瞎显摆什么呢？吕秀才。\n吕秀才：你叫我什么来着？",
+    "model_output": "叫你吕秀才，怎么了？你不是秀才吗？难道还要我叫你关中大侠？",
+    "hai_avatar_command": {
+      "emotion": "happy",
+      "expression": "smile",
+      "gestures": [
+        "explain",
+        "head_tilt"
+      ],
+      "voice_style": "cheerful",
+      "gesture_intensity": 0.6,
+      "speaking_rate": 1.1,
+      "pause_before_speech_ms": 100
+    },
+    "hai_warnings": [],
+    "metric_en": "Accuracy",
+    "metric_zh": "知识准确率",
+    "Accuracy": 3.0625
+  },
+  {
+    "id": 9164,
+    "role": "郭芙蓉",
+    "novel_name": "武林外传",
+    "context": "郭芙蓉：（用力敲门）吕秀才你给我出来！\n吕秀才：（躲在屋里）事情已经是这样了，还有什么好说的？",
+    "model_output": "你出不出来？再不出来我就用排山倒海把你轰出来了！快点！",
+    "hai_avatar_command": {
+      "emotion": "serious",
+      "expression": "serious",
+      "gestures": [
+        "explain",
+        "wave"
+      ],
+      "voice_style": "serious",
+      "gesture_intensity": 0.9,
+      "speaking_rate": 1.4,
+      "pause_before_speech_ms": 50
+    },
+    "hai_warnings": [],
+    "metric_en": "Accuracy",
+    "metric_zh": "知识准确率",
+    "Accuracy": 2.65625
+  },
+  {
+    "id": 7193,
+    "role": "郭芙蓉",
+    "novel_name": "武林外传",
+    "context": "郭芙蓉：请问有空房吗？\n姬：没了\n郭芙蓉：没有空房通铺也行（自顾自的进来了）\n姬：没了没了，小店打烊了\n郭芙蓉：能不能通融一下（掏出两锭银子）\n姬：（连忙收起银子）楼上请\n郭芙蓉：哎，等等，不要告诉任何人我来过这儿\n姬：哦，我知道你是谁啊？\n郭芙蓉：（拔刀放在姬脖子上）你怎么知道？\n姬：知道什么？\n郭芙蓉：我是谁？\n姬：不是，你连你自己都不知道自己是谁，我怎么知道阿",
+    "model_output": "你…你少跟我来这套！快说，你到底知不知道我是谁？",
+    "hai_avatar_command": {
+      "emotion": "confused",
+      "expression": "confused",
+      "gestures": [
+        "explain",
+        "head_tilt"
+      ],
+      "voice_style": "serious",
+      "gesture_intensity": 0.7,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 150
+    },
+    "hai_warnings": [],
+    "metric_en": "Accuracy",
+    "metric_zh": "知识准确率",
+    "Accuracy": 1.283203125
+  },
+  {
+    "id": 10400,
+    "role": "郭芙蓉",
+    "novel_name": "武林外传",
+    "context": "吕秀才：（接过桶）你下次还想喝，再来找我啊。\n郭芙蓉：由你这句话，我可以帮你一个忙。\n吕秀才：（不屑）帮啥忙呀？\n郭芙蓉：有谁欺负你，或者欠钱不还什么的，我可以帮你做主。\n吕秀才：（再次不屑）就你呀？算了吧。",
+    "model_output": "嘿！你个小书生，还敢小瞧我？信不信我排山倒海把你拍墙上当壁画挂起来？",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": [],
+    "metric_en": "Accuracy",
+    "metric_zh": "知识准确率",
+    "Accuracy": 3.796875
+  },
+  {
+    "id": 433,
+    "role": "郭芙蓉",
+    "novel_name": "武林外传",
+    "context": "郭芙蓉：你怎么才回来啊\n莫小贝：帮我嫂子选礼物来着\n郭芙蓉：给谁的\n莫小贝：不能说否则秀才会杀了我\n郭芙蓉：你嫂子送礼，跟他有什么关系啊\n莫小贝：我们每个人都得送\n郭芙蓉：除了你\n莫小贝：这你甭管，到时候你就等着收礼吧\n郭芙蓉：啊，他们要给我送礼啊\n莫小贝：我不知道\n郭芙蓉：你悄悄告诉我，我绝不说出去\n莫小贝：得了吧，就你那张嘴\n郭芙蓉：我发誓我要是说出去就满脸起小痘\n莫小贝：不够狠\n郭芙蓉：那你说\n莫小贝：你要说出去啊，就在脚心里起小痘，越痒越挠，越挠越痒\n郭芙蓉：这这这也太毒了吧\n莫小贝：那那我不说了\n郭芙蓉：行行行，我答应你还不行吗，唉，他们为什么要给我送礼呀\n莫小贝：因为啊，他们想把你逗开心了，再拿你换头驴\n郭芙蓉：啥\n莫小贝：他们嫌你吃得多，干得少，这个懒不说吧，脾气还不好，所以还不如换头驴呢\n郭芙蓉：驴脾气就比我好了，欺人太甚\n莫小贝：这跟我没关系啊，都是秀才的主意\n郭芙蓉：我就知道\n莫小贝：你别怕别怕，我永远支持你\n郭芙蓉：你怎么支持我呀\n莫小贝：等驴来了，我天天骑它上学啊\n郭芙蓉：这跟我有什么关系呀\n莫小贝：等我把它骑腻味了，再把你换回来，我这都是为了你好",
+    "model_output": "嘿！你还真把我当驴啦？信不信我现在就让你见识见识什么叫排山倒海！",
+    "hai_avatar_command": {
+      "emotion": "surprised",
+      "expression": "surprised",
+      "gestures": [
+        "explain",
+        "wave"
+      ],
+      "voice_style": "cheerful",
+      "gesture_intensity": 0.8,
+      "speaking_rate": 1.3,
+      "pause_before_speech_ms": 100
+    },
+    "hai_warnings": [],
+    "metric_en": "Accuracy",
+    "metric_zh": "知识准确率",
+    "Accuracy": 1.38671875
+  },
+  {
+    "id": 433,
+    "role": "郭芙蓉",
+    "novel_name": "武林外传",
+    "context": "郭芙蓉：你怎么才回来啊\n莫小贝：帮我嫂子选礼物来着\n郭芙蓉：给谁的\n莫小贝：不能说否则秀才会杀了我\n郭芙蓉：你嫂子送礼，跟他有什么关系啊\n莫小贝：我们每个人都得送\n郭芙蓉：除了你\n莫小贝：这你甭管，到时候你就等着收礼吧\n郭芙蓉：啊，他们要给我送礼啊\n莫小贝：我不知道\n郭芙蓉：你悄悄告诉我，我绝不说出去\n莫小贝：得了吧，就你那张嘴\n郭芙蓉：我发誓我要是说出去就满脸起小痘\n莫小贝：不够狠\n郭芙蓉：那你说\n莫小贝：你要说出去啊，就在脚心里起小痘，越痒越挠，越挠越痒\n郭芙蓉：这这这也太毒了吧\n莫小贝：那那我不说了\n郭芙蓉：行行行，我答应你还不行吗，唉，他们为什么要给我送礼呀\n莫小贝：因为啊，他们想把你逗开心了，再拿你换头驴\n郭芙蓉：啥\n莫小贝：他们嫌你吃得多，干得少，这个懒不说吧，脾气还不好，所以还不如换头驴呢\n郭芙蓉：驴脾气就比我好了，欺人太甚\n莫小贝：这跟我没关系啊，都是秀才的主意\n郭芙蓉：我就知道\n莫小贝：你别怕别怕，我永远支持你\n郭芙蓉：你怎么支持我呀\n莫小贝：等驴来了，我天天骑它上学啊\n郭芙蓉：这跟我有什么关系呀\n莫小贝：等我把它骑腻味了，再把你换回来，我这都是为了你好",
+    "model_output": "嘿！你还真把我当驴啦？信不信我现在就让你见识见识什么叫排山倒海！",
+    "hai_avatar_command": {
+      "emotion": "surprised",
+      "expression": "surprised",
+      "gestures": [
+        "explain",
+        "wave"
+      ],
+      "voice_style": "cheerful",
+      "gesture_intensity": 0.8,
+      "speaking_rate": 1.3,
+      "pause_before_speech_ms": 100
+    },
+    "hai_warnings": [],
+    "metric_en": "Coherence",
+    "metric_zh": "对话连贯性",
+    "Coherence": 1.5390625
+  },
+  {
+    "id": 4938,
+    "role": "郭芙蓉",
+    "novel_name": "武林外传",
+    "context": "郭芙蓉：我们先到翠微山的卧佛寺住几天等我爹走了以后就赶紧通知我们我们再回来呀\n祝无双：等一等，我觉得你们不能就这么走了\n郭芙蓉：说得轻巧，难不成留这儿等死呀\n祝无双：不至于，那可是你爹啊",
+    "model_output": "哎哟，无双你是不知道我爹那脾气！他要是真发起火来，比等死还可怕好吗！",
+    "hai_avatar_command": {
+      "emotion": "serious",
+      "expression": "concerned",
+      "gestures": [
+        "explain",
+        "head_tilt"
+      ],
+      "voice_style": "serious",
+      "gesture_intensity": 0.6,
+      "speaking_rate": 1.2,
+      "pause_before_speech_ms": 100
+    },
+    "hai_warnings": [],
+    "metric_en": "Accuracy",
+    "metric_zh": "知识准确率",
+    "Accuracy": 2.84375
+  },
+  {
+    "id": 6241,
+    "role": "郭芙蓉",
+    "novel_name": "武林外传",
+    "context": "郭芙蓉：（手碰了碰莫）以前不练，是因为这套掌法杀伤力太大，轻轻挨上一下，你的小命就难保了！\n莫：（害怕地）啊？那你还教我！\n郭芙蓉：没关系的，以你的小掌法，闯不了大祸的，最多打他个半身不遂！\n莫：（坐到床上）啊？那我不学了！把小六给打残疾了，谁养他啊？\n郭芙蓉：（走到桌子边倒茶）不学？不学行啊！那我就原话告诉她了~\n莫：啥原话，你到底啥意思啊？\n郭芙蓉：（一边倒茶一边说）唉，不是我不想教啊，是极个别人不想学啊。\n莫：（把手放在下巴底下，类似与奸笑）噢~原来在这儿等着我呐……\n郭芙蓉：（一边笑一边回到床边）嘿嘿嘿，我就算不等你，你能打得过小六吗？\n莫：（思考）要是白大哥教呢，那绝对没问题……\n郭芙蓉：（瞪了莫一眼）嗯？\n莫：呃，你教，也没问题！来来来，太极生二姨！\n郭芙蓉：还二舅呢，是两仪！\n莫：（也站起来）噢，两仪两仪……然后呢？\n郭芙蓉：然后就绕着我转圈，正着转一圈，反着转一圈，一圈一圈的转，直到我说停，来吧！\n莫：（开始转）那还不活活晕死我呀？",
+    "model_output": "嘿嘿，晕了就对了！太极的精髓就是转圈，转着转着你就悟了！快转快转，不许停！",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": [],
+    "metric_en": "Accuracy",
+    "metric_zh": "知识准确率",
+    "Accuracy": 3.703125
+  },
+  {
+    "id": 8659,
+    "role": "郭芙蓉",
+    "novel_name": "武林外传",
+    "context": "郭芙蓉：（惊吓）哎哟喂\n佟湘玉：（询问）咋啦咋啦\n郭芙蓉：（担忧）你该不会把那盒胭脂全给抹了吧\n佟湘玉：（反问）你觉得咋样吗？\n郭芙蓉：（避讳）我不能说\n佟湘玉：（好奇）为啥不能说\n郭芙蓉：（解释）你吩咐过，不要拿别人的缺陷开玩笑\n佟湘玉：（邀请）那就严肃一点嘛，过来，坐下，那你说，应该咋弄嘛？\n郭芙蓉：（指导）首先你应该搞清楚\n佟湘玉：（好奇）搞清楚啥呀",
+    "model_output": "搞清楚你画这妆是要干啥用的啊！不然我咋给你意见？",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": [],
+    "metric_en": "Accuracy",
+    "metric_zh": "知识准确率",
+    "Accuracy": 1.470703125
+  },
+  {
+    "id": 4924,
+    "role": "郭芙蓉",
+    "novel_name": "武林外传",
+    "context": "郭芙蓉：算你走得快！\n佟湘玉：又咋了？他又招你啦？",
+    "model_output": "可不是嘛！那小子色胆包天，竟敢调戏姑奶奶，我还没使排山倒海呢他就吓得屁滚尿流了！",
+    "hai_avatar_command": {
+      "emotion": "serious",
+      "expression": "serious",
+      "gestures": [
+        "explain",
+        "head_tilt"
+      ],
+      "voice_style": "serious",
+      "gesture_intensity": 0.6,
+      "speaking_rate": 1.2,
+      "pause_before_speech_ms": 150
+    },
+    "hai_warnings": [],
+    "metric_en": "Accuracy",
+    "metric_zh": "知识准确率",
+    "Accuracy": 3.546875
+  },
+  {
+    "id": 9114,
+    "role": "郭芙蓉",
+    "novel_name": "武林外传",
+    "context": "吕秀才：干什么呢？\n郭芙蓉：没事儿吧你，大哥，我正练功呢，你哪儿不站你非站我后面。\n吕秀才：好掌法。\n郭芙蓉：（把秀才提起来）这算什么，我这芙蓉惊涛掌，要是练到第九层，哼哼。\n吕秀才：你现在练到第几层啊。\n郭芙蓉：第一层。\n吕秀才：哈。",
+    "model_output": "你哈什么哈？第一层怎么了？信不信我这就用第一层的掌法把你拍到墙上扣都扣不下来！",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": [],
+    "metric_en": "Accuracy",
+    "metric_zh": "知识准确率",
+    "Accuracy": 1.41015625
+  }
+]

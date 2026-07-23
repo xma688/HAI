@@ -1,0 +1,3 @@
+run,benchmark,provider,count,macro_mae,direction_accuracy,fluency_proxy,coherency_proxy,empathy_proxy,warning_rate,llm_fallback_rate,character_rm_scores,boundary
+charactereval_official_adapted_20260720T002007Z,CharacterEval,openai,20,,,1.0,1.0,0.0,0.0,0.0,"{""Accuracy"": 2.5755, ""Coherence"": 1.5391, ""Communication_skills"": 2.1562}",CharacterEval-adapted dialogue metrics; not official CharacterRM score.
+incharacter_bfi_self_report_20260720T002754Z,InCharacter,openai,44,0.42,1.0,,,,0.0,0.0,{},"InCharacter BFI self-report style adapted run; comparable method, not full official interview evaluator."

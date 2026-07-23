@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>HAI Benchmark Report</title>
+  <style>
+    body { font-family: Arial, "Microsoft YaHei", sans-serif; margin: 32px; color: #1f2937; }
+    h1, h2 { color: #111827; }
+    section { margin: 24px 0; padding: 18px; border: 1px solid #d1d5db; border-radius: 8px; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border-bottom: 1px solid #e5e7eb; padding: 8px; text-align: left; vertical-align: top; }
+    th { width: 220px; color: #374151; }
+    code { white-space: pre-wrap; word-break: break-word; }
+    img { max-width: 760px; width: 100%; border: 1px solid #e5e7eb; border-radius: 8px; }
+    .note { padding: 12px; background: #fff7ed; border: 1px solid #fed7aa; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <h1>HAI Benchmark Report</h1>
+  <p class="note">InCharacter self-report uses official BFI scoring rules. CharacterEval output is converted to official generation/generation_trans format; official CharacterRM scoring requires local BaichuanCharRM weights.</p>
+  
+            <section>
+              <h2>charactereval_official_adapted_20260720T002007Z</h2>
+              <p><b>Benchmark:</b> CharacterEval
+                 <b>Provider:</b> openai</p>
+              <table><tr><th>count</th><td><code>20</code></td></tr><tr><th>fluency_proxy</th><td><code>1.0</code></td></tr><tr><th>coherency_proxy</th><td><code>1.0</code></td></tr><tr><th>empathy_proxy</th><td><code>0.0</code></td></tr><tr><th>expression_diversity_proxy</th><td><code>1.0</code></td></tr><tr><th>warning_rate</th><td><code>0.0</code></td></tr><tr><th>llm_fallback_rate</th><td><code>0.0</code></td></tr><tr><th>metric_tag_coverage</th><td><code>{&quot;Accuracy&quot;: 20, &quot;Coherence&quot;: 1, &quot;Communication_skills&quot;: 1}</code></td></tr><tr><th>charrm_status</th><td><code>&quot;not_run; use CharacterEval BaichuanCharRM weights to produce official reward-model scores&quot;</code></td></tr><tr><th>reporting_boundary</th><td><code>&quot;CharacterEval-adapted dialogue metrics; not official CharacterRM score.&quot;</code></td></tr><tr><th>character_rm</th><td><code>{&quot;count&quot;: 22, &quot;device&quot;: &quot;cuda&quot;, &quot;scores&quot;: {&quot;Accuracy&quot;: 2.5755, &quot;Coherence&quot;: 1.5391, &quot;Communication_skills&quot;: 2.1562}, &quot;reporting_boundary&quot;: &quot;Official CharacterEval CharacterRM scores for the generated adapted HAI responses.&quot;}</code></td></tr></table>
+            </section>
+            
+            <section>
+              <h2>incharacter_bfi_self_report_20260720T002754Z</h2>
+              <p><b>Benchmark:</b> InCharacter
+                 <b>Provider:</b> openai</p>
+              <table><tr><th>count</th><td><code>44</code></td></tr><tr><th>parsed_count</th><td><code>44</code></td></tr><tr><th>parse_failure_rate</th><td><code>0.0</code></td></tr><tr><th>warning_rate</th><td><code>0.0</code></td></tr><tr><th>llm_fallback_rate</th><td><code>0.0</code></td></tr><tr><th>macro_mae</th><td><code>0.42</code></td></tr><tr><th>direction_accuracy</th><td><code>1.0</code></td></tr><tr><th>reporting_boundary</th><td><code>&quot;InCharacter BFI self-report style adapted run; comparable method, not full official interview evaluator.&quot;</code></td></tr></table>
+            </section>
+            
+  <h2>Charts</h2>
+  <figure><img src="charactereval_official_adapted_20260720T002007Z_dialogue.png" alt="charactereval_official_adapted_20260720T002007Z_dialogue.png"><figcaption>charactereval_official_adapted_20260720T002007Z_dialogue.png</figcaption></figure>
+<figure><img src="charactereval_official_adapted_20260720T002007Z_charrm.png" alt="charactereval_official_adapted_20260720T002007Z_charrm.png"><figcaption>charactereval_official_adapted_20260720T002007Z_charrm.png</figcaption></figure>
+<figure><img src="incharacter_bfi_self_report_20260720T002754Z_bfi.png" alt="incharacter_bfi_self_report_20260720T002754Z_bfi.png"><figcaption>incharacter_bfi_self_report_20260720T002754Z_bfi.png</figcaption></figure>
+</body>
+</html>

@@ -1,0 +1,25 @@
+{
+  "count": 60,
+  "fluency_proxy": 1.0,
+  "coherency_proxy": 0.8833,
+  "empathy_proxy": 0.05,
+  "expression_diversity_proxy": 0.9333,
+  "warning_rate": 0.0333,
+  "llm_fallback_rate": 0.0,
+  "metric_tag_coverage": {
+    "Accuracy": 60,
+    "Behavior": 22,
+    "Coherence": 17,
+    "Communication_skills": 19,
+    "Consistency": 17,
+    "Diversity": 17,
+    "Empathy": 17,
+    "Exposure": 16,
+    "Fluency": 16,
+    "Hallucination": 16,
+    "Humanlikeness": 17,
+    "Utterance": 18
+  },
+  "charrm_status": "not_run; use CharacterEval BaichuanCharRM weights to produce official reward-model scores",
+  "reporting_boundary": "CharacterEval-adapted dialogue metrics; not official CharacterRM score."
+}

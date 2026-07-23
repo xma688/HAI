@@ -1,0 +1,21 @@
+{
+  "count": 36,
+  "available_count": 252,
+  "max_records_per_metric": 3,
+  "device": "cuda",
+  "scores": {
+    "Accuracy": 4.0208,
+    "Behavior": 4.7448,
+    "Coherence": 4.651,
+    "Communication_skills": 4.6667,
+    "Consistency": 4.1042,
+    "Diversity": 4.3385,
+    "Empathy": 4.0625,
+    "Exposure": 4.0781,
+    "Fluency": 4.4844,
+    "Hallucination": 4.8125,
+    "Humanlikeness": 4.474,
+    "Utterance": 4.1094
+  },
+  "reporting_boundary": "Official CharacterEval CharacterRM scores for the generated adapted HAI responses."
+}

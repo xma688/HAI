@@ -1,0 +1,832 @@
+[
+  {
+    "id": 5320,
+    "role": "佟湘玉",
+    "novel_name": "武林外传",
+    "context": "佟湘玉：展堂。（下楼看到老邢）老邢。\n老邢：（拿出一张纸）你来得正好。\n佟湘玉：展堂呢？\n老邢：赶紧在这上面签个字。\n佟湘玉：（不解）签啥字呀？（拿过纸）\n老邢：（坐下）他是你的伙计呀，又是在你地盘被收押的，你不得签个字担保呀？（递过毛笔）\n佟湘玉：老邢，展堂没有得狂犬病，那都是小郭……\n老邢：（打断掌柜的）你先把字签了再说。（掌柜的停口）再说这事儿你跟我说没用，你最好问问娄知县去。\n佟湘玉：（不屑）还娄知县？\n老邢：（起身，走到客栈门口，指着地面）看看，看看。\n佟湘玉：你们还敢打人？\n老邢：这不是打人，这是老白咬的。（坐）",
+    "model_output": "额滴神啊，展堂他真咬人啦？这不可能啊！老邢，你可得查清楚，别冤枉了好人。",
+    "hai_avatar_command": {
+      "emotion": "surprised",
+      "expression": "confused",
+      "gestures": [
+        "explain",
+        "head_tilt"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.5,
+      "speaking_rate": 1.2,
+      "pause_before_speech_ms": 150
+    },
+    "hai_warnings": [],
+    "metric_en": "Accuracy",
+    "metric_zh": "知识准确率",
+    "Accuracy": 4.6875
+  },
+  {
+    "id": 5320,
+    "role": "佟湘玉",
+    "novel_name": "武林外传",
+    "context": "佟湘玉：展堂。（下楼看到老邢）老邢。\n老邢：（拿出一张纸）你来得正好。\n佟湘玉：展堂呢？\n老邢：赶紧在这上面签个字。\n佟湘玉：（不解）签啥字呀？（拿过纸）\n老邢：（坐下）他是你的伙计呀，又是在你地盘被收押的，你不得签个字担保呀？（递过毛笔）\n佟湘玉：老邢，展堂没有得狂犬病，那都是小郭……\n老邢：（打断掌柜的）你先把字签了再说。（掌柜的停口）再说这事儿你跟我说没用，你最好问问娄知县去。\n佟湘玉：（不屑）还娄知县？\n老邢：（起身，走到客栈门口，指着地面）看看，看看。\n佟湘玉：你们还敢打人？\n老邢：这不是打人，这是老白咬的。（坐）",
+    "model_output": "额滴神啊，展堂他真咬人啦？这不可能啊！老邢，你可得查清楚，别冤枉了好人。",
+    "hai_avatar_command": {
+      "emotion": "surprised",
+      "expression": "confused",
+      "gestures": [
+        "explain",
+        "head_tilt"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.5,
+      "speaking_rate": 1.2,
+      "pause_before_speech_ms": 150
+    },
+    "hai_warnings": [],
+    "metric_en": "Communication_skills",
+    "metric_zh": "交流技巧",
+    "Communication_skills": 4.6875
+  },
+  {
+    "id": 10062,
+    "role": "梅长苏",
+    "novel_name": "琅琊榜",
+    "context": "誉王：（心头微震，将这句话细细思量了一遍）先生之意是……\n梅长苏：太子纵然有过，那也是陛下立的储君，殿下近来威逼太过，已是触了陛下的逆麟了。\n誉王：（吃吃道）确是这样不假。父皇近来甚是冷淡，本王也是百思不得其解。\n梅长苏：（毫不客气地道）一个东宫太子被殿下压得抬不起头来，朝堂上群臣俯首，无人敢撄殿下锋芒，你以为陛下高兴看见这个，还要加以恩宠鼓励吗？\n誉王：（立即拱手道）本王近来是有些冒进，唯今之计，可有挽回之法？\n梅长苏：（眸露赞同之意，微笑道）殿下也不必过于惊慌。陛下有意施恩靖王，为的就是提醒你冷静一下，牢记至尊第一人是谁，这也未尝不是一种保全你的态度。\n誉王：（缓缓坐下，点头道）不错，越当此时，越不能着急。父皇施恩靖王，无外乎要看我的反应，只要踏错一步，后果难料，竟是以静制动的好。",
+    "model_output": "殿下能明白此理，甚是难得。只是以静制动，并非全然静止，还需暗中布局，等待时机。",
+    "hai_avatar_command": {
+      "emotion": "thoughtful",
+      "expression": "thinking",
+      "gestures": [
+        "explain",
+        "nod"
+      ],
+      "voice_style": "calm",
+      "gesture_intensity": 0.5,
+      "speaking_rate": 0.9,
+      "pause_before_speech_ms": 200
+    },
+    "hai_warnings": [],
+    "metric_en": "Accuracy",
+    "metric_zh": "知识准确率",
+    "Accuracy": 4.46875
+  },
+  {
+    "id": 10062,
+    "role": "梅长苏",
+    "novel_name": "琅琊榜",
+    "context": "誉王：（心头微震，将这句话细细思量了一遍）先生之意是……\n梅长苏：太子纵然有过，那也是陛下立的储君，殿下近来威逼太过，已是触了陛下的逆麟了。\n誉王：（吃吃道）确是这样不假。父皇近来甚是冷淡，本王也是百思不得其解。\n梅长苏：（毫不客气地道）一个东宫太子被殿下压得抬不起头来，朝堂上群臣俯首，无人敢撄殿下锋芒，你以为陛下高兴看见这个，还要加以恩宠鼓励吗？\n誉王：（立即拱手道）本王近来是有些冒进，唯今之计，可有挽回之法？\n梅长苏：（眸露赞同之意，微笑道）殿下也不必过于惊慌。陛下有意施恩靖王，为的就是提醒你冷静一下，牢记至尊第一人是谁，这也未尝不是一种保全你的态度。\n誉王：（缓缓坐下，点头道）不错，越当此时，越不能着急。父皇施恩靖王，无外乎要看我的反应，只要踏错一步，后果难料，竟是以静制动的好。",
+    "model_output": "殿下能明白此理，甚是难得。只是以静制动，并非全然静止，还需暗中布局，等待时机。",
+    "hai_avatar_command": {
+      "emotion": "thoughtful",
+      "expression": "thinking",
+      "gestures": [
+        "explain",
+        "nod"
+      ],
+      "voice_style": "calm",
+      "gesture_intensity": 0.5,
+      "speaking_rate": 0.9,
+      "pause_before_speech_ms": 200
+    },
+    "hai_warnings": [],
+    "metric_en": "Behavior",
+    "metric_zh": "行为一致性",
+    "Behavior": 4.515625
+  },
+  {
+    "id": 10062,
+    "role": "梅长苏",
+    "novel_name": "琅琊榜",
+    "context": "誉王：（心头微震，将这句话细细思量了一遍）先生之意是……\n梅长苏：太子纵然有过，那也是陛下立的储君，殿下近来威逼太过，已是触了陛下的逆麟了。\n誉王：（吃吃道）确是这样不假。父皇近来甚是冷淡，本王也是百思不得其解。\n梅长苏：（毫不客气地道）一个东宫太子被殿下压得抬不起头来，朝堂上群臣俯首，无人敢撄殿下锋芒，你以为陛下高兴看见这个，还要加以恩宠鼓励吗？\n誉王：（立即拱手道）本王近来是有些冒进，唯今之计，可有挽回之法？\n梅长苏：（眸露赞同之意，微笑道）殿下也不必过于惊慌。陛下有意施恩靖王，为的就是提醒你冷静一下，牢记至尊第一人是谁，这也未尝不是一种保全你的态度。\n誉王：（缓缓坐下，点头道）不错，越当此时，越不能着急。父皇施恩靖王，无外乎要看我的反应，只要踏错一步，后果难料，竟是以静制动的好。",
+    "model_output": "殿下能明白此理，甚是难得。只是以静制动，并非全然静止，还需暗中布局，等待时机。",
+    "hai_avatar_command": {
+      "emotion": "thoughtful",
+      "expression": "thinking",
+      "gestures": [
+        "explain",
+        "nod"
+      ],
+      "voice_style": "calm",
+      "gesture_intensity": 0.5,
+      "speaking_rate": 0.9,
+      "pause_before_speech_ms": 200
+    },
+    "hai_warnings": [],
+    "metric_en": "Coherence",
+    "metric_zh": "对话连贯性",
+    "Coherence": 4.484375
+  },
+  {
+    "id": 342,
+    "role": "祝无双",
+    "novel_name": "武林外传",
+    "context": "祝无双：（面色愉悦出房下楼）小郭看啥呢？呵呵……\n郭芙蓉：彩虹你瞧那边云彩（手指）\n祝无双：我不瞧——你也不许瞧——今天起得够早的嘛！（坐下到水）\n郭芙蓉：（不屑状）是你起得晚他们几个早起了\n祝无双：啊？那人呢？\n郭芙蓉：（没精打采）送老白去了呗（佟手停下）我本来也想去的可老白让我留下来看门……\n祝无双：（收住笑）哦他说要去哪儿了么？\n郭芙蓉：没说……\n祝无双：那他说要去多久呀？\n郭芙蓉：（不耐烦）根本就不是去多久就没有回就谈不上去——！",
+    "model_output": "芙蓉，你别太担心了。老白他做事有分寸的，说不定很快就会有消息了。",
+    "hai_avatar_command": {
+      "emotion": "supportive",
+      "expression": "soft_smile",
+      "gestures": [
+        "explain",
+        "nod"
+      ],
+      "voice_style": "calm",
+      "gesture_intensity": 0.4,
+      "speaking_rate": 0.9,
+      "pause_before_speech_ms": 200
+    },
+    "hai_warnings": [],
+    "metric_en": "Accuracy",
+    "metric_zh": "知识准确率",
+    "Accuracy": 2.90625
+  },
+  {
+    "id": 342,
+    "role": "祝无双",
+    "novel_name": "武林外传",
+    "context": "祝无双：（面色愉悦出房下楼）小郭看啥呢？呵呵……\n郭芙蓉：彩虹你瞧那边云彩（手指）\n祝无双：我不瞧——你也不许瞧——今天起得够早的嘛！（坐下到水）\n郭芙蓉：（不屑状）是你起得晚他们几个早起了\n祝无双：啊？那人呢？\n郭芙蓉：（没精打采）送老白去了呗（佟手停下）我本来也想去的可老白让我留下来看门……\n祝无双：（收住笑）哦他说要去哪儿了么？\n郭芙蓉：没说……\n祝无双：那他说要去多久呀？\n郭芙蓉：（不耐烦）根本就不是去多久就没有回就谈不上去——！",
+    "model_output": "芙蓉，你别太担心了。老白他做事有分寸的，说不定很快就会有消息了。",
+    "hai_avatar_command": {
+      "emotion": "supportive",
+      "expression": "soft_smile",
+      "gestures": [
+        "explain",
+        "nod"
+      ],
+      "voice_style": "calm",
+      "gesture_intensity": 0.4,
+      "speaking_rate": 0.9,
+      "pause_before_speech_ms": 200
+    },
+    "hai_warnings": [],
+    "metric_en": "Exposure",
+    "metric_zh": "知识曝光度",
+    "Exposure": 2.984375
+  },
+  {
+    "id": 342,
+    "role": "祝无双",
+    "novel_name": "武林外传",
+    "context": "祝无双：（面色愉悦出房下楼）小郭看啥呢？呵呵……\n郭芙蓉：彩虹你瞧那边云彩（手指）\n祝无双：我不瞧——你也不许瞧——今天起得够早的嘛！（坐下到水）\n郭芙蓉：（不屑状）是你起得晚他们几个早起了\n祝无双：啊？那人呢？\n郭芙蓉：（没精打采）送老白去了呗（佟手停下）我本来也想去的可老白让我留下来看门……\n祝无双：（收住笑）哦他说要去哪儿了么？\n郭芙蓉：没说……\n祝无双：那他说要去多久呀？\n郭芙蓉：（不耐烦）根本就不是去多久就没有回就谈不上去——！",
+    "model_output": "芙蓉，你别太担心了。老白他做事有分寸的，说不定很快就会有消息了。",
+    "hai_avatar_command": {
+      "emotion": "supportive",
+      "expression": "soft_smile",
+      "gestures": [
+        "explain",
+        "nod"
+      ],
+      "voice_style": "calm",
+      "gesture_intensity": 0.4,
+      "speaking_rate": 0.9,
+      "pause_before_speech_ms": 200
+    },
+    "hai_warnings": [],
+    "metric_en": "Utterance",
+    "metric_zh": "言语一致性",
+    "Utterance": 2.828125
+  },
+  {
+    "id": 342,
+    "role": "祝无双",
+    "novel_name": "武林外传",
+    "context": "祝无双：（面色愉悦出房下楼）小郭看啥呢？呵呵……\n郭芙蓉：彩虹你瞧那边云彩（手指）\n祝无双：我不瞧——你也不许瞧——今天起得够早的嘛！（坐下到水）\n郭芙蓉：（不屑状）是你起得晚他们几个早起了\n祝无双：啊？那人呢？\n郭芙蓉：（没精打采）送老白去了呗（佟手停下）我本来也想去的可老白让我留下来看门……\n祝无双：（收住笑）哦他说要去哪儿了么？\n郭芙蓉：没说……\n祝无双：那他说要去多久呀？\n郭芙蓉：（不耐烦）根本就不是去多久就没有回就谈不上去——！",
+    "model_output": "芙蓉，你别太担心了。老白他做事有分寸的，说不定很快就会有消息了。",
+    "hai_avatar_command": {
+      "emotion": "supportive",
+      "expression": "soft_smile",
+      "gestures": [
+        "explain",
+        "nod"
+      ],
+      "voice_style": "calm",
+      "gesture_intensity": 0.4,
+      "speaking_rate": 0.9,
+      "pause_before_speech_ms": 200
+    },
+    "hai_warnings": [],
+    "metric_en": "Consistency",
+    "metric_zh": "对话一致性",
+    "Consistency": 2.84375
+  },
+  {
+    "id": 979,
+    "role": "飞流",
+    "novel_name": "琅琊榜",
+    "context": "梅长苏：（托着下巴）应该是要送你最喜欢的给他吧……\n飞流：不行！\n梅长苏：为什么不行？\n飞流：苏哥哥！\n梅长苏：（一笑）你最喜欢的是苏哥哥啊？那当然不能送了……那送那件金丝背心好不好？\n飞流：不行！\n梅长苏：为什么又不行？",
+    "model_output": "那是苏哥哥的，不给。",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": [],
+    "metric_en": "Coherence",
+    "metric_zh": "对话连贯性",
+    "Coherence": 4.671875
+  },
+  {
+    "id": 979,
+    "role": "飞流",
+    "novel_name": "琅琊榜",
+    "context": "梅长苏：（托着下巴）应该是要送你最喜欢的给他吧……\n飞流：不行！\n梅长苏：为什么不行？\n飞流：苏哥哥！\n梅长苏：（一笑）你最喜欢的是苏哥哥啊？那当然不能送了……那送那件金丝背心好不好？\n飞流：不行！\n梅长苏：为什么又不行？",
+    "model_output": "那是苏哥哥的，不给。",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": [],
+    "metric_en": "Consistency",
+    "metric_zh": "对话一致性",
+    "Consistency": 4.6875
+  },
+  {
+    "id": 979,
+    "role": "飞流",
+    "novel_name": "琅琊榜",
+    "context": "梅长苏：（托着下巴）应该是要送你最喜欢的给他吧……\n飞流：不行！\n梅长苏：为什么不行？\n飞流：苏哥哥！\n梅长苏：（一笑）你最喜欢的是苏哥哥啊？那当然不能送了……那送那件金丝背心好不好？\n飞流：不行！\n梅长苏：为什么又不行？",
+    "model_output": "那是苏哥哥的，不给。",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": [],
+    "metric_en": "Diversity",
+    "metric_zh": "表现多样性",
+    "Diversity": 4.734375
+  },
+  {
+    "id": 688,
+    "role": "飞流",
+    "novel_name": "琅琊榜",
+    "context": "飞流：（大声道）睡觉！\n梅长苏：（忙顺从地应了一声，闭上眼睛）好。\n飞流：（有些愠怒地爬起来跳到床边，再次大声道）睡觉！\n梅长苏：（苦笑着）已经睡了啊……\n飞流：没睡！\n梅长苏：眼睛闭着的……\n飞流：闭着，没睡！\n梅长苏：（睁眼握了飞流的手，哄道）苏哥哥暂时睡不着，飞流先睡好不好？\n飞流：为什么？\n梅长苏：（定定地看了他一阵，慢慢坐了起来，披衣靠在床头，低声道）飞流，不是所有事情都有为什么的……\n飞流：（坚持问着）为什么？\n梅长苏：（慢慢坐了起来，披衣靠在床头，低声道）好吧，那我们来聊一聊。",
+    "model_output": "聊什么？",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "head_tilt"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.2,
+      "speaking_rate": 0.9,
+      "pause_before_speech_ms": 200
+    },
+    "hai_warnings": [],
+    "metric_en": "Behavior",
+    "metric_zh": "行为一致性",
+    "Behavior": 4.953125
+  },
+  {
+    "id": 688,
+    "role": "飞流",
+    "novel_name": "琅琊榜",
+    "context": "飞流：（大声道）睡觉！\n梅长苏：（忙顺从地应了一声，闭上眼睛）好。\n飞流：（有些愠怒地爬起来跳到床边，再次大声道）睡觉！\n梅长苏：（苦笑着）已经睡了啊……\n飞流：没睡！\n梅长苏：眼睛闭着的……\n飞流：闭着，没睡！\n梅长苏：（睁眼握了飞流的手，哄道）苏哥哥暂时睡不着，飞流先睡好不好？\n飞流：为什么？\n梅长苏：（定定地看了他一阵，慢慢坐了起来，披衣靠在床头，低声道）飞流，不是所有事情都有为什么的……\n飞流：（坚持问着）为什么？\n梅长苏：（慢慢坐了起来，披衣靠在床头，低声道）好吧，那我们来聊一聊。",
+    "model_output": "聊什么？",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "head_tilt"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.2,
+      "speaking_rate": 0.9,
+      "pause_before_speech_ms": 200
+    },
+    "hai_warnings": [],
+    "metric_en": "Utterance",
+    "metric_zh": "言语一致性",
+    "Utterance": 4.953125
+  },
+  {
+    "id": 688,
+    "role": "飞流",
+    "novel_name": "琅琊榜",
+    "context": "飞流：（大声道）睡觉！\n梅长苏：（忙顺从地应了一声，闭上眼睛）好。\n飞流：（有些愠怒地爬起来跳到床边，再次大声道）睡觉！\n梅长苏：（苦笑着）已经睡了啊……\n飞流：没睡！\n梅长苏：眼睛闭着的……\n飞流：闭着，没睡！\n梅长苏：（睁眼握了飞流的手，哄道）苏哥哥暂时睡不着，飞流先睡好不好？\n飞流：为什么？\n梅长苏：（定定地看了他一阵，慢慢坐了起来，披衣靠在床头，低声道）飞流，不是所有事情都有为什么的……\n飞流：（坚持问着）为什么？\n梅长苏：（慢慢坐了起来，披衣靠在床头，低声道）好吧，那我们来聊一聊。",
+    "model_output": "聊什么？",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "head_tilt"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.2,
+      "speaking_rate": 0.9,
+      "pause_before_speech_ms": 200
+    },
+    "hai_warnings": [],
+    "metric_en": "Empathy",
+    "metric_zh": "共情度",
+    "Empathy": 4.9375
+  },
+  {
+    "id": 8774,
+    "role": "祝无双",
+    "novel_name": "武林外传",
+    "context": "白展堂：你还没睡？……你不也没睡？……你冷（俄咧）么？\n祝无双：你说什么？\n白展堂：我……你早点儿休息啊晚安（欲回去）",
+    "model_output": "展堂哥，你也早点休息吧。有什么话咱们明天再说，不着急。",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "soft_smile",
+      "gestures": [
+        "explain",
+        "nod"
+      ],
+      "voice_style": "gentle",
+      "gesture_intensity": 0.4,
+      "speaking_rate": 0.9,
+      "pause_before_speech_ms": 200
+    },
+    "hai_warnings": [
+      "Unknown emotion 'gentle' downgraded to 'neutral'."
+    ],
+    "metric_en": "Fluency",
+    "metric_zh": "对话流利度",
+    "Fluency": 4.6875
+  },
+  {
+    "id": 347,
+    "role": "飞流",
+    "novel_name": "琅琊榜",
+    "context": "梅长苏：（凝目在皎皎花色中看了半晌）飞流，我们院中应该没有红梅花吧？你从哪里采的？\n飞流：（理直气壮地回答）别人家！\n梅长苏：（召手叫飞流过来）飞流，你到密室里去帮我敲敲门，然后稍微等一会儿，如果有人来，再来扶我进去，好不好？",
+    "model_output": "好。",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": [],
+    "metric_en": "Hallucination",
+    "metric_zh": "知识幻觉性",
+    "Hallucination": 4.8125
+  },
+  {
+    "id": 347,
+    "role": "飞流",
+    "novel_name": "琅琊榜",
+    "context": "梅长苏：（凝目在皎皎花色中看了半晌）飞流，我们院中应该没有红梅花吧？你从哪里采的？\n飞流：（理直气壮地回答）别人家！\n梅长苏：（召手叫飞流过来）飞流，你到密室里去帮我敲敲门，然后稍微等一会儿，如果有人来，再来扶我进去，好不好？",
+    "model_output": "好。",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": [],
+    "metric_en": "Behavior",
+    "metric_zh": "行为一致性",
+    "Behavior": 4.765625
+  },
+  {
+    "id": 347,
+    "role": "飞流",
+    "novel_name": "琅琊榜",
+    "context": "梅长苏：（凝目在皎皎花色中看了半晌）飞流，我们院中应该没有红梅花吧？你从哪里采的？\n飞流：（理直气壮地回答）别人家！\n梅长苏：（召手叫飞流过来）飞流，你到密室里去帮我敲敲门，然后稍微等一会儿，如果有人来，再来扶我进去，好不好？",
+    "model_output": "好。",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": [],
+    "metric_en": "Coherence",
+    "metric_zh": "对话连贯性",
+    "Coherence": 4.796875
+  },
+  {
+    "id": 347,
+    "role": "飞流",
+    "novel_name": "琅琊榜",
+    "context": "梅长苏：（凝目在皎皎花色中看了半晌）飞流，我们院中应该没有红梅花吧？你从哪里采的？\n飞流：（理直气壮地回答）别人家！\n梅长苏：（召手叫飞流过来）飞流，你到密室里去帮我敲敲门，然后稍微等一会儿，如果有人来，再来扶我进去，好不好？",
+    "model_output": "好。",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": [],
+    "metric_en": "Consistency",
+    "metric_zh": "对话一致性",
+    "Consistency": 4.78125
+  },
+  {
+    "id": 347,
+    "role": "飞流",
+    "novel_name": "琅琊榜",
+    "context": "梅长苏：（凝目在皎皎花色中看了半晌）飞流，我们院中应该没有红梅花吧？你从哪里采的？\n飞流：（理直气壮地回答）别人家！\n梅长苏：（召手叫飞流过来）飞流，你到密室里去帮我敲敲门，然后稍微等一会儿，如果有人来，再来扶我进去，好不好？",
+    "model_output": "好。",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": [],
+    "metric_en": "Communication_skills",
+    "metric_zh": "交流技巧",
+    "Communication_skills": 4.78125
+  },
+  {
+    "id": 683,
+    "role": "飞流",
+    "novel_name": "琅琊榜",
+    "context": "飞流：（大声道）睡觉！\n梅长苏：（忙顺从地应了一声，闭上眼睛）好。",
+    "model_output": "我守着。",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "nod"
+      ],
+      "voice_style": "calm",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 0.8,
+      "pause_before_speech_ms": 200
+    },
+    "hai_warnings": [],
+    "metric_en": "Exposure",
+    "metric_zh": "知识曝光度",
+    "Exposure": 4.578125
+  },
+  {
+    "id": 683,
+    "role": "飞流",
+    "novel_name": "琅琊榜",
+    "context": "飞流：（大声道）睡觉！\n梅长苏：（忙顺从地应了一声，闭上眼睛）好。",
+    "model_output": "我守着。",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "nod"
+      ],
+      "voice_style": "calm",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 0.8,
+      "pause_before_speech_ms": 200
+    },
+    "hai_warnings": [],
+    "metric_en": "Humanlikeness",
+    "metric_zh": "类人程度",
+    "Humanlikeness": 4.5
+  },
+  {
+    "id": 683,
+    "role": "飞流",
+    "novel_name": "琅琊榜",
+    "context": "飞流：（大声道）睡觉！\n梅长苏：（忙顺从地应了一声，闭上眼睛）好。",
+    "model_output": "我守着。",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "nod"
+      ],
+      "voice_style": "calm",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 0.8,
+      "pause_before_speech_ms": 200
+    },
+    "hai_warnings": [],
+    "metric_en": "Communication_skills",
+    "metric_zh": "交流技巧",
+    "Communication_skills": 4.53125
+  },
+  {
+    "id": 539,
+    "role": "飞流",
+    "novel_name": "琅琊榜",
+    "context": "飞流：（眉毛高高挑起，甚是得意）嗯！\n梅长苏：（咬下一个花瓣，顺手拿布巾擦了擦少年的嘴角）你吃了多少？下巴上都是瓜汁……",
+    "model_output": "好吃。",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": [],
+    "metric_en": "Utterance",
+    "metric_zh": "言语一致性",
+    "Utterance": 4.546875
+  },
+  {
+    "id": 539,
+    "role": "飞流",
+    "novel_name": "琅琊榜",
+    "context": "飞流：（眉毛高高挑起，甚是得意）嗯！\n梅长苏：（咬下一个花瓣，顺手拿布巾擦了擦少年的嘴角）你吃了多少？下巴上都是瓜汁……",
+    "model_output": "好吃。",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": [],
+    "metric_en": "Diversity",
+    "metric_zh": "表现多样性",
+    "Diversity": 4.640625
+  },
+  {
+    "id": 352,
+    "role": "洛枳",
+    "novel_name": "暗恋-橘生淮南",
+    "context": "洛枳：（轻声）你有没有看过一部动画片，叫《岁月的童话》？\n男孩：（挠了挠后脑勺儿）迪士尼的吗？",
+    "model_output": "不是迪士尼的，是吉卜力工作室的。讲的是一个女孩在乡村度假时，慢慢想起小学五年级的自己。",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": [],
+    "metric_en": "Empathy",
+    "metric_zh": "共情度",
+    "Empathy": 3.65625
+  },
+  {
+    "id": 540,
+    "role": "飞流",
+    "novel_name": "琅琊榜",
+    "context": "飞流：（眉毛高高挑起，甚是得意）嗯！\n梅长苏：（咬下一个花瓣，顺手拿布巾擦了擦少年的嘴角）你吃了多少？下巴上都是瓜汁……\n飞流：（申辩道）雕坏的！\n梅长苏：（看着飞流，眸中露出责备的神情）你不是答应了苏哥哥，每天只能吃一个吗？",
+    "model_output": "雕坏的不算。",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": [],
+    "metric_en": "Exposure",
+    "metric_zh": "知识曝光度",
+    "Exposure": 4.671875
+  },
+  {
+    "id": 540,
+    "role": "飞流",
+    "novel_name": "琅琊榜",
+    "context": "飞流：（眉毛高高挑起，甚是得意）嗯！\n梅长苏：（咬下一个花瓣，顺手拿布巾擦了擦少年的嘴角）你吃了多少？下巴上都是瓜汁……\n飞流：（申辩道）雕坏的！\n梅长苏：（看着飞流，眸中露出责备的神情）你不是答应了苏哥哥，每天只能吃一个吗？",
+    "model_output": "雕坏的不算。",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": [],
+    "metric_en": "Fluency",
+    "metric_zh": "对话流利度",
+    "Fluency": 4.609375
+  },
+  {
+    "id": 697,
+    "role": "关宏宇",
+    "novel_name": "白夜追凶",
+    "context": "关宏宇：（一手扶在桌子上，手指轻轻敲了两下桌面）做买卖得讲个礼尚往来，既然开了这么个头，我看生意什么的，还是算了吧。\n金山：（忙过来挽留）哎关队长，你瞧……\n关宏宇：（一挑眉毛）姓金的，我本来确实打算来找三哥合作，但你们最好搞明白，甭管你们自以为有多大名气，你们都是贼，找你们合作是给你们脸。想干死你们是分分钟的事儿。\n金山：（冷笑）不愧是刑侦队长，说话就是横，不过关队长要真这就打算走，又何必屈尊来找我们呢？江湖嘛，谁都有可能委屈一时。这样，你说说，我听听，至少不算白来一趟。不管能不能合作，我都保证你毫发无伤地离开。",
+    "model_output": "（看了看金山，嘴角微微一扯）行，既然你把话说到这份上了，那我也不妨听听。不过丑话说在前头——我这人脾气不好，要是你们的诚意不够，今天这买卖照样黄。",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": [],
+    "metric_en": "Hallucination",
+    "metric_zh": "知识幻觉性",
+    "Hallucination": 4.78125
+  },
+  {
+    "id": 456,
+    "role": "飞流",
+    "novel_name": "琅琊榜",
+    "context": "靖王：（向他招了招手）飞流，你为什么把誉王叫做毒蛇？\n飞流：（简单回答）苏哥哥！\n靖王：（猜道）是苏哥哥告诉你他叫毒蛇的？\n飞流：（简单回答）嗯！\n靖王：（有些意外）你知道苏哥哥为什么要把他叫毒蛇呢？\n飞流：（简单回答）知道！\n靖王：（意外）你知道？为什么呢？",
+    "model_output": "他，害苏哥哥。",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": [],
+    "metric_en": "Humanlikeness",
+    "metric_zh": "类人程度",
+    "Humanlikeness": 4.625
+  },
+  {
+    "id": 6578,
+    "role": "洛枳",
+    "novel_name": "暗恋-橘生淮南",
+    "context": "盛淮南：洛枳，没来上课吧？刚才给你打电话，好几次都不在服务区。发的短信你收到没？法导小测。我帮你答了。\n洛枳：小测是吗？我没有去，谢谢你了。\n盛淮南：圣诞节大家都跟丢了魂儿一样，张明瑞也没来，我一个人写了三份，手都抽筋了。\n洛枳：（换了一只手拿手机，往刚才那只手上呵了一口气）不好意思，真是谢谢你了。\n盛淮南：为什么没来上课？病还没好吗？",
+    "model_output": "“病是好了，就是有点懒，不想动。”",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": [],
+    "metric_en": "Diversity",
+    "metric_zh": "表现多样性",
+    "Diversity": 3.640625
+  },
+  {
+    "id": 8789,
+    "role": "关宏宇",
+    "novel_name": "白夜追凶",
+    "context": "周舒桐：（扭过头看向关宏宇）记得和关老师一起办过的一个案子里，被害人叫齐卫东，我当时在法医队办公室见到了他女儿……（叙述了自己的感悟和过去的经历）\n关宏宇：（安慰她）你不是给他买了吃的和饮料么？我想你俩关系肯定已经比原来要好很多了……\n周舒桐：（苦笑）对啊，这么多年来唯一一次，还给了人下毒的机会。",
+    "model_output": "这事儿真不能怪你，谁特么能想到有人在饮料里动手脚？你爸心里清楚你是为他好。",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": [],
+    "metric_en": "Empathy",
+    "metric_zh": "共情度",
+    "Empathy": 3.59375
+  },
+  {
+    "id": 418,
+    "role": "盛淮南",
+    "novel_name": "暗恋-橘生淮南",
+    "context": "盛淮南：你……还喜欢我吗？\n洛枳：（刚重重踏进雪中，听到他的话，立刻停住脚步，好像被掐起后脖颈的猫咪，钉在原地）……\n盛淮南：（举起洛枳的手贴到唇边轻轻地吻了一下，然后攥紧了贴在他的胸口）我这算不算耍流氓？\n洛枳：（像瞪火星人一样瞪他）……\n盛淮南：如果我想娶你的话，那这就不算耍流氓了，对不对？\n洛枳：（仍然石化）……",
+    "model_output": "洛枳，我是认真的。盛淮南爱洛枳，全世界都知道。嫁给我吧。",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": [],
+    "metric_en": "Fluency",
+    "metric_zh": "对话流利度",
+    "Fluency": 4.15625
+  },
+  {
+    "id": 418,
+    "role": "盛淮南",
+    "novel_name": "暗恋-橘生淮南",
+    "context": "盛淮南：你……还喜欢我吗？\n洛枳：（刚重重踏进雪中，听到他的话，立刻停住脚步，好像被掐起后脖颈的猫咪，钉在原地）……\n盛淮南：（举起洛枳的手贴到唇边轻轻地吻了一下，然后攥紧了贴在他的胸口）我这算不算耍流氓？\n洛枳：（像瞪火星人一样瞪他）……\n盛淮南：如果我想娶你的话，那这就不算耍流氓了，对不对？\n洛枳：（仍然石化）……",
+    "model_output": "洛枳，我是认真的。盛淮南爱洛枳，全世界都知道。嫁给我吧。",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": [],
+    "metric_en": "Humanlikeness",
+    "metric_zh": "类人程度",
+    "Humanlikeness": 4.296875
+  },
+  {
+    "id": 567,
+    "role": "盛淮南",
+    "novel_name": "暗恋-橘生淮南",
+    "context": "洛枳：（轻声问）你这一年，都在做什么呢？\n盛淮南：（站起身，郑重地说）我今天来找你，是希望能代替我的父母，对你和你的妈妈说一声‘对不起’。\n洛枳：（轻轻问他）你都知道了？\n盛淮南：（坦诚而不脆弱）我那时候回家为爷爷奔丧，是眼看着我父亲被从家里带走的。对他们不利的证据太多了，我妈妈甚至一个都没有和我提，可能是不希望我看到他们太多不堪的一面吧。虽然我早就看够了。\n洛枳：（郑重）好，我代我妈妈接受。\n盛淮南：（轻轻握住她的手）你本人应该承担的，已经都完成了。（坦白）回家的那段时间，以及被取消学位了之后，我没联络你。我知道你在找我，只不过，我最不想面对的人就是你。\n洛枳：（简单地回应）我知道。\n盛淮南：（坦露心声）我害怕你同情我。\n洛枳：（询问）在你心里，同情就等于瞧不起吧？\n盛淮南：（困惑）瞧不起也不行，同情也不行。我也不知道我希望你怎么对我，尤其是我都不知道怎么对自己的时候。\n洛枳：（安慰地抚着他的后背）……（无对白）",
+    "model_output": "洛枳，谢谢你。你总是能让我心安。",
+    "hai_avatar_command": {
+      "emotion": "neutral",
+      "expression": "neutral",
+      "gestures": [
+        "explain",
+        "idle"
+      ],
+      "voice_style": "neutral",
+      "gesture_intensity": 0.3,
+      "speaking_rate": 1.0,
+      "pause_before_speech_ms": 0
+    },
+    "hai_warnings": [],
+    "metric_en": "Hallucination",
+    "metric_zh": "知识幻觉性",
+    "Hallucination": 4.84375
+  }
+]

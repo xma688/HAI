@@ -1,0 +1,77 @@
+{
+  "run_dir": "D:\\HAI\\evaluation\\results\\charactereval_official_adapted_20260720T090123Z",
+  "created_at_utc": "2026-07-20T09:01:23.143349+00:00",
+  "git_commit": "a4e6a93172732e4d628c6d71070e9e9d4cf7da87",
+  "python": "3.13.9 | packaged by Anaconda, Inc. | (main, Oct 21 2025, 19:09:58) [MSC v.1929 64 bit (AMD64)]",
+  "config_path": "evaluation\\datasets\\official_adapted\\charactereval_official_subset.jsonl",
+  "settings": {
+    "app": {
+      "language": "zh-CN",
+      "max_input_chars": 500,
+      "max_reply_chars": 500
+    },
+    "llm": {
+      "provider": "mock",
+      "model": "deepseek-v4-flash",
+      "base_url": "https://opencode.ai/zen/go/v1",
+      "api_key_env": "OPENCODE_GO_API_KEY",
+      "temperature": 0.5,
+      "timeout_seconds": 30,
+      "max_retries": 1
+    },
+    "tts": {
+      "provider": "mock",
+      "output_dir": "D:\\HAI\\assets\\temp",
+      "voice": "zh-CN-XiaoxiaoNeural",
+      "timeout_seconds": 30
+    },
+    "avatar": {
+      "provider": "mock",
+      "reset_after_speech": true,
+      "default_expression": "neutral",
+      "prometheus_output_dir": "data\\prometheus_avatar",
+      "prometheus_model_url": "https://cdn.jsdelivr.net/gh/Live2D/CubismWebSamples@develop/Samples/Resources/Mao/Mao.model3.json"
+    },
+    "planner": {
+      "max_gestures": 2,
+      "enable_cooldown": true
+    },
+    "personalization": {
+      "enabled": true,
+      "profile_dir": "data/profiles",
+      "update_interval": 5,
+      "big_five_learning_rate": 0.05,
+      "gesture_affinity_decay": 0.95
+    }
+  },
+  "runner": "run_official_character_eval",
+  "provider": "openai",
+  "benchmark": "CharacterEval",
+  "source_metadata": {
+    "repo": "https://github.com/morecry/CharacterEval",
+    "commit": "c3d44a6fc1790cc8c4b2fd7c01f0c72930655e0c",
+    "files": [
+      "data/test_data.jsonl",
+      "data/character_profiles.json",
+      "data/id2metric.jsonl"
+    ],
+    "prepared_records": 60,
+    "selection": "balanced",
+    "metric_coverage": {
+      "Accuracy": 60,
+      "Behavior": 22,
+      "Coherence": 17,
+      "Communication_skills": 19,
+      "Consistency": 17,
+      "Diversity": 17,
+      "Empathy": 17,
+      "Exposure": 16,
+      "Fluency": 16,
+      "Hallucination": 16,
+      "Humanlikeness": 17,
+      "Utterance": 18
+    }
+  },
+  "external_data_export_ack": true,
+  "reporting_boundary": "Adapted local HAI run; not official CharacterEval/CharacterRM score."
+}

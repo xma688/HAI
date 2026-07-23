@@ -77,8 +77,11 @@ def write_csv(path: Path, summaries: list[dict[str, Any]]) -> None:
                     "benchmark": manifest.get("benchmark", manifest.get("runner", "")),
                     "provider": manifest.get("provider", ""),
                     "count": metrics.get("count", ""),
-                    "macro_mae": metrics.get("macro_mae", ""),
-                    "direction_accuracy": metrics.get("direction_accuracy", ""),
+                    "macro_mae": metrics.get("macro_mae", metrics.get("aggregate_macro_mae", "")),
+                    "direction_accuracy": metrics.get(
+                        "direction_accuracy",
+                        metrics.get("aggregate_direction_accuracy", ""),
+                    ),
                     "fluency_proxy": metrics.get("fluency_proxy", ""),
                     "coherency_proxy": metrics.get("coherency_proxy", ""),
                     "empathy_proxy": metrics.get("empathy_proxy", ""),
@@ -111,6 +114,27 @@ def write_charts(out_dir: Path, summaries: list[dict[str, Any]]) -> list[Path]:
             plt.ylim(1, 5)
             plt.ylabel("BFI score")
             plt.title("InCharacter BFI Self-Report")
+            plt.legend()
+            plt.tight_layout()
+            plt.savefig(path, dpi=160)
+            plt.close()
+            chart_paths.append(path)
+        elif "per_persona" in metrics:
+            path = out_dir / f"{run_name}_bfi_personas.png"
+            dimensions = ["Extraversion", "Agreeableness", "Conscientiousness", "Neuroticism", "Openness"]
+            personas = list(metrics["per_persona"].keys())
+            x = range(len(dimensions))
+            width = min(0.22, 0.8 / max(1, len(personas)))
+            plt.figure(figsize=(10.5, 5.2))
+            for persona_index, persona in enumerate(personas):
+                scores = metrics["per_persona"][persona]["dimension_scores"]
+                values = [scores[dimension]["predicted_bfi_1_to_5"] or 0 for dimension in dimensions]
+                offsets = [i + (persona_index - (len(personas) - 1) / 2) * width for i in x]
+                plt.bar(offsets, values, width=width, label=persona)
+            plt.xticks(list(x), dimensions, rotation=20, ha="right")
+            plt.ylim(1, 5)
+            plt.ylabel("Predicted BFI score")
+            plt.title("InCharacter BFI Across Avatar Personas")
             plt.legend()
             plt.tight_layout()
             plt.savefig(path, dpi=160)
