@@ -52,6 +52,24 @@ def test_mock_pipeline_completes_one_turn():
     assert "end_to_end" in result.latency_ms
 
 
+def test_pipeline_reports_real_processing_stages_in_order():
+    pipeline = build_mock_pipeline()
+    stages: list[str] = []
+    reply_payloads: list[str] = []
+
+    async def collect(stage: str, payload: dict):
+        stages.append(stage)
+        if stage == "reply":
+            reply_payloads.append(payload["reply_text"])
+
+    result = asyncio.run(
+        pipeline.process("今天有点累。", progress_callback=collect)
+    )
+
+    assert stages == ["understanding", "reply", "voice", "performance", "complete"]
+    assert reply_payloads == [result.reply_text]
+
+
 def test_mock_pipeline_scenarios_complete():
     cases = [
         "你好！",

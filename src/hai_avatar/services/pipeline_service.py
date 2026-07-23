@@ -5,7 +5,8 @@ import logging
 import time
 import uuid
 from pathlib import Path
-from typing import Optional
+from collections.abc import Awaitable, Callable
+from typing import Any, Optional
 
 from hai_avatar.avatar.base import AvatarController
 from hai_avatar.config import Settings
@@ -21,6 +22,8 @@ from hai_avatar.services.conversation_service import ConversationService
 from hai_avatar.tts.base import TTSProvider
 
 logger = logging.getLogger(__name__)
+
+ProgressCallback = Callable[[str, dict[str, Any]], Awaitable[None]]
 
 
 class PipelineService:
@@ -50,7 +53,12 @@ class PipelineService:
         self._avatar_connected = False
         self._avatar_lock = asyncio.Lock()
 
-    async def process(self, user_text: str, user_id: str = "default") -> PipelineResult:
+    async def process(
+        self,
+        user_text: str,
+        user_id: str = "default",
+        progress_callback: ProgressCallback | None = None,
+    ) -> PipelineResult:
         start = time.perf_counter()
         latency_ms: dict[str, float] = {}
         warnings: list[str] = []
@@ -61,6 +69,7 @@ class PipelineService:
             raise PipelineError(f"User text exceeds {self.settings.app.max_input_chars} characters.")
 
         logger.info("Pipeline request started; input_length=%s user_id=%s", len(clean_text), user_id)
+        await self._emit_progress(progress_callback, "understanding")
 
         if self._personalization_enabled:
             t0 = time.perf_counter()
@@ -127,7 +136,14 @@ class PipelineService:
         else:
             latency_ms["post_processor"] = 0
 
+        await self._emit_progress(
+            progress_callback,
+            "reply",
+            reply_text=llm_response.reply_text,
+        )
+
         audio_path: str | None = None
+        await self._emit_progress(progress_callback, "voice")
         t0 = time.perf_counter()
         try:
             output_path = self._next_audio_path(self.settings.tts.output_dir)
@@ -144,6 +160,11 @@ class PipelineService:
             warnings.append(f"TTS failed; voice output is unavailable for this turn: {exc}")
         latency_ms["tts"] = self._elapsed(t0)
 
+        await self._emit_progress(
+            progress_callback,
+            "performance",
+            audio_available=audio_path is not None,
+        )
         async with self._avatar_lock:
             t0 = time.perf_counter()
             try:
@@ -182,6 +203,8 @@ class PipelineService:
         self.conversation_service.add_turn(user_id, clean_text, llm_response.reply_text)
         self._update_profile(user_profile, clean_text, avatar_command)
         latency_ms["state_update"] = self._elapsed(t0)
+
+        await self._emit_progress(progress_callback, "complete")
 
         return PipelineResult(
             user_text=clean_text,
@@ -244,3 +267,16 @@ class PipelineService:
 
     def _elapsed(self, started_at: float) -> float:
         return round((time.perf_counter() - started_at) * 1000, 3)
+
+    async def _emit_progress(
+        self,
+        callback: ProgressCallback | None,
+        stage: str,
+        **payload: Any,
+    ) -> None:
+        if callback is None:
+            return
+        try:
+            await callback(stage, payload)
+        except Exception:
+            logger.warning("Pipeline progress callback failed at stage=%s", stage, exc_info=True)
