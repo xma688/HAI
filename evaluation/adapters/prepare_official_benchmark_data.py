@@ -13,6 +13,7 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
+from collections import Counter
 from typing import Any
 
 
@@ -51,7 +52,7 @@ def compact_profile(profile: dict[str, Any], max_chars: int = 700) -> str:
     return text[:max_chars]
 
 
-def prepare_character_eval(root: Path, limit: int) -> list[dict[str, Any]]:
+def prepare_character_eval(root: Path, limit: int, selection: str = "balanced") -> list[dict[str, Any]]:
     samples = load_json(root / "data" / "test_data.jsonl")
     profiles = load_json(root / "data" / "character_profiles.json")
     id2metric = load_json(root / "data" / "id2metric.jsonl")
@@ -92,9 +93,46 @@ def prepare_character_eval(root: Path, limit: int) -> list[dict[str, Any]]:
                 "user_text": user_text,
             }
         )
-        if len(records) >= limit:
-            break
-    return records
+    if selection == "first":
+        return records[:limit]
+    return select_balanced_character_records(records, limit)
+
+
+def select_balanced_character_records(records: list[dict[str, Any]], limit: int) -> list[dict[str, Any]]:
+    """Greedily balance CharacterEval records across metric dimensions."""
+
+    if limit <= 0:
+        return records
+    metric_names = sorted({tag["metric_en"] for record in records for tag in record.get("metric_tags", [])})
+    if not metric_names:
+        return records[:limit]
+
+    selected: list[dict[str, Any]] = []
+    unused = records.copy()
+    coverage: Counter[str] = Counter()
+    metric_rank = {metric: index for index, metric in enumerate(metric_names)}
+
+    while unused and len(selected) < limit:
+        target = min(metric_names, key=lambda metric: (coverage[metric], metric_rank[metric]))
+        best_index = next(
+            (
+                index
+                for index, record in enumerate(unused)
+                if any(tag["metric_en"] == target for tag in record.get("metric_tags", []))
+            ),
+            0,
+        )
+        record = unused.pop(best_index)
+        selected.append(record)
+        coverage.update(tag["metric_en"] for tag in record.get("metric_tags", []))
+    return selected
+
+
+def metric_coverage(records: list[dict[str, Any]]) -> dict[str, int]:
+    coverage: Counter[str] = Counter()
+    for record in records:
+        coverage.update(tag["metric_en"] for tag in record.get("metric_tags", []))
+    return dict(sorted(coverage.items()))
 
 
 def prepare_incharacter(root: Path, limit: int) -> list[dict[str, Any]]:
@@ -140,9 +178,14 @@ def main() -> None:
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
     parser.add_argument("--character-limit", type=int, default=100)
     parser.add_argument("--incharacter-limit", type=int, default=44)
+    parser.add_argument("--character-selection", choices=["first", "balanced"], default="balanced")
     args = parser.parse_args()
 
-    character_records = prepare_character_eval(args.character_eval_root, args.character_limit)
+    character_records = prepare_character_eval(
+        args.character_eval_root,
+        args.character_limit,
+        selection=args.character_selection,
+    )
     incharacter_records = prepare_incharacter(args.incharacter_root, args.incharacter_limit)
     write_jsonl(args.output_dir / "charactereval_official_subset.jsonl", character_records)
     write_jsonl(args.output_dir / "incharacter_bfi_official_subset.jsonl", incharacter_records)
@@ -152,6 +195,8 @@ def main() -> None:
             "commit": "c3d44a6fc1790cc8c4b2fd7c01f0c72930655e0c",
             "files": ["data/test_data.jsonl", "data/character_profiles.json", "data/id2metric.jsonl"],
             "prepared_records": len(character_records),
+            "selection": args.character_selection,
+            "metric_coverage": metric_coverage(character_records),
         },
         "InCharacter": {
             "repo": "https://github.com/Neph0s/InCharacter",

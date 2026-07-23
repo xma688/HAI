@@ -21,6 +21,12 @@ def main() -> None:
     parser.add_argument("--character-profiles", default=".tmp/CharacterEval/data/character_profiles.json")
     parser.add_argument("--reward-model-path", required=True)
     parser.add_argument("--max-seq-length", type=int, default=4096)
+    parser.add_argument(
+        "--max-records-per-metric",
+        type=int,
+        default=0,
+        help="Optional balanced CharacterRM sample size per metric. 0 scores every transformed record.",
+    )
     args = parser.parse_args()
 
     run_dir = Path(args.run_dir)
@@ -39,7 +45,8 @@ def main() -> None:
     from BaichuanCharRM.tokenization_baichuan import BaichuanTokenizer
 
     character_profile = load_json(Path(args.character_profiles))
-    records = load_json(generation_trans_path)
+    all_records = load_json(generation_trans_path)
+    records = select_records(all_records, args.max_records_per_metric)
     device = "cuda" if torch.cuda.is_available() else "cpu"
     dtype = torch.bfloat16 if device == "cuda" else torch.float32
 
@@ -69,6 +76,8 @@ def main() -> None:
         metrics.setdefault(metric, []).append(float(record[metric]))
     summary = {
         "count": len(records),
+        "available_count": len(all_records),
+        "max_records_per_metric": args.max_records_per_metric,
         "device": device,
         "scores": {metric: round(sum(values) / len(values), 4) for metric, values in sorted(metrics.items())},
         "reporting_boundary": "Official CharacterEval CharacterRM scores for the generated adapted HAI responses.",
@@ -78,6 +87,20 @@ def main() -> None:
         encoding="utf-8",
     )
     print(summary)
+
+
+def select_records(records: list[dict[str, Any]], max_records_per_metric: int) -> list[dict[str, Any]]:
+    if max_records_per_metric <= 0:
+        return records
+    counts: dict[str, int] = {}
+    selected: list[dict[str, Any]] = []
+    for record in records:
+        metric = record["metric_en"]
+        if counts.get(metric, 0) >= max_records_per_metric:
+            continue
+        selected.append(record)
+        counts[metric] = counts.get(metric, 0) + 1
+    return selected
 
 
 def format_input(example: dict[str, Any], character_profile: dict[str, Any]) -> str:

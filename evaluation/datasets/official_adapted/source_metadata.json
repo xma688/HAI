@@ -7,7 +7,22 @@
       "data/character_profiles.json",
       "data/id2metric.jsonl"
     ],
-    "prepared_records": 20
+    "prepared_records": 60,
+    "selection": "balanced",
+    "metric_coverage": {
+      "Accuracy": 60,
+      "Behavior": 22,
+      "Coherence": 17,
+      "Communication_skills": 19,
+      "Consistency": 17,
+      "Diversity": 17,
+      "Empathy": 17,
+      "Exposure": 16,
+      "Fluency": 16,
+      "Hallucination": 16,
+      "Humanlikeness": 17,
+      "Utterance": 18
+    }
   },
   "InCharacter": {
     "repo": "https://github.com/Neph0s/InCharacter",
@@ -15,7 +30,7 @@
     "files": [
       "data/questionnaires/BFI.json"
     ],
-    "prepared_records": 10
+    "prepared_records": 44
   },
   "reporting_boundary": "Adapted local HAI runs; do not report as official benchmark overall scores."
 }
