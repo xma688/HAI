@@ -18,12 +18,12 @@ logger = logging.getLogger(__name__)
 
 BRAND_ASSET_DIR = PROJECT_ROOT / "assets" / "brand"
 ICON_PATH = BRAND_ASSET_DIR / "hai-companion-icon.png"
-HERO_PATH = BRAND_ASSET_DIR / "hero-companion.png"
+HERO_PATH = BRAND_ASSET_DIR / "hero-companion.jpg"
 STORY_IMAGES = (
-    (BRAND_ASSET_DIR / "emotion-understanding.png", "理解情绪，而不只识别关键词"),
-    (BRAND_ASSET_DIR / "natural-voice.png", "让语气、语速与内容保持一致"),
-    (BRAND_ASSET_DIR / "expressive-avatar.png", "表情与动作跟随每轮对话"),
-    (BRAND_ASSET_DIR / "quiet-companionship.png", "在需要的时候，安静地陪着你"),
+    (BRAND_ASSET_DIR / "emotion-understanding.jpg", "理解情绪，而不只识别关键词"),
+    (BRAND_ASSET_DIR / "natural-voice.jpg", "让语气、语速与内容保持一致"),
+    (BRAND_ASSET_DIR / "expressive-avatar.jpg", "表情与动作跟随每轮对话"),
+    (BRAND_ASSET_DIR / "quiet-companionship.jpg", "在需要的时候，安静地陪着你"),
 )
 STYLES_PATH = Path(__file__).with_name("styles.css")
 

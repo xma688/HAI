@@ -71,6 +71,11 @@ def test_prometheus_controller_writes_bridge_files(tmp_path):
 
     asyncio.run(run())
     assert (output_dir / "index.html").exists()
+    bridge_html = (output_dir / "index.html").read_text(encoding="utf-8")
+    assert "modelBaseDimensions" in bridge_html
+    assert "ResizeObserver" in bridge_html
+    assert "app.screen?.width" in bridge_html
+    assert "* 0.70" in bridge_html
     state = (output_dir / "avatar-state.js").read_text(encoding="utf-8")
     assert "HAI_AVATAR_STATE" in state
     assert "session cleared" in state

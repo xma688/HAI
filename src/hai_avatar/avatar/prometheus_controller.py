@@ -312,6 +312,9 @@ class PrometheusAvatarController(AvatarController):
     let lastUpdatedAt = '';
     let app = null;
     let model = null;
+    let modelBaseDimensions = null;
+    let resizeFrame = null;
+    let resizeObserver = null;
     let mouthTimer = null;
     let lipSyncActive = false;
     let lipSyncStartedAt = 0;
@@ -381,6 +384,12 @@ class PrometheusAvatarController(AvatarController):
       model = await PIXI.live2d.Live2DModel.from(state.model_url);
       stripModelMotionSounds(model);
       app.stage.addChild(model);
+      const initialScaleX = Number(model.scale?.x) || 1;
+      const initialScaleY = Number(model.scale?.y) || 1;
+      modelBaseDimensions = {
+        width: model.width / initialScaleX,
+        height: model.height / initialScaleY,
+      };
       fitModel();
       try { model.motion?.('Idle', 0, { loop: true }); } catch (_) {}
       try { model.motion?.('idle', 0, { loop: true }); } catch (_) {}
@@ -389,11 +398,27 @@ class PrometheusAvatarController(AvatarController):
       animateGestures(state.gestures || [], true, state.gesture_intensity);
       setStatus(`model loaded: ${Math.round(model.width)}x${Math.round(model.height)}`, 'ok');
 
-      window.addEventListener('resize', () => {
-        if (!app) return;
-        app.renderer.resize(container.clientWidth, container.clientHeight);
-        fitModel();
-      });
+      const resizeAvatar = () => {
+        if (resizeFrame !== null) cancelAnimationFrame(resizeFrame);
+        resizeFrame = requestAnimationFrame(() => {
+          resizeFrame = null;
+          if (!app) return;
+          const nextWidth = Math.max(1, container.clientWidth);
+          const nextHeight = Math.max(1, container.clientHeight);
+          const screenWidth = app.screen?.width || 0;
+          const screenHeight = app.screen?.height || 0;
+          if (Math.abs(screenWidth - nextWidth) > .5 || Math.abs(screenHeight - nextHeight) > .5) {
+            app.renderer.resize(nextWidth, nextHeight);
+          }
+          fitModel();
+        });
+      };
+      window.addEventListener('resize', resizeAvatar);
+      if ('ResizeObserver' in window) {
+        resizeObserver = new ResizeObserver(resizeAvatar);
+        resizeObserver.observe(container);
+      }
+      resizeAvatar();
     }
 
     function renderState(nextState) {
@@ -427,17 +452,20 @@ class PrometheusAvatarController(AvatarController):
 
     function fitModel() {
       if (!app || !model) return;
-      const width = app.renderer.width / (window.devicePixelRatio || 1);
-      const height = app.renderer.height / (window.devicePixelRatio || 1);
-      const scale = Math.min(width / model.width, height / model.height) * 0.86;
+      const resolution = app.renderer.resolution || window.devicePixelRatio || 1;
+      const width = app.screen?.width || app.renderer.width / resolution;
+      const height = app.screen?.height || app.renderer.height / resolution;
+      const baseWidth = modelBaseDimensions?.width || model.width || 1;
+      const baseHeight = modelBaseDimensions?.height || model.height || 1;
+      const scale = Math.min(width / baseWidth, height / baseHeight) * 0.70;
       model.scale.set(scale);
       if (model.anchor) {
         model.anchor.set(0.5, 0.5);
         model.x = width / 2;
-        model.y = height / 2;
+        model.y = height * 0.52;
       } else {
         model.x = (width - model.width) / 2;
-        model.y = (height - model.height) / 2;
+        model.y = (height - model.height) / 2 + height * 0.02;
       }
     }
 
