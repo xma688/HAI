@@ -57,7 +57,7 @@ class MockLLMProvider(LLMProvider):
                 "gestures": ["nod", "explain"],
                 "voice_style": "calm",
                 "gesture_intensity": 0.35,
-                "speaking_rate": 0.8,
+                "speaking_rate": 0.9,
                 "pause_before_speech_ms": 300,
             },
             "explanation": {
@@ -67,7 +67,7 @@ class MockLLMProvider(LLMProvider):
                 "gestures": ["think", "explain"],
                 "voice_style": "gentle",
                 "gesture_intensity": 0.45,
-                "speaking_rate": 0.85,
+                "speaking_rate": 0.95,
                 "pause_before_speech_ms": 200,
             },
             "confusion": {

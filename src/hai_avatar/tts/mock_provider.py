@@ -5,7 +5,7 @@ import struct
 import wave
 from pathlib import Path
 
-from hai_avatar.schemas import TTSResult
+from hai_avatar.schemas import MAX_SPEAKING_RATE, MIN_SPEAKING_RATE, TTSResult
 from hai_avatar.tts.base import TTSProvider
 
 
@@ -22,7 +22,7 @@ class MockTTSProvider(TTSProvider):
         speaking_rate: float = 1.0,
     ) -> TTSResult:
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        safe_rate = max(0.5, min(2.0, speaking_rate))
+        safe_rate = max(MIN_SPEAKING_RATE, min(MAX_SPEAKING_RATE, speaking_rate))
         duration_ms = int(min(3000, max(700, len(text) * 55)) / safe_rate)
         frequency = {
             "cheerful": 660,

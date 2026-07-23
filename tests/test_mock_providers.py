@@ -6,6 +6,7 @@ from uuid import uuid4
 
 from hai_avatar.avatar.mock_controller import MockAvatarController
 from hai_avatar.avatar.prometheus_controller import PrometheusAvatarController
+from hai_avatar.tts.edge_tts_provider import _resolve_rate_percent
 from hai_avatar.tts.mock_provider import MockTTSProvider
 
 
@@ -15,6 +16,14 @@ def test_mock_tts_returns_valid_file_path():
     result = asyncio.run(provider.synthesize("你好", "neutral", output_path))
     assert Path(result.audio_path).exists()
     assert result.duration_ms is not None
+
+
+def test_edge_tts_rate_stays_within_narrow_range():
+    assert _resolve_rate_percent(0.5, "neutral") == -10
+    assert _resolve_rate_percent(0.9, "calm") == -10
+    assert _resolve_rate_percent(1.0, "neutral") == 0
+    assert _resolve_rate_percent(1.1, "cheerful") == 10
+    assert _resolve_rate_percent(2.0, "neutral") == 10
 
 
 def test_mock_avatar_executes_command():

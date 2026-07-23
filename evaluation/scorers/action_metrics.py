@@ -28,7 +28,7 @@ def score_action_records(records: list[dict[str, Any]]) -> dict[str, Any]:
         totals["voice_hit"] += int(cmd["voice_style"] in gold.get("voice_style", []))
         lo, hi = gold.get("gesture_intensity", [0.0, 1.0])
         totals["intensity_hit"] += int(lo <= cmd["gesture_intensity"] <= hi)
-        lo, hi = gold.get("speaking_rate", [0.5, 2.0])
+        lo, hi = gold.get("speaking_rate", [0.9, 1.1])
         totals["speaking_rate_hit"] += int(lo <= cmd["speaking_rate"] <= hi)
         if set(forbidden.get("gestures", [])).intersection(gestures):
             totals["forbidden_violations"] += 1

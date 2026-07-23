@@ -5,7 +5,7 @@ import logging
 import wave
 from pathlib import Path
 
-from hai_avatar.schemas import TTSResult
+from hai_avatar.schemas import MAX_SPEAKING_RATE, MIN_SPEAKING_RATE, TTSResult
 from hai_avatar.tts.base import TTSProvider
 
 logger = logging.getLogger(__name__)
@@ -18,6 +18,16 @@ _VOICE_STYLE_PARAMS: dict[str, dict[str, str]] = {
     "apologetic": {"rate": "-10%", "pitch": "-5Hz"},
     "neutral": {"rate": "+0%", "pitch": "+0Hz"},
 }
+
+
+def _resolve_rate_percent(speaking_rate: float, voice_style: str) -> int:
+    params = _VOICE_STYLE_PARAMS.get(voice_style, _VOICE_STYLE_PARAMS["neutral"])
+    style_rate = int(params["rate"].removesuffix("%"))
+    safe_rate = max(MIN_SPEAKING_RATE, min(MAX_SPEAKING_RATE, speaking_rate))
+    requested_rate = round((safe_rate - 1.0) * 100)
+    min_percent = round((MIN_SPEAKING_RATE - 1.0) * 100)
+    max_percent = round((MAX_SPEAKING_RATE - 1.0) * 100)
+    return max(min_percent, min(max_percent, style_rate + requested_rate))
 
 
 class EdgeTTSProvider(TTSProvider):
@@ -35,9 +45,7 @@ class EdgeTTSProvider(TTSProvider):
         import edge_tts
 
         params = _VOICE_STYLE_PARAMS.get(voice_style, _VOICE_STYLE_PARAMS["neutral"])
-        style_rate = int(params["rate"].removesuffix("%"))
-        requested_rate = round((max(0.5, min(2.0, speaking_rate)) - 1.0) * 100)
-        rate = max(-50, min(100, style_rate + requested_rate))
+        rate = _resolve_rate_percent(speaking_rate, voice_style)
         output_path.parent.mkdir(parents=True, exist_ok=True)
         tmp_path = output_path.with_suffix(".mp3")
 
