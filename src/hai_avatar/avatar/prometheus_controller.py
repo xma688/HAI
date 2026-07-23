@@ -319,7 +319,9 @@ class PrometheusAvatarController(AvatarController):
     let lipSyncActive = false;
     let lipSyncStartedAt = 0;
     let currentAudio = null;
+    let releaseCurrentAudio = null;
     let lastPlayedAudioUrl = '';
+    document.documentElement.dataset.audioState = 'idle';
     let gestureIntensity = .5;
     let gestureState = { type: null, startedAt: 0, duration: 0 };
     let gestureQueue = [];
@@ -349,6 +351,13 @@ class PrometheusAvatarController(AvatarController):
     document.addEventListener('DOMContentLoaded', () => {
       renderState(state);
       initAvatar().catch(showError);
+    });
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState !== 'visible') {
+        stopStateAudio(false);
+        window.speechSynthesis?.cancel();
+      }
     });
 
     document.getElementById('speakBtn').onclick = async () => {
@@ -529,30 +538,85 @@ class PrometheusAvatarController(AvatarController):
 
     function playStateAudio(force = false) {
       if (!state.audio_url) return false;
-      if (!force && state.audio_url === lastPlayedAudioUrl) return true;
-      if (currentAudio) {
-        currentAudio.pause();
-        currentAudio = null;
+      if (!force && document.visibilityState !== 'visible') {
+        lastPlayedAudioUrl = state.audio_url;
+        document.documentElement.dataset.audioState = 'suppressed-hidden';
+        return true;
       }
-      lastPlayedAudioUrl = state.audio_url;
-      currentAudio = new Audio(`${state.audio_url}?turn=${encodeURIComponent(state.turn_id || '')}`);
-      currentAudio.onplay = startTextLipSync;
-      currentAudio.onended = stopTextLipSync;
-      currentAudio.onerror = stopTextLipSync;
-      currentAudio.play().catch((error) => {
-        stopTextLipSync();
-        setStatus(`audio autoplay blocked; use Speak latest reply (${error?.message || error})`, 'error');
-      });
+      if (!force && state.audio_url === lastPlayedAudioUrl) return true;
+      const audioUrl = state.audio_url;
+      const turnId = state.turn_id || '';
+      lastPlayedAudioUrl = audioUrl;
+      if (currentAudio) stopStateAudio(false);
+
+      const playExclusively = async () => {
+        if (!force && document.visibilityState !== 'visible') return;
+        await playAudioFile(audioUrl, turnId);
+      };
+      Promise.resolve().then(() => {
+        if (navigator.locks?.request) {
+          return navigator.locks.request(
+            'hai-avatar-audio-playback',
+            { mode: 'exclusive', ifAvailable: true },
+            async (lock) => {
+              if (!lock) {
+                document.documentElement.dataset.audioState = 'suppressed-locked';
+                if (force) setStatus('audio is already playing in another tab', 'error');
+                return;
+              }
+              await playExclusively();
+            },
+          );
+        }
+        return playExclusively();
+      }).catch(showAudioPlaybackError);
       return true;
     }
 
-    function stopStateAudio() {
+    async function playAudioFile(audioUrl, turnId) {
+      if (currentAudio) stopStateAudio(false);
+      const audio = new Audio(`${audioUrl}?turn=${encodeURIComponent(turnId)}`);
+      currentAudio = audio;
+      await new Promise((resolve) => {
+        let finished = false;
+        const finish = () => {
+          if (finished) return;
+          finished = true;
+          if (currentAudio === audio) currentAudio = null;
+          if (releaseCurrentAudio === finish) releaseCurrentAudio = null;
+          document.documentElement.dataset.audioState = 'idle';
+          stopTextLipSync();
+          resolve();
+        };
+        releaseCurrentAudio = finish;
+        audio.onplay = () => {
+          document.documentElement.dataset.audioState = 'playing';
+          startTextLipSync();
+        };
+        audio.onended = finish;
+        audio.onerror = finish;
+        audio.play().catch((error) => {
+          showAudioPlaybackError(error);
+          finish();
+        });
+      });
+    }
+
+    function showAudioPlaybackError(error) {
+      stopTextLipSync();
+      setStatus(`audio autoplay blocked; use Speak latest reply (${error?.message || error})`, 'error');
+    }
+
+    function stopStateAudio(forgetLastPlayed = true) {
       if (currentAudio) {
         currentAudio.pause();
         currentAudio.currentTime = 0;
-        currentAudio = null;
       }
-      lastPlayedAudioUrl = '';
+      if (releaseCurrentAudio) releaseCurrentAudio();
+      currentAudio = null;
+      releaseCurrentAudio = null;
+      document.documentElement.dataset.audioState = 'idle';
+      if (forgetLastPlayed) lastPlayedAudioUrl = '';
       stopTextLipSync();
     }
 

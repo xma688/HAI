@@ -76,6 +76,11 @@ def test_prometheus_controller_writes_bridge_files(tmp_path):
     assert "ResizeObserver" in bridge_html
     assert "app.screen?.width" in bridge_html
     assert "* 0.70" in bridge_html
+    assert "visibilitychange" in bridge_html
+    assert "document.visibilityState" in bridge_html
+    assert "navigator.locks?.request" in bridge_html
+    assert "hai-avatar-audio-playback" in bridge_html
+    assert "dataset.audioState = 'suppressed-locked'" in bridge_html
     state = (output_dir / "avatar-state.js").read_text(encoding="utf-8")
     assert "HAI_AVATAR_STATE" in state
     assert "session cleared" in state
