@@ -61,6 +61,21 @@ def test_conflict_labels_are_corrected():
     assert warnings
 
 
+def test_distress_input_never_uses_smiling_expression():
+    planner = ActionPlanner(enable_cooldown=False)
+    command, _ = planner.plan(
+        LLMAvatarResponse(
+            reply_text="我在这里陪着你。",
+            emotion="supportive",
+            expression="soft_smile",
+            gestures=["nod"],
+            voice_style="calm",
+        ),
+        user_text="我真的很难过，也有点焦虑。",
+    )
+    assert command.expression == ExpressionType.concerned
+
+
 def test_gesture_cooldown_replaces_repeated_gesture():
     planner = ActionPlanner(enable_cooldown=True)
     first, _ = planner.plan(

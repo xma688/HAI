@@ -140,23 +140,8 @@ class PipelineService:
             audio_path = tts_result.audio_path
             logger.info("TTS wrote audio to %s", audio_path)
         except Exception as exc:
-            logger.exception("TTS failed; falling back to mock audio")
-            warnings.append(f"TTS failed; fallback mock audio used: {exc}")
-            try:
-                from hai_avatar.tts.mock_provider import MockTTSProvider
-
-                mock_tts = MockTTSProvider()
-                output_path = self._next_audio_path(self.settings.tts.output_dir)
-                fallback_result = await mock_tts.synthesize(
-                    llm_response.reply_text,
-                    avatar_command.voice_style.value,
-                    output_path,
-                    speaking_rate=avatar_command.speaking_rate,
-                )
-                audio_path = fallback_result.audio_path
-            except Exception as fallback_exc:
-                logger.exception("Mock TTS fallback also failed")
-                warnings.append(f"Mock TTS fallback also failed: {fallback_exc}")
+            logger.exception("TTS failed; voice output disabled for this turn")
+            warnings.append(f"TTS failed; voice output is unavailable for this turn: {exc}")
         latency_ms["tts"] = self._elapsed(t0)
 
         async with self._avatar_lock:

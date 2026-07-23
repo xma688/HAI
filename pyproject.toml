@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "hai-chat-avatar"
-version = "0.2.0"
+version = "0.3.0"
 description = "Mock-first AI chat avatar pipeline for Human-AI Interaction coursework."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -36,6 +36,9 @@ hai-avatar-mock = "hai_avatar.main:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools.package-data]
+"hai_avatar.ui" = ["*.css"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

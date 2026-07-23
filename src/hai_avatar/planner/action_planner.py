@@ -83,8 +83,8 @@ class ActionPlanner:
         warnings: list[str],
     ) -> tuple[ExpressionType, list[GestureType]]:
         if emotion == EmotionType.supportive and expression == ExpressionType.surprised:
-            warnings.append("supportive + surprised corrected to soft_smile.")
-            expression = ExpressionType.soft_smile
+            warnings.append("supportive + surprised corrected to concerned.")
+            expression = ExpressionType.concerned
         if emotion == EmotionType.serious and expression == ExpressionType.smile:
             warnings.append("serious + smile corrected to serious.")
             expression = ExpressionType.serious
@@ -99,6 +99,15 @@ class ActionPlanner:
             expression = ExpressionType.smile
 
         lowered = user_text.lower()
+        distress_keywords = [
+            "难过", "伤心", "悲伤", "焦虑", "害怕", "恐惧", "担心", "压力", "崩溃", "失望", "委屈",
+        ]
+        if (
+            emotion == EmotionType.supportive
+            and expression in (ExpressionType.smile, ExpressionType.soft_smile)
+            and any(keyword in lowered for keyword in distress_keywords)
+        ):
+            expression = ExpressionType.concerned
         if any(keyword in lowered for keyword in ["再见", "拜拜", "下次见", "回头见"]):
             gestures = self._prepend_unique(GestureType.wave, gestures)
         if any(keyword in lowered for keyword in ["解释", "说明", "概念", "为什么", "怎么"]):

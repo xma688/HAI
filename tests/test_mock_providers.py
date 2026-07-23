@@ -1,4 +1,5 @@
 import asyncio
+import time
 import wave
 from pathlib import Path
 from uuid import uuid4
@@ -52,12 +53,19 @@ def test_prometheus_controller_writes_bridge_files(tmp_path):
         await avatar.set_expression("soft_smile")
         await avatar.trigger_gesture("nod", intensity=0.8)
         await avatar.start_speaking()
+        started_at = time.perf_counter()
         await avatar.play_audio(str(audio_path))
+        assert time.perf_counter() - started_at < 0.04
         await avatar.stop_speaking()
+        assert avatar.state["speaking"] is True
         assert avatar.state["gestures"] == ["nod"]
         assert avatar.state["gesture_intensity"] == 0.8
         assert avatar.state["audio_url"].startswith("./audio/")
         await avatar.reset_to_idle()
+        assert avatar.state["expression"] == "soft_smile"
+        await asyncio.sleep(0.08)
+        assert avatar.state["speaking"] is False
+        assert avatar.state["expression"] == "neutral"
         assert avatar.state["reply_text"] == "你好"
         await avatar.clear_session_state()
 

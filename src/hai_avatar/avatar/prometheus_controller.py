@@ -65,6 +65,8 @@ class PrometheusAvatarController(AvatarController):
             "model_url": self.model_url,
             "updated_at": None,
         }
+        self._playback_task: asyncio.Task[None] | None = None
+        self._reset_after_playback = False
         self._write_bridge()
 
     async def connect(self) -> None:
@@ -75,6 +77,7 @@ class PrometheusAvatarController(AvatarController):
         logger.info("Prometheus bridge ready at %s", self.html_path)
 
     async def set_reply_text(self, reply_text: str, voice_style: str = "neutral") -> None:
+        self._cancel_playback_task()
         self.state["turn_id"] = uuid.uuid4().hex
         self.state["reply_text"] = reply_text
         self.state["voice_style"] = voice_style
@@ -84,6 +87,7 @@ class PrometheusAvatarController(AvatarController):
         self.state["audio_url"] = None
         self.state["audio_duration_ms"] = 0
         self.state["speaking"] = False
+        self._reset_after_playback = False
         self._event("reply_text updated")
         self._write_bridge()
 
@@ -115,7 +119,11 @@ class PrometheusAvatarController(AvatarController):
         self._event(f"audio ready -> {destination.name}")
         self._write_bridge()
         if duration_ms:
-            await asyncio.sleep(duration_ms / 1000)
+            turn_id = self.state.get("turn_id")
+            self._playback_task = asyncio.create_task(
+                self._finish_playback(turn_id, duration_ms / 1000),
+                name=f"avatar-playback-{turn_id or 'unknown'}",
+            )
 
     async def start_speaking(self) -> None:
         self.state["speaking"] = True
@@ -123,22 +131,57 @@ class PrometheusAvatarController(AvatarController):
         self._write_bridge()
 
     async def stop_speaking(self) -> None:
+        if self._playback_task and not self._playback_task.done():
+            return
         self.state["speaking"] = False
         self._event("speaking stopped")
         self._write_bridge()
 
     async def reset_to_idle(self) -> None:
+        if self._playback_task and not self._playback_task.done():
+            self._reset_after_playback = True
+            return
+        self._apply_idle_state()
+        self._event("returned to idle")
+        self._write_bridge()
+
+    def _apply_idle_state(self) -> None:
         self.state["expression"] = "neutral"
         self.state["prometheus_emotion"] = "neutral"
         self.state["gestures"] = []
         self.state["gesture_intensity"] = 0.5
         self.state["speaking"] = False
-        self._event("returned to idle")
-        self._write_bridge()
+
+    async def _finish_playback(self, turn_id: str | None, duration_seconds: float) -> None:
+        """Finish browser playback without blocking the response request."""
+
+        try:
+            await asyncio.sleep(duration_seconds)
+            if self.state.get("turn_id") != turn_id:
+                return
+            self.state["speaking"] = False
+            self._event("speaking stopped")
+            if self._reset_after_playback:
+                self._apply_idle_state()
+                self._event("returned to idle")
+            self._write_bridge()
+        except asyncio.CancelledError:
+            return
+        finally:
+            if asyncio.current_task() is self._playback_task:
+                self._playback_task = None
+                self._reset_after_playback = False
+
+    def _cancel_playback_task(self) -> None:
+        if self._playback_task and not self._playback_task.done():
+            self._playback_task.cancel()
+        self._playback_task = None
+        self._reset_after_playback = False
 
     async def clear_session_state(self) -> None:
         """Remove reply and media state in addition to returning to idle."""
 
+        self._cancel_playback_task()
         self.state.update(
             {
                 "turn_id": None,
@@ -213,7 +256,7 @@ class PrometheusAvatarController(AvatarController):
   <style>
     :root { color-scheme: dark; font-family: Inter, "Microsoft YaHei", sans-serif; }
     body { margin: 0; min-height: 100vh; background: #101014; color: #f4f4f5; display: grid; grid-template-columns: minmax(420px, 1fr) 380px; }
-    #avatar { position: relative; width: 100%; height: 100vh; background: #08080b; overflow: hidden; transform-origin: 50% 70%; animation: idleFloat 4s ease-in-out infinite; }
+    #avatar { position: relative; width: 100%; height: 100vh; background: radial-gradient(circle at 50% 36%, #18213d 0, #0b0e1b 48%, #070912 100%); overflow: hidden; transform-origin: 50% 70%; animation: idleFloat 4s ease-in-out infinite; }
     #avatar canvas { display: block; width: 100%; height: 100%; }
     #avatarStatus { position: absolute; left: 16px; top: 16px; max-width: min(620px, calc(100% - 32px)); padding: 10px 12px; border: 1px solid #303038; border-radius: 8px; background: rgba(13,13,17,.86); color: #d4d4d8; font: 12px/1.45 ui-monospace, SFMono-Regular, Consolas, monospace; white-space: pre-wrap; pointer-events: none; }
     #avatarStatus.ok { color: #a7f3d0; }
@@ -236,12 +279,17 @@ class PrometheusAvatarController(AvatarController):
     .pill { display: inline-block; padding: 3px 8px; border: 1px solid #3f3f46; border-radius: 999px; margin: 2px; }
     button { border: 0; padding: 10px 14px; border-radius: 8px; background: #00d4aa; color: #07100e; font-weight: 700; cursor: pointer; }
     pre { white-space: pre-wrap; background: #0d0d11; padding: 10px; border-radius: 8px; color: #d4d4d8; }
+    html.embed body { display: block; overflow: hidden; }
+    html.embed aside { display: none; }
+    html.embed #avatarStatus { opacity: 0; transition: opacity .25s ease; }
+    html.embed #avatarStatus.error { opacity: 1; }
     @keyframes idleFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
     @keyframes nodMotion { 0%,100% { transform: rotate(0deg); } 35% { transform: rotate(2deg) translateY(10px); } 65% { transform: rotate(-1deg) translateY(-4px); } }
     @keyframes waveMotion { 0%,100% { transform: rotate(0deg); } 25% { transform: rotate(4deg); } 50% { transform: rotate(-4deg); } 75% { transform: rotate(3deg); } }
     @keyframes tiltMotion { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(-7deg); } }
     @keyframes explainMotion { 0%,100% { transform: translateX(0); } 35% { transform: translateX(10px); } 70% { transform: translateX(-6px); } }
   </style>
+  <script>if (new URLSearchParams(location.search).get('embed') === '1') document.documentElement.classList.add('embed');</script>
   <script src="./avatar-state.js"></script>
 </head>
 <body>
@@ -323,7 +371,7 @@ class PrometheusAvatarController(AvatarController):
       app = new PIXI.Application({
         width: container.clientWidth,
         height: container.clientHeight,
-        backgroundColor: 0x08080b,
+        backgroundAlpha: 0,
         antialias: true,
         resolution: window.devicePixelRatio || 1,
         autoDensity: true,

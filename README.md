@@ -160,7 +160,7 @@ PYTHONPATH=src python scripts/run_experiment.py --stats
 ## 测试
 
 ```bash
-PYTHONPATH=src pytest    # 当前 41 个测试全部通过
+PYTHONPATH=src pytest    # 当前 43 个测试全部通过
 ```
 
 覆盖：JSON 解析/修复、标签降级、截断、冲突纠正、冷却、Mock TTS/Avatar/Pipeline、用户画像构建/加载/更新、Big Five 推断、Prompt 生成、PostProcessor 约束、对话历史累积、完全管线（启用/禁用个性化）。
@@ -244,7 +244,14 @@ CharacterEval 跑完 CharacterRM 后还会生成 `charrm_evaluation.json` 和 `c
 - Prometheus/Live2D 已通过浏览器 bridge 接入；模型 motion 能力取决于所选 Live2D 模型
 - ASR 语音输入仅在有 API Key 时可用（通过 Gradio 麦克风触发）
 - Mock Avatar 仅打日志，不做真实口型同步
-- Edge TTS 需要安装 `edge-tts` 和系统命令 `ffmpeg`；缺失或失败时会降级为 Mock WAV
+- Edge TTS 需要安装 `edge-tts` 和系统命令 `ffmpeg`；缺失或失败时保留文字回复并明确提示语音不可用，不再播放 Mock 提示音
+
+## 0.3.0 行为说明
+
+- Gradio 首页和实时对话工作区采用统一的深色响应式视觉系统，移动端会自动改为单列布局。
+- Prometheus/Live2D 播放不再阻塞 HTTP 回复；角色状态由本轮音频时长驱动，并由 `turn_id` 防止旧任务覆盖新一轮对话。
+- 负面情绪输入会把不合时宜的笑脸纠正为 `concerned`，让安慰语气与角色表情保持一致。
+- TTS 失败只影响本轮语音，不影响文字、情绪、表情和动作结果。
 
 ## 0.2.0 行为说明
 
