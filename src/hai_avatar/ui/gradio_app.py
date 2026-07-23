@@ -176,6 +176,24 @@ def _notice(message: str, *, error: bool = False) -> str:
     return f'<div class="hai-notice{kind}" role="alert">{html.escape(message)}</div>'
 
 
+def _format_status_with_latency(cmd: AvatarCommand, latency_ms: float | None) -> str:
+    gestures = ", ".join(gesture.value for gesture in cmd.gestures) or "idle"
+    latency = f"{latency_ms / 1000:.1f}s" if latency_ms is not None else "—"
+    items = (
+        ("Emotion", cmd.emotion.value),
+        ("Expression", cmd.expression.value),
+        ("Gesture", gestures),
+        ("Voice", f"{cmd.voice_style.value} · {cmd.speaking_rate:.2f}x"),
+        ("Intensity", f"{cmd.gesture_intensity:.2f}"),
+        ("Latency", latency),
+    )
+    cells = "".join(
+        f'<div class="hai-status-item"><small>{label}</small><strong>{html.escape(value)}</strong></div>'
+        for label, value in items
+    )
+    return f'<div class="hai-status-grid">{cells}</div>'
+
+
 def _story_markup() -> str:
     return """
     <section class="hai-story" aria-labelledby="hai-story-title">
@@ -256,24 +274,10 @@ class GradioApp:
         return self._loop.run_until_complete(self._process_async(user_text, "local-cli"))
 
     def _format_status(self, cmd: AvatarCommand) -> str:
-        return self._format_status_with_latency(cmd, None)
+        return _format_status_with_latency(cmd, None)
 
     def _format_status_with_latency(self, cmd: AvatarCommand, latency_ms: float | None) -> str:
-        gestures = ", ".join(gesture.value for gesture in cmd.gestures) or "idle"
-        latency = f"{latency_ms / 1000:.1f}s" if latency_ms is not None else "—"
-        items = (
-            ("Emotion", cmd.emotion.value),
-            ("Expression", cmd.expression.value),
-            ("Gesture", gestures),
-            ("Voice", f"{cmd.voice_style.value} · {cmd.speaking_rate:.2f}x"),
-            ("Intensity", f"{cmd.gesture_intensity:.2f}"),
-            ("Latency", latency),
-        )
-        cells = "".join(
-            f'<div class="hai-status-item"><small>{label}</small><strong>{html.escape(value)}</strong></div>'
-            for label, value in items
-        )
-        return f'<div class="hai-status-grid">{cells}</div>'
+        return _format_status_with_latency(cmd, latency_ms)
 
     def create_interface(self) -> gr.Blocks:
         with gr.Blocks(title="HAI · 安静的 AI 陪伴", fill_width=True) as demo:
