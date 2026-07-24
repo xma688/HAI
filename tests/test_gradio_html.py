@@ -1,3 +1,5 @@
+import re
+
 from hai_avatar.schemas import (
     AvatarCommand,
     EmotionType,
@@ -73,6 +75,15 @@ def test_privacy_copy_matches_persistent_personalization():
     footer = gradio_app._footer_band()
     assert "个性化资料" in footer
     assert "不会被长期留存" not in footer
+
+
+def test_chat_panel_never_wraps_into_extra_columns():
+    css = gradio_app.STYLES_PATH.read_text(encoding="utf-8")
+    assert re.search(
+        r"#chat-panel\s*\{[^}]*flex-wrap:\s*nowrap\s*!important",
+        css,
+        re.DOTALL,
+    )
 
 
 def test_story_markup_removed():

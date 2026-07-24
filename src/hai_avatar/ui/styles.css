@@ -405,9 +405,17 @@ summary {
 #chat-panel {
   display: flex !important;
   flex-direction: column;
+  flex-wrap: nowrap !important;
   gap: var(--space-3) !important;
   padding: var(--space-5);
+  overflow: hidden;
   background: rgba(28, 23, 20, 0.94) !important;
+}
+
+#chat-panel > * {
+  width: 100% !important;
+  min-width: 0 !important;
+  max-width: 100% !important;
 }
 
 .hai-panel-head {
