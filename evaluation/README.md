@@ -1,88 +1,114 @@
-# HAI Evaluation MVP
+# HAI Evaluation
 
-This directory implements the runnable MVP from `docs/HAI_Evaluation_Implementation_Plan(1).pdf`.
+This directory contains the cleaned final evaluation pipeline for the HAI chat-avatar system.
 
-Important naming boundary:
+The earlier MVP/mock evaluation scripts and toy datasets have been removed. The retained path focuses on the two selected benchmark families:
 
-- `run_character_eval_subset.py` is a CharacterEval-derived local smoke test, not the official CharacterEval score.
-- `run_official_character_eval.py` writes CharacterEval-compatible `generation.json` / `generation_trans.json`; `run_charactereval_charrm.py` then runs the official BaichuanCharRM reward model locally.
-- `run_incharacter_bfi_self_report.py` uses InCharacter's official BFI questionnaire and scoring keys with a fixed HAI AvatarPersona. It is the self-report variant, not the full interview/evaluator-LLM pipeline.
-- The main evaluation track is HAI-specific: profile correctness, counterfactual personalization, Action/Voice planning, and later real-user experiments.
+- CharacterEval: official public samples adapted to the HAI pipeline, then scored with local `morecry/BaichuanCharRM`.
+- InCharacter: official questionnaire files, scored as self-report experiments across fixed HAI avatar personas.
 
-## Commands
+## Directory Layout
 
-```powershell
-python evaluation/runners/run_counterfactual.py --provider mock --condition full --limit 1
-python evaluation/runners/run_action_eval.py --provider mock
-python evaluation/runners/run_character_eval_subset.py --provider mock
+```text
+adapters/
+  prepare_official_benchmark_data.py     Build official adapted CharacterEval/InCharacter data artifacts
+datasets/official_adapted/
+  charactereval_official_subset.jsonl    Balanced CharacterEval adapted subset
+  incharacter_bfi_official_subset.jsonl  Prepared BFI artifact kept for provenance
+  source_metadata.json                   Official source repo metadata and coverage
+runners/
+  run_official_character_eval.py         Generate HAI responses for CharacterEval adapted data
+  run_charactereval_charrm.py            Score generated responses with local BaichuanCharRM
+  run_incharacter_questionnaire_personas.py
+                                          Run BFI/Empathy questionnaires across HAI personas
+scorers/
+  dialogue_metrics.py                    Local proxy metrics for generated dialogue quality
+  incharacter_questionnaire_scoring.py   Questionnaire scoring and target comparison
+reports/
+  build_benchmark_report.py              Combined benchmark HTML/CSV/PNG report
+  summarize_incharacter_small_experiments.py
+                                          BFI repeat, Empathy, and ablation summary report
+results/
+  ...                                    Only final retained result directories
 ```
 
-## Official Benchmark Adapted Runs
+## External Data Boundary
 
-The two PDFs name InCharacter and CharacterEval as benchmark references. This
-repo now supports adapted local runs using their public GitHub data:
+Real API evaluation sends benchmark prompts and persona descriptions to an external provider. Runners refuse this unless `--allow-external-data-export` is passed explicitly.
 
-- CharacterEval: https://github.com/morecry/CharacterEval
-- InCharacter: https://github.com/Neph0s/InCharacter
+## Reproduce Final-Style Runs
 
-Fetch the official repos into `.tmp/` first:
+Prepare official adapted data:
 
 ```powershell
-git clone --depth 1 https://github.com/morecry/CharacterEval.git .tmp\CharacterEval
-git clone --depth 1 https://github.com/Neph0s/InCharacter.git .tmp\InCharacter
+$env:PYTHONPATH="src"
+python evaluation\adapters\prepare_official_benchmark_data.py --character-limit 60 --character-selection balanced --incharacter-limit 44
 ```
 
-Prepare HAI-compatible subsets:
+Run CharacterEval adapted generation:
 
 ```powershell
-python evaluation/adapters/prepare_official_benchmark_data.py --character-limit 20 --incharacter-limit 10
+$env:PYTHONPATH="src"
+python evaluation\runners\run_official_character_eval.py --provider openai --allow-external-data-export --output evaluation\results\charactereval_new
 ```
 
-Run adapted benchmark experiments:
+Run CharacterRM sampled scoring:
 
 ```powershell
-python evaluation/runners/run_official_character_eval.py --provider mock --limit 2
-python evaluation/runners/run_incharacter_bfi_adapted.py --provider mock --limit 2
+$env:PYTORCH_CUDA_ALLOC_CONF="expandable_segments:True"
+$env:PYTHONPATH="src"
+python evaluation\runners\run_charactereval_charrm.py --run-dir evaluation\results\charactereval_new --reward-model-path .tmp\BaichuanCharRM --max-records-per-metric 3
 ```
 
-Run the InCharacter BFI self-report scoring method:
+Run InCharacter BFI:
 
 ```powershell
-python evaluation/runners/run_incharacter_bfi_self_report.py --provider openai --allow-external-data-export
+$env:PYTHONPATH="src"
+python evaluation\runners\run_incharacter_questionnaire_personas.py --questionnaire .tmp\InCharacter\data\questionnaires\BFI.json --provider openai --allow-external-data-export
 ```
 
-Build a visual report:
+Run InCharacter Empathy:
 
 ```powershell
-python evaluation/reports/build_benchmark_report.py --runs <run_dir_1> <run_dir_2> --out evaluation/results/benchmark_report
+$env:PYTHONPATH="src"
+python evaluation\runners\run_incharacter_questionnaire_personas.py --questionnaire .tmp\InCharacter\data\questionnaires\Empathy.json --provider openai --allow-external-data-export
 ```
 
-Use `--provider openai --allow-external-data-export` for real API runs only
-when external API export is allowed. Check `metrics.json` for
-`llm_fallback_rate`; a non-zero value means the provider failed or the raw
-response violated HAI's JSON schema and fallback responses affected the
-pipeline.
-
-For CharacterEval official reward-model scoring, first download
-`morecry/BaichuanCharRM` locally, then run:
+Build the combined benchmark report:
 
 ```powershell
-python scripts/download_charrm.py
-python evaluation/runners/run_charactereval_charrm.py --run-dir <charactereval_run_dir> --reward-model-path <local_BaichuanCharRM_dir>
+$env:PYTHONPATH="src"
+python evaluation\reports\build_benchmark_report.py --runs evaluation\results\charactereval_official_adapted_20260720T090123Z evaluation\results\incharacter_bfi_personas_20260723T065833Z --out evaluation\results\benchmark_report_new
 ```
 
-Outputs are written to `evaluation/results/<run_id>/`:
+Build the InCharacter small-experiment report:
 
-- `manifest.json`
-- `outputs.jsonl`
-- `metrics.json`
-- CharacterEval after CharacterRM: `charrm_evaluation.json`, `charrm_metrics.json`
-- Report builder output: `benchmark_report.html`, `metrics_summary.csv`, and PNG charts
+```powershell
+$env:PYTHONPATH="src"
+python evaluation\reports\summarize_incharacter_small_experiments.py --bfi-runs evaluation\results\incharacter_bfi_personas_20260723T065833Z evaluation\results\incharacter_bfi_personas_repeat2_20260724 --empathy-run evaluation\results\incharacter_empathy_personas_20260724 --control-run evaluation\results\incharacter_bfi_control_20260724 --out evaluation\results\incharacter_small_experiments_new
+```
 
-For formal runs, use `--provider openai`, freeze the commit/config/API model, and keep raw outputs plus planner/post-processor commands.
+## Retained Final Results
 
-Do not report adapted runs as official overall scores unless the matching
-official evaluator has been run. CharacterEval official scoring requires
-CharacterRM. `run_incharacter_bfi_self_report.py` uses the official BFI
-questionnaire scoring method, but it is still the self-report variant rather
-than the full interview/evaluator-LLM pipeline.
+```text
+evaluation/results/charactereval_official_adapted_20260720T090123Z/
+evaluation/results/incharacter_bfi_personas_20260723T065833Z/
+evaluation/results/incharacter_bfi_personas_repeat2_20260724/
+evaluation/results/incharacter_empathy_personas_20260724/
+evaluation/results/incharacter_bfi_control_20260724/
+evaluation/results/benchmark_report_20260723T0710_incharacter_expanded/
+evaluation/results/incharacter_small_experiments_20260724/
+```
+
+Main reports:
+
+```text
+evaluation/results/benchmark_report_20260723T0710_incharacter_expanded/benchmark_report.html
+evaluation/results/incharacter_small_experiments_20260724/incharacter_small_experiments.html
+```
+
+## Reporting Boundary
+
+Do not present these as full official leaderboard scores.
+
+CharacterEval is an official-data adapted subset with local CharacterRM scoring. InCharacter uses official questionnaire items and scoring rules in a HAI self-report setup, not the full original interview/evaluator protocol.

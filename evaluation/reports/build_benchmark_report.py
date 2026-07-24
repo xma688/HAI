@@ -121,20 +121,27 @@ def write_charts(out_dir: Path, summaries: list[dict[str, Any]]) -> list[Path]:
             chart_paths.append(path)
         elif "per_persona" in metrics:
             path = out_dir / f"{run_name}_bfi_personas.png"
-            dimensions = ["Extraversion", "Agreeableness", "Conscientiousness", "Neuroticism", "Openness"]
             personas = list(metrics["per_persona"].keys())
+            first_scores = metrics["per_persona"][personas[0]]["dimension_scores"] if personas else {}
+            preferred = ["Extraversion", "Agreeableness", "Conscientiousness", "Neuroticism", "Openness"]
+            dimensions = [dimension for dimension in preferred if dimension in first_scores]
+            dimensions += [dimension for dimension in first_scores if dimension not in dimensions]
             x = range(len(dimensions))
             width = min(0.22, 0.8 / max(1, len(personas)))
             plt.figure(figsize=(10.5, 5.2))
             for persona_index, persona in enumerate(personas):
                 scores = metrics["per_persona"][persona]["dimension_scores"]
-                values = [scores[dimension]["predicted_bfi_1_to_5"] or 0 for dimension in dimensions]
+                values = [
+                    scores[dimension].get("predicted_bfi_1_to_5", scores[dimension].get("predicted_score")) or 0
+                    for dimension in dimensions
+                ]
                 offsets = [i + (persona_index - (len(personas) - 1) / 2) * width for i in x]
                 plt.bar(offsets, values, width=width, label=persona)
             plt.xticks(list(x), dimensions, rotation=20, ha="right")
-            plt.ylim(1, 5)
-            plt.ylabel("Predicted BFI score")
-            plt.title("InCharacter BFI Across Avatar Personas")
+            scale = next(iter(metrics["per_persona"].values())).get("scale", [1, 5])
+            plt.ylim(scale[0], scale[1])
+            plt.ylabel("Predicted score")
+            plt.title("InCharacter Questionnaire Across Avatar Personas")
             plt.legend()
             plt.tight_layout()
             plt.savefig(path, dpi=160)

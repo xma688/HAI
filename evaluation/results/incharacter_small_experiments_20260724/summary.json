@@ -1,0 +1,184 @@
+{
+  "bfi_repeats": {
+    "repeat_count": 2,
+    "record_count_total": 264,
+    "aggregate_macro_mae": {
+      "n": 2,
+      "mean": 0.4913,
+      "std": 0.0197
+    },
+    "aggregate_direction_accuracy": {
+      "n": 2,
+      "mean": 0.9667,
+      "std": 0.0472
+    },
+    "per_persona": {
+      "playful": {
+        "macro_mae": {
+          "n": 2,
+          "mean": 0.673,
+          "std": 0.0507
+        },
+        "direction_accuracy": {
+          "n": 2,
+          "mean": 1.0,
+          "std": 0.0
+        }
+      },
+      "professional": {
+        "macro_mae": {
+          "n": 2,
+          "mean": 0.3589,
+          "std": 0.0149
+        },
+        "direction_accuracy": {
+          "n": 2,
+          "mean": 0.9,
+          "std": 0.1414
+        }
+      },
+      "supportive": {
+        "macro_mae": {
+          "n": 2,
+          "mean": 0.4422,
+          "std": 0.095
+        },
+        "direction_accuracy": {
+          "n": 2,
+          "mean": 1.0,
+          "std": 0.0
+        }
+      }
+    }
+  },
+  "empathy": {
+    "count": 30,
+    "aggregate_macro_mae": 0.5333,
+    "aggregate_direction_accuracy": 1.0,
+    "per_persona": {
+      "supportive": {
+        "macro_mae": 0.6,
+        "direction_accuracy": 1.0,
+        "dimension_scores": {
+          "Empathetic": {
+            "answered_items": 10,
+            "predicted_score": 7.0,
+            "target_score": 6.4,
+            "absolute_error": 0.6
+          }
+        }
+      },
+      "playful": {
+        "macro_mae": 0.7,
+        "direction_accuracy": 1.0,
+        "dimension_scores": {
+          "Empathetic": {
+            "answered_items": 10,
+            "predicted_score": 6.2,
+            "target_score": 5.5,
+            "absolute_error": 0.7
+          }
+        }
+      },
+      "professional": {
+        "macro_mae": 0.3,
+        "direction_accuracy": 1.0,
+        "dimension_scores": {
+          "Empathetic": {
+            "answered_items": 10,
+            "predicted_score": 5.2,
+            "target_score": 4.9,
+            "absolute_error": 0.3
+          }
+        }
+      }
+    }
+  },
+  "ablation": {
+    "control_no_persona": {
+      "count": 44,
+      "macro_mae": 1.4961,
+      "dimension_scores": {
+        "Extraversion": {
+          "answered_items": 8,
+          "predicted_score": 4.25,
+          "target_score": 3.0,
+          "absolute_error": 1.25
+        },
+        "Agreeableness": {
+          "answered_items": 9,
+          "predicted_score": 4.7778,
+          "target_score": 3.0,
+          "absolute_error": 1.7778
+        },
+        "Conscientiousness": {
+          "answered_items": 9,
+          "predicted_score": 4.7778,
+          "target_score": 3.0,
+          "absolute_error": 1.7778
+        },
+        "Neuroticism": {
+          "answered_items": 8,
+          "predicted_score": 1.125,
+          "target_score": 3.0,
+          "absolute_error": 1.875
+        },
+        "Openness": {
+          "answered_items": 10,
+          "predicted_score": 3.8,
+          "target_score": 3.0,
+          "absolute_error": 0.8
+        }
+      }
+    },
+    "single_supportive": {
+      "count": 44,
+      "macro_mae": 0.5094,
+      "dimension_scores": {
+        "Extraversion": {
+          "answered_items": 8,
+          "predicted_bfi_1_to_5": 3.625,
+          "target_bfi_1_to_5": 3.2,
+          "absolute_error": 0.425
+        },
+        "Agreeableness": {
+          "answered_items": 9,
+          "predicted_bfi_1_to_5": 5.0,
+          "target_bfi_1_to_5": 4.4,
+          "absolute_error": 0.6
+        },
+        "Conscientiousness": {
+          "answered_items": 9,
+          "predicted_bfi_1_to_5": 4.2222,
+          "target_bfi_1_to_5": 3.8,
+          "absolute_error": 0.4222
+        },
+        "Neuroticism": {
+          "answered_items": 8,
+          "predicted_bfi_1_to_5": 1.0,
+          "target_bfi_1_to_5": 1.8,
+          "absolute_error": 0.8
+        },
+        "Openness": {
+          "answered_items": 10,
+          "predicted_bfi_1_to_5": 3.9,
+          "target_bfi_1_to_5": 3.6,
+          "absolute_error": 0.3
+        }
+      }
+    },
+    "multi_persona": {
+      "count": 132,
+      "macro_mae": 0.5053,
+      "persona_count": 3
+    }
+  },
+  "inputs": {
+    "bfi_runs": [
+      "evaluation\\results\\incharacter_bfi_personas_20260723T065833Z",
+      "evaluation\\results\\incharacter_bfi_personas_repeat2_20260724"
+    ],
+    "empathy_run": "evaluation\\results\\incharacter_empathy_personas_20260724",
+    "control_run": "evaluation\\results\\incharacter_bfi_control_20260724"
+  }
+}

@@ -1,0 +1,108 @@
+{
+  "run_dir": "evaluation\\results\\incharacter_empathy_personas_20260724",
+  "created_at_utc": "2026-07-24T06:29:20.392715+00:00",
+  "git_commit": "b6fe05655dd28dcdfdc60909ba1134ccdd6eac1a",
+  "python": "3.13.9 | packaged by Anaconda, Inc. | (main, Oct 21 2025, 19:09:58) [MSC v.1929 64 bit (AMD64)]",
+  "config_path": ".tmp\\InCharacter\\data\\questionnaires\\Empathy.json",
+  "settings": {
+    "app": {
+      "language": "zh-CN",
+      "max_input_chars": 500,
+      "max_reply_chars": 500
+    },
+    "llm": {
+      "provider": "mock",
+      "model": "deepseek-v4-flash",
+      "base_url": "https://opencode.ai/zen/go/v1",
+      "api_key_env": "OPENCODE_GO_API_KEY",
+      "temperature": 0.5,
+      "timeout_seconds": 30,
+      "max_retries": 1
+    },
+    "tts": {
+      "provider": "mock",
+      "output_dir": "D:\\HAI\\assets\\temp",
+      "voice": "zh-CN-XiaoxiaoNeural",
+      "timeout_seconds": 30
+    },
+    "avatar": {
+      "provider": "mock",
+      "reset_after_speech": true,
+      "default_expression": "neutral",
+      "prometheus_output_dir": "data\\prometheus_avatar",
+      "prometheus_model_url": "https://cdn.jsdelivr.net/gh/Live2D/CubismWebSamples@develop/Samples/Resources/Mao/Mao.model3.json"
+    },
+    "planner": {
+      "max_gestures": 2,
+      "enable_cooldown": true
+    },
+    "personalization": {
+      "enabled": true,
+      "profile_dir": "data/profiles",
+      "update_interval": 5,
+      "big_five_learning_rate": 0.05,
+      "gesture_affinity_decay": 0.95
+    }
+  },
+  "runner": "run_incharacter_questionnaire_personas",
+  "provider": "openai",
+  "benchmark": "InCharacter",
+  "questionnaire": "Empathy",
+  "method": "Self-report questionnaire across HAI persona presets",
+  "personas": {
+    "supportive": {
+      "name": "Supportive HAI Companion",
+      "description": "patient, emotionally supportive, non-judgmental, warm conversational avatar",
+      "use_persona_prompt": true,
+      "big_five": {
+        "openness": 0.65,
+        "conscientiousness": 0.7,
+        "extraversion": 0.55,
+        "agreeableness": 0.85,
+        "neuroticism": 0.2
+      },
+      "questionnaire_targets": {
+        "Empathy": {
+          "Empathetic": 0.9
+        }
+      }
+    },
+    "playful": {
+      "name": "Playful HAI Companion",
+      "description": "curious, energetic, humorous, expressive conversational avatar",
+      "use_persona_prompt": true,
+      "big_five": {
+        "openness": 0.85,
+        "conscientiousness": 0.45,
+        "extraversion": 0.8,
+        "agreeableness": 0.7,
+        "neuroticism": 0.35
+      },
+      "questionnaire_targets": {
+        "Empathy": {
+          "Empathetic": 0.75
+        }
+      }
+    },
+    "professional": {
+      "name": "Professional HAI Companion",
+      "description": "calm, organized, reliable, concise professional assistant avatar",
+      "use_persona_prompt": true,
+      "big_five": {
+        "openness": 0.55,
+        "conscientiousness": 0.9,
+        "extraversion": 0.35,
+        "agreeableness": 0.65,
+        "neuroticism": 0.15
+      },
+      "questionnaire_targets": {
+        "Empathy": {
+          "Empathetic": 0.65
+        }
+      }
+    }
+  },
+  "question_count_per_persona": 10,
+  "external_data_export_ack": true,
+  "reporting_boundary": "Questionnaire self-report method, not full official interview evaluator."
+}
