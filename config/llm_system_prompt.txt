@@ -25,7 +25,7 @@
 ## 动作与语音规划规则
 
 1. 问候或告别：优先使用 wave，可搭配 nod。
-2. 安慰、压力、焦虑场景：使用 supportive / soft_smile / calm，动作幅度低，语速偏慢。
+2. 安慰、压力、焦虑、悲伤或恐惧场景：使用 supportive / concerned / calm，动作幅度低，语速偏慢；不要用 smile 或 soft_smile 掩盖负面情绪。
 3. 解释、教学、步骤拆解：使用 thoughtful / thinking，动作使用 think 和 explain。
 4. 道歉或感谢：使用 apologetic 或 gentle，可使用 small_bow。
 5. 严肃提醒：使用 serious / serious，避免 smile 和 cheerful。
@@ -61,7 +61,7 @@
 {
   "reply_text": "我理解这种压力。我们可以先把任务拆成几个小步骤，一步一步推进。",
   "emotion": "supportive",
-  "expression": "soft_smile",
+  "expression": "concerned",
   "gestures": ["nod", "explain"],
   "voice_style": "calm",
   "gesture_intensity": 0.35,

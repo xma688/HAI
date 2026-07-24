@@ -8,8 +8,12 @@ pipeline output.
 
 from __future__ import annotations
 
+import asyncio
 import json
 import logging
+import shutil
+import uuid
+import wave
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -46,17 +50,24 @@ class PrometheusAvatarController(AvatarController):
         self.html_path = self.output_dir / "index.html"
         self.state: dict[str, Any] = {
             "connected": False,
+            "turn_id": None,
             "reply_text": "",
             "expression": "neutral",
             "prometheus_emotion": "neutral",
             "gestures": [],
+            "gesture_intensity": 0.5,
             "voice_style": "neutral",
             "audio_path": None,
+            "audio_url": None,
+            "audio_duration_ms": 0,
             "speaking": False,
             "events": [],
             "model_url": self.model_url,
             "updated_at": None,
         }
+        self._playback_task: asyncio.Task[None] | None = None
+        self._reset_after_playback = False
+        self._write_bridge()
 
     async def connect(self) -> None:
         self.output_dir.mkdir(parents=True, exist_ok=True)
@@ -66,8 +77,17 @@ class PrometheusAvatarController(AvatarController):
         logger.info("Prometheus bridge ready at %s", self.html_path)
 
     async def set_reply_text(self, reply_text: str, voice_style: str = "neutral") -> None:
+        self._cancel_playback_task()
+        self.state["turn_id"] = uuid.uuid4().hex
         self.state["reply_text"] = reply_text
         self.state["voice_style"] = voice_style
+        self.state["gestures"] = []
+        self.state["gesture_intensity"] = 0.5
+        self.state["audio_path"] = None
+        self.state["audio_url"] = None
+        self.state["audio_duration_ms"] = 0
+        self.state["speaking"] = False
+        self._reset_after_playback = False
         self._event("reply_text updated")
         self._write_bridge()
 
@@ -77,15 +97,33 @@ class PrometheusAvatarController(AvatarController):
         self._event(f"expression -> {expression}")
         self._write_bridge()
 
-    async def trigger_gesture(self, gesture: str) -> None:
+    async def trigger_gesture(self, gesture: str, intensity: float = 0.5) -> None:
         self.state.setdefault("gestures", []).append(gesture)
-        self._event(f"gesture -> {gesture}")
+        self.state["gesture_intensity"] = max(0.0, min(1.0, intensity))
+        self._event(f"gesture -> {gesture} ({self.state['gesture_intensity']:.2f})")
         self._write_bridge()
 
     async def play_audio(self, audio_path: str) -> None:
-        self.state["audio_path"] = audio_path
-        self._event(f"audio -> {audio_path}")
+        source = Path(audio_path)
+        if not source.exists():
+            raise FileNotFoundError(f"Avatar audio file not found: {source}")
+        audio_dir = self.output_dir / "audio"
+        audio_dir.mkdir(parents=True, exist_ok=True)
+        destination = audio_dir / f"{uuid.uuid4().hex}{source.suffix.lower() or '.wav'}"
+        shutil.copy2(source, destination)
+        self._cleanup_audio(audio_dir)
+        duration_ms = self._audio_duration_ms(destination)
+        self.state["audio_path"] = str(destination)
+        self.state["audio_url"] = f"./audio/{destination.name}"
+        self.state["audio_duration_ms"] = duration_ms
+        self._event(f"audio ready -> {destination.name}")
         self._write_bridge()
+        if duration_ms:
+            turn_id = self.state.get("turn_id")
+            self._playback_task = asyncio.create_task(
+                self._finish_playback(turn_id, duration_ms / 1000),
+                name=f"avatar-playback-{turn_id or 'unknown'}",
+            )
 
     async def start_speaking(self) -> None:
         self.state["speaking"] = True
@@ -93,13 +131,95 @@ class PrometheusAvatarController(AvatarController):
         self._write_bridge()
 
     async def stop_speaking(self) -> None:
+        if self._playback_task and not self._playback_task.done():
+            return
         self.state["speaking"] = False
         self._event("speaking stopped")
         self._write_bridge()
 
     async def reset_to_idle(self) -> None:
+        if self._playback_task and not self._playback_task.done():
+            self._reset_after_playback = True
+            return
+        self._apply_idle_state()
         self._event("returned to idle")
         self._write_bridge()
+
+    def _apply_idle_state(self) -> None:
+        self.state["expression"] = "neutral"
+        self.state["prometheus_emotion"] = "neutral"
+        self.state["gestures"] = []
+        self.state["gesture_intensity"] = 0.5
+        self.state["speaking"] = False
+
+    async def _finish_playback(self, turn_id: str | None, duration_seconds: float) -> None:
+        """Finish browser playback without blocking the response request."""
+
+        try:
+            await asyncio.sleep(duration_seconds)
+            if self.state.get("turn_id") != turn_id:
+                return
+            self.state["speaking"] = False
+            self._event("speaking stopped")
+            if self._reset_after_playback:
+                self._apply_idle_state()
+                self._event("returned to idle")
+            self._write_bridge()
+        except asyncio.CancelledError:
+            return
+        finally:
+            if asyncio.current_task() is self._playback_task:
+                self._playback_task = None
+                self._reset_after_playback = False
+
+    def _cancel_playback_task(self) -> None:
+        if self._playback_task and not self._playback_task.done():
+            self._playback_task.cancel()
+        self._playback_task = None
+        self._reset_after_playback = False
+
+    async def clear_session_state(self) -> None:
+        """Remove reply and media state in addition to returning to idle."""
+
+        self._cancel_playback_task()
+        self.state.update(
+            {
+                "turn_id": None,
+                "reply_text": "",
+                "expression": "neutral",
+                "prometheus_emotion": "neutral",
+                "gestures": [],
+                "gesture_intensity": 0.5,
+                "voice_style": "neutral",
+                "audio_path": None,
+                "audio_url": None,
+                "audio_duration_ms": 0,
+                "speaking": False,
+                "events": [],
+            }
+        )
+        self._event("session cleared")
+        self._write_bridge()
+
+    @staticmethod
+    def _audio_duration_ms(audio_path: Path) -> int:
+        if audio_path.suffix.lower() != ".wav":
+            return 0
+        try:
+            with wave.open(str(audio_path), "rb") as wav_file:
+                return int(wav_file.getnframes() / float(wav_file.getframerate()) * 1000)
+        except (wave.Error, EOFError, ZeroDivisionError):
+            return 0
+
+    @staticmethod
+    def _cleanup_audio(audio_dir: Path, keep_latest: int = 20) -> None:
+        files = sorted(
+            (path for path in audio_dir.iterdir() if path.is_file()),
+            key=lambda path: path.stat().st_mtime,
+            reverse=True,
+        )
+        for stale_path in files[keep_latest:]:
+            stale_path.unlink(missing_ok=True)
 
     def _event(self, message: str) -> None:
         self.state["updated_at"] = datetime.now(timezone.utc).isoformat()
@@ -109,17 +229,18 @@ class PrometheusAvatarController(AvatarController):
 
     def _write_bridge(self) -> None:
         self.output_dir.mkdir(parents=True, exist_ok=True)
-        self.state_path.write_text(
-            "window.HAI_AVATAR_STATE = "
-            + json.dumps(self.state, ensure_ascii=False, indent=2)
-            + ";\n",
-            encoding="utf-8",
-        )
-        self.state_json_path.write_text(
-            json.dumps(self.state, ensure_ascii=False, indent=2),
-            encoding="utf-8",
-        )
-        self.html_path.write_text(self._html(), encoding="utf-8")
+        state_json = json.dumps(self.state, ensure_ascii=False, indent=2)
+        self._atomic_write(self.state_path, f"window.HAI_AVATAR_STATE = {state_json};\n")
+        self._atomic_write(self.state_json_path, state_json)
+        html = self._html()
+        if not self.html_path.exists() or self.html_path.read_text(encoding="utf-8") != html:
+            self._atomic_write(self.html_path, html)
+
+    @staticmethod
+    def _atomic_write(path: Path, content: str) -> None:
+        temp_path = path.with_suffix(path.suffix + ".tmp")
+        temp_path.write_text(content, encoding="utf-8")
+        temp_path.replace(path)
 
     def _html(self) -> str:
         return """<!DOCTYPE html>
@@ -135,7 +256,7 @@ class PrometheusAvatarController(AvatarController):
   <style>
     :root { color-scheme: dark; font-family: Inter, "Microsoft YaHei", sans-serif; }
     body { margin: 0; min-height: 100vh; background: #101014; color: #f4f4f5; display: grid; grid-template-columns: minmax(420px, 1fr) 380px; }
-    #avatar { position: relative; width: 100%; height: 100vh; background: #08080b; overflow: hidden; transform-origin: 50% 70%; animation: idleFloat 4s ease-in-out infinite; }
+    #avatar { position: relative; width: 100%; height: 100vh; background: radial-gradient(circle at 50% 36%, #18213d 0, #0b0e1b 48%, #070912 100%); overflow: hidden; transform-origin: 50% 70%; animation: idleFloat 4s ease-in-out infinite; }
     #avatar canvas { display: block; width: 100%; height: 100%; }
     #avatarStatus { position: absolute; left: 16px; top: 16px; max-width: min(620px, calc(100% - 32px)); padding: 10px 12px; border: 1px solid #303038; border-radius: 8px; background: rgba(13,13,17,.86); color: #d4d4d8; font: 12px/1.45 ui-monospace, SFMono-Regular, Consolas, monospace; white-space: pre-wrap; pointer-events: none; }
     #avatarStatus.ok { color: #a7f3d0; }
@@ -158,12 +279,17 @@ class PrometheusAvatarController(AvatarController):
     .pill { display: inline-block; padding: 3px 8px; border: 1px solid #3f3f46; border-radius: 999px; margin: 2px; }
     button { border: 0; padding: 10px 14px; border-radius: 8px; background: #00d4aa; color: #07100e; font-weight: 700; cursor: pointer; }
     pre { white-space: pre-wrap; background: #0d0d11; padding: 10px; border-radius: 8px; color: #d4d4d8; }
+    html.embed body { display: block; overflow: hidden; }
+    html.embed aside { display: none; }
+    html.embed #avatarStatus { opacity: 0; transition: opacity .25s ease; }
+    html.embed #avatarStatus.error { opacity: 1; }
     @keyframes idleFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
     @keyframes nodMotion { 0%,100% { transform: rotate(0deg); } 35% { transform: rotate(2deg) translateY(10px); } 65% { transform: rotate(-1deg) translateY(-4px); } }
     @keyframes waveMotion { 0%,100% { transform: rotate(0deg); } 25% { transform: rotate(4deg); } 50% { transform: rotate(-4deg); } 75% { transform: rotate(3deg); } }
     @keyframes tiltMotion { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(-7deg); } }
     @keyframes explainMotion { 0%,100% { transform: translateX(0); } 35% { transform: translateX(10px); } 70% { transform: translateX(-6px); } }
   </style>
+  <script>if (new URLSearchParams(location.search).get('embed') === '1') document.documentElement.classList.add('embed');</script>
   <script src="./avatar-state.js"></script>
 </head>
 <body>
@@ -186,9 +312,15 @@ class PrometheusAvatarController(AvatarController):
     let lastUpdatedAt = '';
     let app = null;
     let model = null;
+    let modelBaseDimensions = null;
+    let resizeFrame = null;
+    let resizeObserver = null;
     let mouthTimer = null;
     let lipSyncActive = false;
     let lipSyncStartedAt = 0;
+    let currentAudio = null;
+    let lastPlayedAudioUrl = '';
+    let gestureIntensity = .5;
     let gestureState = { type: null, startedAt: 0, duration: 0 };
     let gestureQueue = [];
     let lastGestureSignature = '';
@@ -222,8 +354,8 @@ class PrometheusAvatarController(AvatarController):
     document.getElementById('speakBtn').onclick = async () => {
       if (!state.reply_text) return;
       setEmotion(state.prometheus_emotion || 'neutral');
-      animateGestures(state.gestures || [], true);
-      speakWithBrowser(state.reply_text);
+      animateGestures(state.gestures || [], true, state.gesture_intensity);
+      if (!playStateAudio(true)) speakWithBrowser(state.reply_text);
     };
 
     async function initAvatar() {
@@ -242,7 +374,7 @@ class PrometheusAvatarController(AvatarController):
       app = new PIXI.Application({
         width: container.clientWidth,
         height: container.clientHeight,
-        backgroundColor: 0x08080b,
+        backgroundAlpha: 0,
         antialias: true,
         resolution: window.devicePixelRatio || 1,
         autoDensity: true,
@@ -252,19 +384,41 @@ class PrometheusAvatarController(AvatarController):
       model = await PIXI.live2d.Live2DModel.from(state.model_url);
       stripModelMotionSounds(model);
       app.stage.addChild(model);
+      const initialScaleX = Number(model.scale?.x) || 1;
+      const initialScaleY = Number(model.scale?.y) || 1;
+      modelBaseDimensions = {
+        width: model.width / initialScaleX,
+        height: model.height / initialScaleY,
+      };
       fitModel();
       try { model.motion?.('Idle', 0, { loop: true }); } catch (_) {}
       try { model.motion?.('idle', 0, { loop: true }); } catch (_) {}
       app.ticker.add(applyLive2DOverlays, null, PIXI.UPDATE_PRIORITY?.LOW ?? -25);
       setEmotion(state.prometheus_emotion || 'neutral');
-      animateGestures(state.gestures || [], true);
+      animateGestures(state.gestures || [], true, state.gesture_intensity);
       setStatus(`model loaded: ${Math.round(model.width)}x${Math.round(model.height)}`, 'ok');
 
-      window.addEventListener('resize', () => {
-        if (!app) return;
-        app.renderer.resize(container.clientWidth, container.clientHeight);
-        fitModel();
-      });
+      const resizeAvatar = () => {
+        if (resizeFrame !== null) cancelAnimationFrame(resizeFrame);
+        resizeFrame = requestAnimationFrame(() => {
+          resizeFrame = null;
+          if (!app) return;
+          const nextWidth = Math.max(1, container.clientWidth);
+          const nextHeight = Math.max(1, container.clientHeight);
+          const screenWidth = app.screen?.width || 0;
+          const screenHeight = app.screen?.height || 0;
+          if (Math.abs(screenWidth - nextWidth) > .5 || Math.abs(screenHeight - nextHeight) > .5) {
+            app.renderer.resize(nextWidth, nextHeight);
+          }
+          fitModel();
+        });
+      };
+      window.addEventListener('resize', resizeAvatar);
+      if ('ResizeObserver' in window) {
+        resizeObserver = new ResizeObserver(resizeAvatar);
+        resizeObserver.observe(container);
+      }
+      resizeAvatar();
     }
 
     function renderState(nextState) {
@@ -272,13 +426,14 @@ class PrometheusAvatarController(AvatarController):
       document.getElementById('reply').textContent = nextState.reply_text || '(no reply yet)';
       document.getElementById('expression').textContent = `${nextState.expression} -> ${nextState.prometheus_emotion}`;
       document.getElementById('gestures').innerHTML = (nextState.gestures || []).map(g => `<span class="pill">${g}</span>`).join(' ') || '(none)';
-      document.getElementById('audio').textContent = `${nextState.voice_style || 'neutral'} | ${nextState.audio_path || '(no audio)'}`;
+      document.getElementById('audio').textContent = `${nextState.voice_style || 'neutral'} | rate/intensity ${Number(nextState.gesture_intensity || 0).toFixed(2)} | ${nextState.audio_url || '(no audio)'}`;
       document.getElementById('events').textContent = (nextState.events || []).join('\\n');
     }
 
-    function animateGestures(gestures, force = false) {
+    function animateGestures(gestures, force = false, intensity = .5) {
       const el = document.getElementById('avatar');
       const sequence = gestures.filter(g => g && g !== 'idle');
+      gestureIntensity = Math.max(0, Math.min(1, Number(intensity) || 0));
       const signature = sequence.join('|');
       if (signature && (force || signature !== lastGestureSignature)) {
         lastGestureSignature = signature;
@@ -297,17 +452,20 @@ class PrometheusAvatarController(AvatarController):
 
     function fitModel() {
       if (!app || !model) return;
-      const width = app.renderer.width / (window.devicePixelRatio || 1);
-      const height = app.renderer.height / (window.devicePixelRatio || 1);
-      const scale = Math.min(width / model.width, height / model.height) * 0.86;
+      const resolution = app.renderer.resolution || window.devicePixelRatio || 1;
+      const width = app.screen?.width || app.renderer.width / resolution;
+      const height = app.screen?.height || app.renderer.height / resolution;
+      const baseWidth = modelBaseDimensions?.width || model.width || 1;
+      const baseHeight = modelBaseDimensions?.height || model.height || 1;
+      const scale = Math.min(width / baseWidth, height / baseHeight) * 0.70;
       model.scale.set(scale);
       if (model.anchor) {
         model.anchor.set(0.5, 0.5);
         model.x = width / 2;
-        model.y = height / 2;
+        model.y = height * 0.52;
       } else {
         model.x = (width - model.width) / 2;
-        model.y = (height - model.height) / 2;
+        model.y = (height - model.height) / 2 + height * 0.02;
       }
     }
 
@@ -367,6 +525,35 @@ class PrometheusAvatarController(AvatarController):
       } else {
         setTimeout(stopTextLipSync, fallbackDurationMs);
       }
+    }
+
+    function playStateAudio(force = false) {
+      if (!state.audio_url) return false;
+      if (!force && state.audio_url === lastPlayedAudioUrl) return true;
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio = null;
+      }
+      lastPlayedAudioUrl = state.audio_url;
+      currentAudio = new Audio(`${state.audio_url}?turn=${encodeURIComponent(state.turn_id || '')}`);
+      currentAudio.onplay = startTextLipSync;
+      currentAudio.onended = stopTextLipSync;
+      currentAudio.onerror = stopTextLipSync;
+      currentAudio.play().catch((error) => {
+        stopTextLipSync();
+        setStatus(`audio autoplay blocked; use Speak latest reply (${error?.message || error})`, 'error');
+      });
+      return true;
+    }
+
+    function stopStateAudio() {
+      if (currentAudio) {
+        currentAudio.pause();
+        currentAudio.currentTime = 0;
+        currentAudio = null;
+      }
+      lastPlayedAudioUrl = '';
+      stopTextLipSync();
     }
 
     function startTextLipSync() {
@@ -461,17 +648,18 @@ class PrometheusAvatarController(AvatarController):
       const pulse = Math.sin(progress * Math.PI);
       const shake = Math.sin(progress * Math.PI * 5) * pulse;
       const type = gestureState.type;
+      const strength = .35 + gestureIntensity * .9;
 
       if (type === 'nod' || type === 'agree' || type === 'small_bow') {
-        setParamAny(paramAliases.angleY, -18 * pulse);
-        setParamAny(paramAliases.angleZ, 3 * shake);
+        setParamAny(paramAliases.angleY, -18 * pulse * strength);
+        setParamAny(paramAliases.angleZ, 3 * shake * strength);
       } else if (type === 'wave') {
-        setParamAny(paramAliases.angleZ, 12 * shake);
-        setParamAny(paramAliases.bodyAngleX, 8 * shake);
-        setParamAny(paramAliases.angleX, 10 * shake);
+        setParamAny(paramAliases.angleZ, 12 * shake * strength);
+        setParamAny(paramAliases.bodyAngleX, 8 * shake * strength);
+        setParamAny(paramAliases.angleX, 10 * shake * strength);
       } else if (type === 'head_tilt' || type === 'think' || type === 'explain') {
-        setParamAny(paramAliases.angleZ, -14 * pulse);
-        setParamAny(paramAliases.angleX, 8 * pulse);
+        setParamAny(paramAliases.angleZ, -14 * pulse * strength);
+        setParamAny(paramAliases.angleX, 8 * pulse * strength);
       }
 
       if (progress >= 1) {
@@ -505,14 +693,21 @@ class PrometheusAvatarController(AvatarController):
           lastUpdatedAt = nextState.updated_at;
           renderState(state);
           setEmotion(state.prometheus_emotion || 'neutral');
-          animateGestures(state.gestures || [], true);
+          animateGestures(state.gestures || [], true, state.gesture_intensity);
+          if (state.speaking && state.audio_url) {
+            playStateAudio();
+          } else if (!state.audio_url && currentAudio) {
+            stopStateAudio();
+          } else if (!state.speaking && currentAudio?.ended) {
+            stopTextLipSync();
+          }
         }
       } catch (error) {
         console.warn('Failed to refresh avatar state', error);
       }
     }
 
-    setInterval(refreshState, 1200);
+    setInterval(refreshState, 250);
   </script>
 </body>
 </html>

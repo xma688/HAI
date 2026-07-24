@@ -14,9 +14,16 @@ class MockTTSProvider(TTSProvider):
 
     sample_rate = 16_000
 
-    async def synthesize(self, text: str, voice_style: str, output_path: Path) -> TTSResult:
+    async def synthesize(
+        self,
+        text: str,
+        voice_style: str,
+        output_path: Path,
+        speaking_rate: float = 1.0,
+    ) -> TTSResult:
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        duration_ms = min(3000, max(700, len(text) * 55))
+        safe_rate = max(0.5, min(2.0, speaking_rate))
+        duration_ms = int(min(3000, max(700, len(text) * 55)) / safe_rate)
         frequency = {
             "cheerful": 660,
             "gentle": 440,

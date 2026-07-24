@@ -61,6 +61,21 @@ def test_conflict_labels_are_corrected():
     assert warnings
 
 
+def test_distress_input_never_uses_smiling_expression():
+    planner = ActionPlanner(enable_cooldown=False)
+    command, _ = planner.plan(
+        LLMAvatarResponse(
+            reply_text="我在这里陪着你。",
+            emotion="supportive",
+            expression="soft_smile",
+            gestures=["nod"],
+            voice_style="calm",
+        ),
+        user_text="我真的很难过，也有点焦虑。",
+    )
+    assert command.expression == ExpressionType.concerned
+
+
 def test_gesture_cooldown_replaces_repeated_gesture():
     planner = ActionPlanner(enable_cooldown=True)
     first, _ = planner.plan(
@@ -84,3 +99,20 @@ def test_gesture_cooldown_replaces_repeated_gesture():
     assert first.gestures == [GestureType.wave]
     assert second.gestures != [GestureType.wave]
     assert warnings
+
+
+def test_gesture_cooldown_is_isolated_by_context():
+    planner = ActionPlanner(enable_cooldown=True)
+    response = LLMAvatarResponse(
+        reply_text="x",
+        emotion="happy",
+        expression="smile",
+        gestures=["wave"],
+        voice_style="neutral",
+    )
+    first, _ = planner.plan(response, context_id="session-a")
+    other_session, warnings = planner.plan(response, context_id="session-b")
+
+    assert first.gestures == [GestureType.wave]
+    assert other_session.gestures == [GestureType.wave]
+    assert warnings == []

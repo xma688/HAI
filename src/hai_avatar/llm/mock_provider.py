@@ -53,7 +53,7 @@ class MockLLMProvider(LLMProvider):
             "supportive": {
                 "reply_text": "没关系，我们先把任务拆成几个小步骤，一步一步推进。",
                 "emotion": "supportive",
-                "expression": "soft_smile",
+                "expression": "concerned",
                 "gestures": ["nod", "explain"],
                 "voice_style": "calm",
                 "gesture_intensity": 0.35,
