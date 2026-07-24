@@ -15,7 +15,7 @@ class AvatarController(ABC):
         """Set avatar expression."""
 
     @abstractmethod
-    async def trigger_gesture(self, gesture: str) -> None:
+    async def trigger_gesture(self, gesture: str, intensity: float = 0.5) -> None:
         """Trigger one gesture."""
 
     @abstractmethod
@@ -33,3 +33,8 @@ class AvatarController(ABC):
     @abstractmethod
     async def reset_to_idle(self) -> None:
         """Return the avatar to idle state."""
+
+    async def clear_session_state(self) -> None:
+        """Clear session-visible state when supported by the backend."""
+
+        await self.reset_to_idle()
