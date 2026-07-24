@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <title>InCharacter Small Experiments</title>
+  <style>
+    body { font-family: Arial, "Microsoft YaHei", sans-serif; margin: 32px; color: #1f2937; }
+    pre { white-space: pre-wrap; background: #f9fafb; border: 1px solid #e5e7eb; padding: 12px; border-radius: 8px; }
+    img { max-width: 760px; width: 100%; border: 1px solid #e5e7eb; border-radius: 8px; }
+  </style>
+</head>
+<body>
+  <h1>InCharacter Small Experiments</h1>
+  <figure><img src="bfi_repeat_macro_mae.png" alt="bfi_repeat_macro_mae.png"><figcaption>bfi_repeat_macro_mae.png</figcaption></figure><figure><img src="empathy_macro_mae.png" alt="empathy_macro_mae.png"><figcaption>empathy_macro_mae.png</figcaption></figure><figure><img src="ablation_macro_mae.png" alt="ablation_macro_mae.png"><figcaption>ablation_macro_mae.png</figcaption></figure>
+  <h2>bfi_repeats</h2><pre>{
+  &quot;repeat_count&quot;: 2,
+  &quot;record_count_total&quot;: 264,
+  &quot;aggregate_macro_mae&quot;: {
+    &quot;n&quot;: 2,
+    &quot;mean&quot;: 0.4913,
+    &quot;std&quot;: 0.0197
+  },
+  &quot;aggregate_direction_accuracy&quot;: {
+    &quot;n&quot;: 2,
+    &quot;mean&quot;: 0.9667,
+    &quot;std&quot;: 0.0472
+  },
+  &quot;per_persona&quot;: {
+    &quot;playful&quot;: {
+      &quot;macro_mae&quot;: {
+        &quot;n&quot;: 2,
+        &quot;mean&quot;: 0.673,
+        &quot;std&quot;: 0.0507
+      },
+      &quot;direction_accuracy&quot;: {
+        &quot;n&quot;: 2,
+        &quot;mean&quot;: 1.0,
+        &quot;std&quot;: 0.0
+      }
+    },
+    &quot;professional&quot;: {
+      &quot;macro_mae&quot;: {
+        &quot;n&quot;: 2,
+        &quot;mean&quot;: 0.3589,
+        &quot;std&quot;: 0.0149
+      },
+      &quot;direction_accuracy&quot;: {
+        &quot;n&quot;: 2,
+        &quot;mean&quot;: 0.9,
+        &quot;std&quot;: 0.1414
+      }
+    },
+    &quot;supportive&quot;: {
+      &quot;macro_mae&quot;: {
+        &quot;n&quot;: 2,
+        &quot;mean&quot;: 0.4422,
+        &quot;std&quot;: 0.095
+      },
+      &quot;direction_accuracy&quot;: {
+        &quot;n&quot;: 2,
+        &quot;mean&quot;: 1.0,
+        &quot;std&quot;: 0.0
+      }
+    }
+  }
+}</pre><h2>empathy</h2><pre>{
+  &quot;count&quot;: 30,
+  &quot;aggregate_macro_mae&quot;: 0.5333,
+  &quot;aggregate_direction_accuracy&quot;: 1.0,
+  &quot;per_persona&quot;: {
+    &quot;supportive&quot;: {
+      &quot;macro_mae&quot;: 0.6,
+      &quot;direction_accuracy&quot;: 1.0,
+      &quot;dimension_scores&quot;: {
+        &quot;Empathetic&quot;: {
+          &quot;answered_items&quot;: 10,
+          &quot;predicted_score&quot;: 7.0,
+          &quot;target_score&quot;: 6.4,
+          &quot;absolute_error&quot;: 0.6
+        }
+      }
+    },
+    &quot;playful&quot;: {
+      &quot;macro_mae&quot;: 0.7,
+      &quot;direction_accuracy&quot;: 1.0,
+      &quot;dimension_scores&quot;: {
+        &quot;Empathetic&quot;: {
+          &quot;answered_items&quot;: 10,
+          &quot;predicted_score&quot;: 6.2,
+          &quot;target_score&quot;: 5.5,
+          &quot;absolute_error&quot;: 0.7
+        }
+      }
+    },
+    &quot;professional&quot;: {
+      &quot;macro_mae&quot;: 0.3,
+      &quot;direction_accuracy&quot;: 1.0,
+      &quot;dimension_scores&quot;: {
+        &quot;Empathetic&quot;: {
+          &quot;answered_items&quot;: 10,
+          &quot;predicted_score&quot;: 5.2,
+          &quot;target_score&quot;: 4.9,
+          &quot;absolute_error&quot;: 0.3
+        }
+      }
+    }
+  }
+}</pre><h2>ablation</h2><pre>{
+  &quot;control_no_persona&quot;: {
+    &quot;count&quot;: 44,
+    &quot;macro_mae&quot;: 1.4961,
+    &quot;dimension_scores&quot;: {
+      &quot;Extraversion&quot;: {
+        &quot;answered_items&quot;: 8,
+        &quot;predicted_score&quot;: 4.25,
+        &quot;target_score&quot;: 3.0,
+        &quot;absolute_error&quot;: 1.25
+      },
+      &quot;Agreeableness&quot;: {
+        &quot;answered_items&quot;: 9,
+        &quot;predicted_score&quot;: 4.7778,
+        &quot;target_score&quot;: 3.0,
+        &quot;absolute_error&quot;: 1.7778
+      },
+      &quot;Conscientiousness&quot;: {
+        &quot;answered_items&quot;: 9,
+        &quot;predicted_score&quot;: 4.7778,
+        &quot;target_score&quot;: 3.0,
+        &quot;absolute_error&quot;: 1.7778
+      },
+      &quot;Neuroticism&quot;: {
+        &quot;answered_items&quot;: 8,
+        &quot;predicted_score&quot;: 1.125,
+        &quot;target_score&quot;: 3.0,
+        &quot;absolute_error&quot;: 1.875
+      },
+      &quot;Openness&quot;: {
+        &quot;answered_items&quot;: 10,
+        &quot;predicted_score&quot;: 3.8,
+        &quot;target_score&quot;: 3.0,
+        &quot;absolute_error&quot;: 0.8
+      }
+    }
+  },
+  &quot;single_supportive&quot;: {
+    &quot;count&quot;: 44,
+    &quot;macro_mae&quot;: 0.5094,
+    &quot;dimension_scores&quot;: {
+      &quot;Extraversion&quot;: {
+        &quot;answered_items&quot;: 8,
+        &quot;predicted_bfi_1_to_5&quot;: 3.625,
+        &quot;target_bfi_1_to_5&quot;: 3.2,
+        &quot;absolute_error&quot;: 0.425
+      },
+      &quot;Agreeableness&quot;: {
+        &quot;answered_items&quot;: 9,
+        &quot;predicted_bfi_1_to_5&quot;: 5.0,
+        &quot;target_bfi_1_to_5&quot;: 4.4,
+        &quot;absolute_error&quot;: 0.6
+      },
+      &quot;Conscientiousness&quot;: {
+        &quot;answered_items&quot;: 9,
+        &quot;predicted_bfi_1_to_5&quot;: 4.2222,
+        &quot;target_bfi_1_to_5&quot;: 3.8,
+        &quot;absolute_error&quot;: 0.4222
+      },
+      &quot;Neuroticism&quot;: {
+        &quot;answered_items&quot;: 8,
+        &quot;predicted_bfi_1_to_5&quot;: 1.0,
+        &quot;target_bfi_1_to_5&quot;: 1.8,
+        &quot;absolute_error&quot;: 0.8
+      },
+      &quot;Openness&quot;: {
+        &quot;answered_items&quot;: 10,
+        &quot;predicted_bfi_1_to_5&quot;: 3.9,
+        &quot;target_bfi_1_to_5&quot;: 3.6,
+        &quot;absolute_error&quot;: 0.3
+      }
+    }
+  },
+  &quot;multi_persona&quot;: {
+    &quot;count&quot;: 132,
+    &quot;macro_mae&quot;: 0.5053,
+    &quot;persona_count&quot;: 3
+  }
+}</pre><h2>inputs</h2><pre>{
+  &quot;bfi_runs&quot;: [
+    &quot;evaluation\\results\\incharacter_bfi_personas_20260723T065833Z&quot;,
+    &quot;evaluation\\results\\incharacter_bfi_personas_repeat2_20260724&quot;
+  ],
+  &quot;empathy_run&quot;: &quot;evaluation\\results\\incharacter_empathy_personas_20260724&quot;,
+  &quot;control_run&quot;: &quot;evaluation\\results\\incharacter_bfi_control_20260724&quot;
+}</pre>
+</body>
+</html>

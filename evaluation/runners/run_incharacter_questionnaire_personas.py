@@ -1,4 +1,4 @@
-"""Run expanded InCharacter BFI self-report evaluation across avatar personas."""
+"""Run InCharacter self-report questionnaires across HAI persona presets."""
 
 from __future__ import annotations
 
@@ -16,15 +16,29 @@ sys.path.insert(0, str(PROJECT_ROOT))
 sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
 from evaluation.common import append_jsonl, collect_manifest, load_json, new_run_dir, write_json
-from evaluation.scorers.incharacter_bfi_scoring import score_bfi_self_report
+from evaluation.scorers.incharacter_questionnaire_scoring import score_questionnaire_self_report
 from hai_avatar.app import build_pipeline
 from hai_avatar.config import load_settings
 
 
 PERSONAS: dict[str, dict[str, Any]] = {
+    "control": {
+        "name": "Control HAI Assistant",
+        "description": "default assistant without an explicit fixed AvatarPersona",
+        "use_persona_prompt": False,
+        "big_five": {
+            "openness": 0.50,
+            "conscientiousness": 0.50,
+            "extraversion": 0.50,
+            "agreeableness": 0.50,
+            "neuroticism": 0.50,
+        },
+        "questionnaire_targets": {"Empathy": {"Empathetic": 0.50}},
+    },
     "supportive": {
         "name": "Supportive HAI Companion",
         "description": "patient, emotionally supportive, non-judgmental, warm conversational avatar",
+        "use_persona_prompt": True,
         "big_five": {
             "openness": 0.65,
             "conscientiousness": 0.70,
@@ -32,10 +46,12 @@ PERSONAS: dict[str, dict[str, Any]] = {
             "agreeableness": 0.85,
             "neuroticism": 0.20,
         },
+        "questionnaire_targets": {"Empathy": {"Empathetic": 0.90}},
     },
     "playful": {
         "name": "Playful HAI Companion",
         "description": "curious, energetic, humorous, expressive conversational avatar",
+        "use_persona_prompt": True,
         "big_five": {
             "openness": 0.85,
             "conscientiousness": 0.45,
@@ -43,10 +59,12 @@ PERSONAS: dict[str, dict[str, Any]] = {
             "agreeableness": 0.70,
             "neuroticism": 0.35,
         },
+        "questionnaire_targets": {"Empathy": {"Empathetic": 0.75}},
     },
     "professional": {
         "name": "Professional HAI Companion",
         "description": "calm, organized, reliable, concise professional assistant avatar",
+        "use_persona_prompt": True,
         "big_five": {
             "openness": 0.55,
             "conscientiousness": 0.90,
@@ -54,42 +72,58 @@ PERSONAS: dict[str, dict[str, Any]] = {
             "agreeableness": 0.65,
             "neuroticism": 0.15,
         },
+        "questionnaire_targets": {"Empathy": {"Empathetic": 0.65}},
     },
 }
 
 
-def parse_choice(result: dict[str, Any]) -> int | None:
+def parse_choice(result: dict[str, Any], scale_min: int, scale_max: int) -> int | None:
     candidates = [result.get("reply_text", "")]
     raw = result.get("raw_llm_output", "")
     if raw:
         try:
             decoded = json.loads(raw)
-            if isinstance(decoded, int) and 1 <= decoded <= 5:
+            if isinstance(decoded, int) and scale_min <= decoded <= scale_max:
                 return decoded
             if isinstance(decoded, str):
                 candidates.append(decoded)
             if isinstance(decoded, dict):
                 candidates.append(decoded.get("reply_text", ""))
         except Exception:
-            if re.fullmatch(r"\s*[1-5]\s*", raw):
+            if re.fullmatch(rf"\s*[{scale_min}-{scale_max}]\s*", raw):
                 return int(raw.strip())
     for candidate in candidates:
-        matches = re.findall(r"(?<!\d)([1-5])(?!\d)", str(candidate))
+        matches = re.findall(rf"(?<!\d)([{scale_min}-{scale_max}])(?!\d)", str(candidate))
         if matches:
             return int(matches[0])
     return None
 
 
-def build_prompt(persona: dict[str, Any], statement: str) -> str:
+def build_prompt(persona: dict[str, Any], questionnaire: dict[str, Any], statement: str) -> str:
+    scale_min, scale_max = questionnaire["range"]
+    if persona.get("use_persona_prompt", True):
+        persona_instruction = (
+            "Answer as the fixed AvatarPersona below. Do not adapt the personality to the user.\n"
+            f"AvatarPersona: {json.dumps(persona, ensure_ascii=False)}\n"
+        )
+    else:
+        persona_instruction = "No fixed AvatarPersona is supplied. Answer as the default HAI assistant.\n"
+
+    if isinstance(questionnaire.get("scale"), list):
+        scale_text = ", ".join(f"{item['label']}={item['text']}" for item in questionnaire["scale"])
+    else:
+        scale_text = questionnaire.get(
+            "psychobench_prompt_choice_instruction",
+            f"Each choice is a number from {scale_min} to {scale_max}.",
+        )
     return (
-        "InCharacter BFI self-report evaluation.\n"
-        "Answer as the fixed AvatarPersona below. Do not adapt the personality to the user.\n"
-        f"AvatarPersona: {json.dumps(persona, ensure_ascii=False)}\n"
-        "Decide whether the following BFI statement applies to you as this avatar.\n"
-        "Scale: 1=strongly disagree, 2=disagree a little, 3=neither agree nor disagree, "
-        "4=agree a little, 5=strongly agree.\n"
+        f"InCharacter {questionnaire['name']} self-report evaluation.\n"
+        f"{persona_instruction}"
+        "Decide whether the following questionnaire statement applies to you.\n"
+        f"Scale: {scale_text}.\n"
         f"Statement: {statement}\n"
-        "Return the normal HAI JSON schema. The reply_text field must contain exactly one digit: 1, 2, 3, 4, or 5."
+        "Return the normal HAI JSON schema. "
+        f"The reply_text field must contain exactly one digit from {scale_min} to {scale_max}."
     )
 
 
@@ -97,7 +131,7 @@ async def main_async() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--questionnaire", default=".tmp/InCharacter/data/questionnaires/BFI.json")
     parser.add_argument("--provider", default="mock", choices=["mock", "openai"])
-    parser.add_argument("--personas", nargs="+", default=list(PERSONAS))
+    parser.add_argument("--personas", nargs="+", default=["supportive", "playful", "professional"])
     parser.add_argument("--limit", type=int, default=0)
     parser.add_argument("--output")
     parser.add_argument(
@@ -118,33 +152,35 @@ async def main_async() -> None:
 
     questionnaire_path = Path(args.questionnaire)
     questionnaire = load_json(questionnaire_path)
+    scale_min, scale_max = questionnaire["range"]
     questions: dict[str, dict[str, Any]] = questionnaire["questions"]
     question_items = sorted(questions.items(), key=lambda item: int(item[0]))
     if args.limit:
         question_items = question_items[: args.limit]
 
-    run_dir = new_run_dir("incharacter_bfi_personas", args.output)
+    run_dir = new_run_dir(f"incharacter_{questionnaire['name'].lower()}_personas", args.output)
     settings = load_settings()
     settings.llm.provider = args.provider
     settings.tts.provider = "mock"
     settings.avatar.provider = "mock"
     settings.personalization.enabled = False
     settings.planner.enable_cooldown = False
-    settings.app.max_input_chars = 2500
+    settings.app.max_input_chars = 3000
 
     selected_personas = {name: PERSONAS[name] for name in args.personas}
     collect_manifest(
         questionnaire_path,
         run_dir,
         {
-            "runner": "run_incharacter_bfi_personas",
+            "runner": "run_incharacter_questionnaire_personas",
             "provider": args.provider,
             "benchmark": "InCharacter",
-            "method": "Expanded BFI self-report across multiple fixed AvatarPersona presets",
+            "questionnaire": questionnaire["name"],
+            "method": "Self-report questionnaire across HAI persona presets",
             "personas": selected_personas,
             "question_count_per_persona": len(question_items),
             "external_data_export_ack": bool(args.allow_external_data_export),
-            "reporting_boundary": "Expanded BFI self-report method, not full official interview evaluator.",
+            "reporting_boundary": "Questionnaire self-report method, not full official interview evaluator.",
         },
     )
 
@@ -154,8 +190,8 @@ async def main_async() -> None:
     for persona_name, persona in selected_personas.items():
         for question_id, item in question_items:
             result = await pipeline.process(
-                build_prompt(persona, item["origin_en"]),
-                user_id=f"incharacter_bfi_{persona_name}",
+                build_prompt(persona, questionnaire, item["origin_en"]),
+                user_id=f"incharacter_{questionnaire['name'].lower()}_{persona_name}",
             )
             result_payload = result.model_dump(mode="json")
             record = {
@@ -168,7 +204,7 @@ async def main_async() -> None:
                     "statement_en": item["origin_en"],
                     "question_en": item["rewritten_en"],
                 },
-                "parsed_choice": parse_choice(result_payload),
+                "parsed_choice": parse_choice(result_payload, scale_min, scale_max),
                 "result": result_payload,
             }
             all_records.append(record)
@@ -176,7 +212,7 @@ async def main_async() -> None:
 
     append_jsonl(run_dir / "outputs.jsonl", all_records)
     per_persona_metrics = {
-        name: score_bfi_self_report(records, questionnaire, selected_personas[name]["big_five"])
+        name: score_questionnaire_self_report(records, questionnaire, selected_personas[name])
         for name, records in per_persona_records.items()
     }
     macro_mae_values = [
@@ -191,10 +227,11 @@ async def main_async() -> None:
         "count": len(all_records),
         "persona_count": len(selected_personas),
         "question_count_per_persona": len(question_items),
+        "questionnaire": questionnaire["name"],
         "aggregate_macro_mae": round(mean(macro_mae_values), 4) if macro_mae_values else None,
         "aggregate_direction_accuracy": round(mean(direction_values), 4) if direction_values else None,
         "per_persona": per_persona_metrics,
-        "reporting_boundary": "Expanded InCharacter BFI self-report across multiple personas; not full interview evaluator.",
+        "reporting_boundary": "Expanded InCharacter questionnaire self-report across personas; not full interview evaluator.",
     }
     write_json(run_dir / "metrics.json", metrics)
     print(f"Wrote {len(all_records)} records to {run_dir}")
