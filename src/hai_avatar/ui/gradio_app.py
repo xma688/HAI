@@ -41,7 +41,7 @@ def _brand_header(avatar_provider: str) -> str:
     <header class="hai-header" role="banner">
       <div class="hai-brand">
         <span class="hai-brand-mark" aria-hidden="true">H</span>
-        <span class="hai-brand-copy"><b>HAI</b><small>安静的 AI 陪伴</small></span>
+        <span class="hai-brand-copy"><b>HAI</b><small>AI 对话伙伴</small></span>
       </div>
       <span class="hai-status-chip {status_class}"><i class="hai-dot" aria-hidden="true"></i>{status_text}</span>
     </header>
@@ -53,9 +53,9 @@ def _welcome_markup() -> str:
     return f"""
     <div id="hai-welcome" class="hai-welcome" style="--hai-home-art:url('{illustration_url}')">
       <div class="hai-welcome-copy">
-        <span class="hai-welcome-eyebrow"><i aria-hidden="true"></i> Emotion-aware companion</span>
-        <h1 class="hai-welcome-line">今晚，慢慢说。</h1>
-        <p class="hai-welcome-note">让声音、表情和动作陪你把这一刻说完整。</p>
+        <span class="hai-welcome-eyebrow"><i aria-hidden="true"></i> AI conversation companion</span>
+        <h1 class="hai-welcome-line">有什么想聊的吗？</h1>
+        <p class="hai-welcome-note">输入文字或使用语音，开始一段对话。</p>
       </div>
       <div class="hai-welcome-meta" aria-label="体验能力">
         <span>Live2D 实时陪伴</span><span>情绪感知</span><span>自然语音</span>
@@ -90,7 +90,7 @@ def _avatar_stage_markup(settings: Settings) -> str:
       <div class="hai-stage-glow" aria-hidden="true"></div>
       {content}
       <div class="hai-waveform {mode}" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-      <div class="hai-stage-caption"><span>我在，慢慢说。</span><small>表情 · 动作 · 口型</small></div>
+      <div class="hai-stage-caption"><span>AI 伙伴已就绪</span><small>表情 · 动作 · 口型</small></div>
     </div>
     """
 
@@ -109,7 +109,7 @@ def _footer_band() -> str:
     <footer class="hai-footer" role="contentinfo">
       <div class="hai-footer-brand">
         <span class="hai-brand-mark" aria-hidden="true">H</span>
-        <div><b>HAI</b><small>安静的 AI 陪伴 · Emotion-aware companion</small></div>
+        <div><b>HAI</b><small>支持文字 · 语音 · Live2D</small></div>
       </div>
       <p class="hai-footer-note">清空会话会移除短期上下文；个性化资料会按系统设置保留。</p>
     </footer>
@@ -138,7 +138,7 @@ def _progress_html(stage: str = "idle", emotion: str = "") -> str:
         done_labels = [label for _, label, _ in _PROGRESS_STAGES[: current_index + 1]]
         percent = int((current_index + 1) / total * 100)
     else:
-        message = "准备好听你说"
+        message = "已就绪"
         done_labels = []
         percent = 0
     busy = "true" if current_index >= 0 and not is_complete else "false"
@@ -258,7 +258,7 @@ class GradioApp:
         return _format_status_with_latency(cmd, latency_ms)
 
     def create_interface(self) -> gr.Blocks:
-        with gr.Blocks(title="HAI · 安静的 AI 陪伴", fill_width=True) as demo:
+        with gr.Blocks(title="HAI · AI 对话伙伴", fill_width=True) as demo:
             gr.HTML(_brand_header(self.settings.avatar.provider), elem_id="brand-header")
             welcome_section = gr.HTML(_welcome_markup(), elem_id="welcome-section")
 
@@ -277,13 +277,13 @@ class GradioApp:
                             elem_id="conversation",
                             layout="bubble",
                             buttons=["copy"],
-                            placeholder="说点什么，我在听。",
+                            placeholder="输入消息开始对话",
                             group_consecutive_messages=True,
                         )
                         with gr.Row(elem_id="composer-row"):
                             user_input = gr.Textbox(
                                 show_label=False,
-                                placeholder="说点什么，我在听。",
+                                placeholder="输入消息…",
                                 lines=2,
                                 max_lines=5,
                                 scale=8,
