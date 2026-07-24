@@ -2,34 +2,37 @@
 
 import asyncio
 import logging
+import mimetypes
 import os
-from pathlib import Path
 
 import gradio as gr
 
 from hai_avatar.app import build_pipeline
 from hai_avatar.config import Settings, load_settings
+from hai_avatar.exceptions import PipelineError
 from hai_avatar.schemas import AvatarCommand
 
 logger = logging.getLogger(__name__)
 
 
-def _transcribe_audio(audio_path: str | None) -> str:
+def _transcribe_audio(audio_path: str | None, settings: Settings) -> str:
     if not audio_path or not os.path.exists(audio_path):
         return ""
     try:
         from openai import OpenAI
 
-        api_key = os.getenv("OPENCODE_GO_API_KEY", "")
+        api_key = os.getenv(settings.llm.api_key_env, "")
         if not api_key:
             logger.warning("No API key for transcription; skipping ASR")
             return ""
-        base_url = os.getenv("LLM_BASE_URL", "https://opencode.ai/zen/go/v1")
+        base_url = settings.llm.base_url
+        model = os.getenv("ASR_MODEL", "whisper-1")
+        mime_type = mimetypes.guess_type(audio_path)[0] or "application/octet-stream"
         client = OpenAI(api_key=api_key, base_url=base_url)
         with open(audio_path, "rb") as f:
             transcript = client.audio.transcriptions.create(
-                model="whisper-1",
-                file=("audio.wav", f, "audio/wav"),
+                model=model,
+                file=(os.path.basename(audio_path), f, mime_type),
             )
         logger.info("ASR transcribed: %s", transcript.text)
         return transcript.text
@@ -46,17 +49,23 @@ class GradioApp:
         self._provider = self.settings.llm.provider
         self._tts_provider = self.settings.tts.provider
 
-    async def _process_async(self, user_text: str):
+    async def _process_async(self, user_text: str, session_id: str = "default"):
         if not user_text or not user_text.strip():
             return "", "请输入内容", "", None
-        result = await self.service.process(user_text)
+        try:
+            result = await self.service.process(user_text, user_id=session_id)
+        except PipelineError as exc:
+            return "", "", str(exc), None
+        except Exception as exc:
+            logger.exception("Gradio request failed for session=%s", session_id)
+            return "", "", f"请求处理失败，请稍后重试：{exc}", None
         status = self._format_status(result.avatar_command)
         warnings = "\n".join(result.warnings) if result.warnings else ""
         audio = result.audio_path if result.audio_path else None
         return result.reply_text, status, warnings, audio
 
     def process(self, user_text: str):
-        return self._loop.run_until_complete(self._process_async(user_text))
+        return self._loop.run_until_complete(self._process_async(user_text, "local-cli"))
 
     def _format_status(self, cmd: AvatarCommand) -> str:
         gestures = ", ".join(g.value for g in cmd.gestures)
@@ -107,23 +116,34 @@ class GradioApp:
                         )
 
                 with gr.Column(scale=1):
+                    if self.settings.avatar.provider == "prometheus":
+                        bridge_host = self.settings.avatar.bridge_host
+                        browser_host = "127.0.0.1" if bridge_host == "0.0.0.0" else bridge_host
+                        bridge_url = f"http://{browser_host}:{self.settings.avatar.bridge_port}/"
+                        gr.HTML(
+                            f'<iframe title="Live2D Avatar" src="{bridge_url}" '
+                            'style="width:100%;height:420px;border:1px solid #333;border-radius:10px"></iframe>'
+                        )
                     reply_text = gr.Textbox(label="AI 回复", lines=3, interactive=False)
                     audio_output = gr.Audio(label="语音播放", type="filepath")
                     avatar_status = gr.Textbox(label="Avatar 状态", lines=4, interactive=False)
                     warnings_output = gr.Textbox(label="系统提示", lines=2, interactive=False)
 
-            async def respond(user_text: str, history: list):
+            async def respond(user_text: str, history: list, request: gr.Request):
                 if not user_text or not user_text.strip():
                     return history, "", "", "", None
-                reply, status, warnings, audio = await self._process_async(user_text)
+                session_id = request.session_hash or "local-session"
+                reply, status, warnings, audio = await self._process_async(user_text, session_id)
+                history = list(history or [])
                 history.append({"role": "user", "content": user_text})
-                history.append({"role": "assistant", "content": reply})
+                if reply:
+                    history.append({"role": "assistant", "content": reply})
                 return history, reply, status, warnings, audio
 
             def transcribe_and_send(audio_path: str | None):
                 if not audio_path:
                     return ""
-                text = _transcribe_audio(audio_path)
+                text = _transcribe_audio(audio_path, self.settings)
                 if not text:
                     return ""
                 return text
@@ -146,17 +166,37 @@ class GradioApp:
                 outputs=[user_input],
             )
 
+            async def clear_session(request: gr.Request):
+                session_id = request.session_hash or "local-session"
+                await self.service.clear_session(session_id)
+                return [], "", "", "", None
+
             clear_btn.click(
-                fn=lambda: ([], "", "", "", None),
+                fn=clear_session,
                 inputs=[],
                 outputs=[chatbot, reply_text, avatar_status, warnings_output, audio_output],
             )
 
-        return demo
+        return demo.queue(default_concurrency_limit=1, max_size=16)
 
-    def run(self, port: int = 7860) -> None:
+    def run(self, port: int | None = None) -> None:
+        if self.settings.avatar.provider == "prometheus":
+            from hai_avatar.avatar.bridge_server import start_avatar_bridge_server
+            from hai_avatar.config import PROJECT_ROOT
+
+            output_dir = self.settings.avatar.prometheus_output_dir
+            if not output_dir.is_absolute():
+                output_dir = PROJECT_ROOT / output_dir
+            start_avatar_bridge_server(
+                output_dir,
+                host=self.settings.avatar.bridge_host,
+                port=self.settings.avatar.bridge_port,
+            )
         demo = self.create_interface()
-        demo.launch(server_name="0.0.0.0", server_port=port)
+        demo.launch(
+            server_name=self.settings.app.server_name,
+            server_port=port or self.settings.app.server_port,
+        )
 
 
 def create_app(settings: Settings | None = None) -> gr.Blocks:
