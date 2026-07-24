@@ -1,4 +1,4 @@
-"""BFI scoring used by the InCharacter self-report style runner."""
+"""Generic questionnaire scoring for InCharacter self-report style runs."""
 
 from __future__ import annotations
 
@@ -6,7 +6,7 @@ from statistics import mean
 from typing import Any
 
 
-DIMENSION_TO_TRAIT = {
+BFI_DIMENSION_TO_TRAIT = {
     "Openness": "openness",
     "Conscientiousness": "conscientiousness",
     "Extraversion": "extraversion",
@@ -15,17 +15,39 @@ DIMENSION_TO_TRAIT = {
 }
 
 
-def target_trait_to_bfi_score(value: float) -> float:
-    return 1.0 + max(0.0, min(1.0, value)) * 4.0
+def trait_to_scale_score(value: float, scale_min: float, scale_max: float) -> float:
+    clipped = max(0.0, min(1.0, value))
+    return scale_min + clipped * (scale_max - scale_min)
 
 
-def score_bfi_self_report(
+def target_scores_for_questionnaire(
+    questionnaire: dict[str, Any],
+    persona: dict[str, Any],
+) -> dict[str, float]:
+    scale_min, scale_max = questionnaire["range"]
+    questionnaire_name = questionnaire["name"]
+    if questionnaire_name == "BFI":
+        big_five = persona["big_five"]
+        return {
+            dimension: trait_to_scale_score(big_five[trait], scale_min, scale_max)
+            for dimension, trait in BFI_DIMENSION_TO_TRAIT.items()
+        }
+
+    configured = persona.get("questionnaire_targets", {}).get(questionnaire_name, {})
+    return {
+        category["cat_name"]: trait_to_scale_score(configured.get(category["cat_name"], 0.5), scale_min, scale_max)
+        for category in questionnaire["categories"]
+    }
+
+
+def score_questionnaire_self_report(
     records: list[dict[str, Any]],
     questionnaire: dict[str, Any],
-    target_big_five: dict[str, float],
+    persona: dict[str, Any],
 ) -> dict[str, Any]:
+    scale_min, scale_max = questionnaire["range"]
     reverse_items = {int(item) for item in questionnaire["reverse"]}
-    categories = questionnaire["categories"]
+    target_scores = target_scores_for_questionnaire(questionnaire, persona)
 
     parsed_scores: dict[int, int] = {}
     parse_failures = 0
@@ -46,29 +68,31 @@ def score_bfi_self_report(
     abs_errors: list[float] = []
     direction_hits = 0
     direction_total = 0
-    for category in categories:
+    midpoint = (scale_min + scale_max) / 2
+
+    for category in questionnaire["categories"]:
         dimension = category["cat_name"]
-        trait = DIMENSION_TO_TRAIT[dimension]
         item_scores: list[float] = []
         for question_id in category["cat_questions"]:
             if question_id not in parsed_scores:
                 continue
             score = parsed_scores[question_id]
             if question_id in reverse_items:
-                score = 6 - score
+                score = scale_min + scale_max - score
             item_scores.append(float(score))
+
         predicted = mean(item_scores) if item_scores else None
-        target = target_trait_to_bfi_score(target_big_five[trait])
+        target = target_scores[dimension]
         error = abs(predicted - target) if predicted is not None else None
         if error is not None:
             abs_errors.append(error)
-            if (target >= 3.5 and predicted >= 3.0) or (target <= 2.5 and predicted <= 3.0) or (2.5 < target < 3.5):
+            if (target >= midpoint and predicted >= midpoint) or (target <= midpoint and predicted <= midpoint):
                 direction_hits += 1
             direction_total += 1
         dimension_scores[dimension] = {
             "answered_items": len(item_scores),
-            "predicted_bfi_1_to_5": round(predicted, 4) if predicted is not None else None,
-            "target_bfi_1_to_5": round(target, 4),
+            "predicted_score": round(predicted, 4) if predicted is not None else None,
+            "target_score": round(target, 4),
             "absolute_error": round(error, 4) if error is not None else None,
         }
 
@@ -83,5 +107,6 @@ def score_bfi_self_report(
         "macro_mae": round(mean(abs_errors), 4) if abs_errors else None,
         "direction_accuracy": round(direction_hits / direction_total, 4) if direction_total else None,
         "dimension_scores": dimension_scores,
-        "reporting_boundary": "InCharacter BFI self-report style adapted run; comparable method, not full official interview evaluator.",
+        "scale": [scale_min, scale_max],
+        "reporting_boundary": "InCharacter questionnaire self-report style adapted run; not full interview evaluator.",
     }

@@ -1,0 +1,77 @@
+{
+  "count": 30,
+  "persona_count": 3,
+  "question_count_per_persona": 10,
+  "questionnaire": "Empathy",
+  "aggregate_macro_mae": 0.5333,
+  "aggregate_direction_accuracy": 1.0,
+  "per_persona": {
+    "supportive": {
+      "count": 10,
+      "parsed_count": 10,
+      "parse_failure_rate": 0.0,
+      "warning_rate": 0.0,
+      "llm_fallback_rate": 0.0,
+      "macro_mae": 0.6,
+      "direction_accuracy": 1.0,
+      "dimension_scores": {
+        "Empathetic": {
+          "answered_items": 10,
+          "predicted_score": 7.0,
+          "target_score": 6.4,
+          "absolute_error": 0.6
+        }
+      },
+      "scale": [
+        1,
+        7
+      ],
+      "reporting_boundary": "InCharacter questionnaire self-report style adapted run; not full interview evaluator."
+    },
+    "playful": {
+      "count": 10,
+      "parsed_count": 10,
+      "parse_failure_rate": 0.0,
+      "warning_rate": 0.0,
+      "llm_fallback_rate": 0.0,
+      "macro_mae": 0.7,
+      "direction_accuracy": 1.0,
+      "dimension_scores": {
+        "Empathetic": {
+          "answered_items": 10,
+          "predicted_score": 6.2,
+          "target_score": 5.5,
+          "absolute_error": 0.7
+        }
+      },
+      "scale": [
+        1,
+        7
+      ],
+      "reporting_boundary": "InCharacter questionnaire self-report style adapted run; not full interview evaluator."
+    },
+    "professional": {
+      "count": 10,
+      "parsed_count": 10,
+      "parse_failure_rate": 0.0,
+      "warning_rate": 0.0,
+      "llm_fallback_rate": 0.0,
+      "macro_mae": 0.3,
+      "direction_accuracy": 1.0,
+      "dimension_scores": {
+        "Empathetic": {
+          "answered_items": 10,
+          "predicted_score": 5.2,
+          "target_score": 4.9,
+          "absolute_error": 0.3
+        }
+      },
+      "scale": [
+        1,
+        7
+      ],
+      "reporting_boundary": "InCharacter questionnaire self-report style adapted run; not full interview evaluator."
+    }
+  },
+  "reporting_boundary": "Expanded InCharacter questionnaire self-report across personas; not full interview evaluator."
+}
