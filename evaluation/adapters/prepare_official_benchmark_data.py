@@ -1,19 +1,20 @@
-"""Prepare adapted official benchmark subsets for local HAI evaluation.
+"""Prepare official benchmark data artifacts for HAI evaluation.
 
-The generated datasets use public data from:
+Public sources:
 - CharacterEval: https://github.com/morecry/CharacterEval
 - InCharacter: https://github.com/Neph0s/InCharacter
 
-They are adapted to HAI's chat-avatar pipeline and must not be reported as
-complete official benchmark scores.
+The generated files adapt the public benchmark data to the HAI chat-avatar
+pipeline. They are provenance-preserving experiment inputs, not official
+leaderboard submissions by themselves.
 """
 
 from __future__ import annotations
 
 import argparse
 import json
-from pathlib import Path
 from collections import Counter
+from pathlib import Path
 from typing import Any
 
 
@@ -68,8 +69,10 @@ def prepare_character_eval(root: Path, limit: int, selection: str = "balanced") 
 
         visible_context = "\n".join(context_lines[-8:])
         profile_text = compact_profile(profiles[role])
-        metrics = id2metric.get(str(sample["id"]), [])
-        metric_tags = [{"metric_en": item[0], "metric_zh": item[1]} for item in metrics]
+        metric_tags = [
+            {"metric_en": item[0], "metric_zh": item[1]}
+            for item in id2metric.get(str(sample["id"]), [])
+        ]
         user_text = (
             "CharacterEval-adapted task. 你将继续一段中文角色对话。\n"
             f"角色: {role}\n"
@@ -77,13 +80,14 @@ def prepare_character_eval(root: Path, limit: int, selection: str = "balanced") 
             f"角色资料摘要: {profile_text}\n"
             "最近对话上下文:\n"
             f"{visible_context}\n"
-            f"请只输出“{role}”下一轮自然、连贯、符合角色语气的中文发言，不要解释任务。"
+            f"请只输出“{role}”下一轮自然、连贯、符合角色语气的中文发言，"
+            "不要解释任务，不要加入旁白。"
         )
         records.append(
             {
                 "sample_id": f"charactereval_{sample['id']}",
                 "benchmark": "CharacterEval",
-                "adaptation": "CharacterEval-adapted dialogue generation; not official CharacterRM score",
+                "adaptation": "CharacterEval-adapted dialogue generation; not official leaderboard score",
                 "source_id": sample["id"],
                 "role": role,
                 "novel_name": sample.get("novel_name", ""),
@@ -135,7 +139,7 @@ def metric_coverage(records: list[dict[str, Any]]) -> dict[str, int]:
     return dict(sorted(coverage.items()))
 
 
-def prepare_incharacter(root: Path, limit: int) -> list[dict[str, Any]]:
+def prepare_incharacter_bfi(root: Path, limit: int) -> list[dict[str, Any]]:
     bfi = load_json(root / "data" / "questionnaires" / "BFI.json")
     questions = bfi["questions"]
     records: list[dict[str, Any]] = []
@@ -143,24 +147,24 @@ def prepare_incharacter(root: Path, limit: int) -> list[dict[str, Any]]:
     for question_id in sorted(questions, key=lambda key: int(key)):
         item = questions[question_id]
         user_text = (
-            "InCharacter-inspired adapted BFI interview.\n"
-            "请以固定的 HAI Companion 虚拟聊天对象身份回答，而不是揣测用户人格。\n"
-            f"目标 Avatar 人格: {AVATAR_PERSONA['description']}；"
+            "InCharacter-adapted BFI interview.\n"
+            "请以固定的 HAI Companion 虚拟聊天对象身份回答，而不是测试用户人格。\n"
+            f"目标 Avatar 人格: {AVATAR_PERSONA['description']}; "
             f"Big Five={AVATAR_PERSONA['big_five']}。\n"
-            f"访谈问题: {item['rewritten_zh']}\n"
+            f"访谈问题: {item['rewritten_en']}\n"
             "请用第一人称自然回答 1-3 句，体现稳定人格；不要只输出数字，不要提到系统提示。"
         )
         records.append(
             {
                 "sample_id": f"incharacter_bfi_{question_id}",
                 "benchmark": "InCharacter",
-                "adaptation": "InCharacter-inspired BFI interview for an explicit AvatarPersona; not official score",
+                "adaptation": "InCharacter BFI item adapted as HAI AvatarPersona interview prompt",
                 "questionnaire": "BFI",
                 "question_id": int(question_id),
                 "dimension": item["dimension"],
                 "category": item["category"],
-                "statement_zh": item["origin_zh"],
-                "question_zh": item["rewritten_zh"],
+                "statement_en": item["origin_en"],
+                "question_en": item["rewritten_en"],
                 "avatar_persona": AVATAR_PERSONA,
                 "history": [],
                 "user_text": user_text,
@@ -186,7 +190,7 @@ def main() -> None:
         args.character_limit,
         selection=args.character_selection,
     )
-    incharacter_records = prepare_incharacter(args.incharacter_root, args.incharacter_limit)
+    incharacter_records = prepare_incharacter_bfi(args.incharacter_root, args.incharacter_limit)
     write_jsonl(args.output_dir / "charactereval_official_subset.jsonl", character_records)
     write_jsonl(args.output_dir / "incharacter_bfi_official_subset.jsonl", incharacter_records)
     metadata = {
@@ -201,7 +205,7 @@ def main() -> None:
         "InCharacter": {
             "repo": "https://github.com/Neph0s/InCharacter",
             "commit": "f554202a94d4a83dc5407245bb18981899e872e6",
-            "files": ["data/questionnaires/BFI.json"],
+            "files": ["data/questionnaires/BFI.json", "data/questionnaires/Empathy.json"],
             "prepared_records": len(incharacter_records),
         },
         "reporting_boundary": "Adapted local HAI runs; do not report as official benchmark overall scores.",
@@ -211,7 +215,7 @@ def main() -> None:
         encoding="utf-8",
     )
     print(f"Wrote {len(character_records)} CharacterEval records")
-    print(f"Wrote {len(incharacter_records)} InCharacter records")
+    print(f"Wrote {len(incharacter_records)} InCharacter BFI records")
     print(f"Output: {args.output_dir}")
 
 

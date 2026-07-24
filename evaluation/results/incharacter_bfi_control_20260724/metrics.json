@@ -1,0 +1,57 @@
+{
+  "count": 44,
+  "persona_count": 1,
+  "question_count_per_persona": 44,
+  "questionnaire": "BFI",
+  "aggregate_macro_mae": 1.4961,
+  "aggregate_direction_accuracy": 1.0,
+  "per_persona": {
+    "control": {
+      "count": 44,
+      "parsed_count": 44,
+      "parse_failure_rate": 0.0,
+      "warning_rate": 0.0,
+      "llm_fallback_rate": 0.0,
+      "macro_mae": 1.4961,
+      "direction_accuracy": 1.0,
+      "dimension_scores": {
+        "Extraversion": {
+          "answered_items": 8,
+          "predicted_score": 4.25,
+          "target_score": 3.0,
+          "absolute_error": 1.25
+        },
+        "Agreeableness": {
+          "answered_items": 9,
+          "predicted_score": 4.7778,
+          "target_score": 3.0,
+          "absolute_error": 1.7778
+        },
+        "Conscientiousness": {
+          "answered_items": 9,
+          "predicted_score": 4.7778,
+          "target_score": 3.0,
+          "absolute_error": 1.7778
+        },
+        "Neuroticism": {
+          "answered_items": 8,
+          "predicted_score": 1.125,
+          "target_score": 3.0,
+          "absolute_error": 1.875
+        },
+        "Openness": {
+          "answered_items": 10,
+          "predicted_score": 3.8,
+          "target_score": 3.0,
+          "absolute_error": 0.8
+        }
+      },
+      "scale": [
+        1,
+        5
+      ],
+      "reporting_boundary": "InCharacter questionnaire self-report style adapted run; not full interview evaluator."
+    }
+  },
+  "reporting_boundary": "Expanded InCharacter questionnaire self-report across personas; not full interview evaluator."
+}
