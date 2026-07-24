@@ -34,51 +34,33 @@ def _file_url(path: Path) -> str:
 
 
 def _brand_header(avatar_provider: str) -> str:
-    mark = '<span class="hai-brand-fallback" aria-hidden="true">H</span>'
     connected = avatar_provider == "prometheus"
     status_class = "connected" if connected else "demo"
     status_text = "角色已连接" if connected else "演示模式"
     return f"""
-    <nav class="hai-nav" aria-label="HAI 产品导航">
-      <a class="hai-brand" href="#hai-welcome" aria-label="返回 HAI 首页">
-        {mark}
+    <header class="hai-header" role="banner">
+      <div class="hai-brand">
+        <span class="hai-brand-mark" aria-hidden="true">H</span>
         <span class="hai-brand-copy"><b>HAI</b><small>安静的 AI 陪伴</small></span>
-      </a>
-      <div class="hai-nav-actions">
-        <span class="hai-connection {status_class}"><i></i>{status_text}</span>
-        <a class="hai-nav-link" href="#turn-details">本轮表现</a>
       </div>
-    </nav>
+      <span class="hai-status-chip {status_class}"><i class="hai-dot" aria-hidden="true"></i>{status_text}</span>
+    </header>
     """
 
 
 def _welcome_markup() -> str:
-    if ILLUSTRATION_PATH.exists():
-        background = html.escape(_file_url(ILLUSTRATION_PATH), quote=True)
-        art_attributes = (
-            'class="hai-welcome-art has-background" '
-            f'style="--hai-home-background: url(&quot;{background}&quot;)"'
-        )
-        fallback = ""
-    else:
-        art_attributes = 'class="hai-welcome-art"'
-        fallback = '<div class="hai-welcome-art-fallback" aria-hidden="true">☾</div>'
+    illustration_url = _file_url(ILLUSTRATION_PATH)
     return f"""
-    <section id="hai-welcome" class="hai-welcome" aria-labelledby="hai-welcome-title">
+    <div id="hai-welcome" class="hai-welcome" style="--hai-home-art:url('{illustration_url}')">
       <div class="hai-welcome-copy">
-        <span class="hai-eyebrow"><i></i> Emotion-aware companion</span>
-        <h1 id="hai-welcome-title">今晚想说什么，<br><em>我在听。</em></h1>
-        <p>HAI 不只回答问题，也会理解语气，用合适的声音、表情和动作认真回应你。</p>
-        <div class="hai-welcome-actions">
-          <a class="hai-primary-link" href="#message-input">开始聊一聊 <span aria-hidden="true">↓</span></a>
-          <span>文字与语音都可以</span>
-        </div>
+        <span class="hai-welcome-eyebrow"><i aria-hidden="true"></i> Emotion-aware companion</span>
+        <h1 class="hai-welcome-line">今晚，慢慢说。</h1>
+        <p class="hai-welcome-note">让声音、表情和动作陪你把这一刻说完整。</p>
       </div>
-      <figure {art_attributes} aria-label="HAI 首页氛围背景">
-        {fallback}
-        <figcaption><i></i><span>Live2D Avatar<small>向下查看实时表情、动作与口型。</small></span></figcaption>
-      </figure>
-    </section>
+      <div class="hai-welcome-meta" aria-label="体验能力">
+        <span>Live2D 实时陪伴</span><span>情绪感知</span><span>自然语音</span>
+      </div>
+    </div>
     """
 
 
@@ -88,25 +70,26 @@ def _avatar_stage_markup(settings: Settings) -> str:
         browser_host = "127.0.0.1" if bridge_host == "0.0.0.0" else bridge_host
         bridge_url = f"http://{browser_host}:{settings.avatar.bridge_port}/?embed=1"
         content = (
-            f'<iframe title="HAI Live2D 虚拟角色" src="{bridge_url}" '
-            'allow="autoplay"></iframe>'
+            f'<iframe title="HAI Live2D 虚拟角色" src="{bridge_url}" allow="autoplay"></iframe>'
         )
         mode = "live"
         state = "Live2D · 已连接"
     else:
         content = (
-            '<div class="hai-stage-unavailable">'
+            '<div class="hai-stage-empty"><span class="hai-stage-moon" aria-hidden="true">☾</span>'
             '<span>Live2D Avatar</span><small>请启用真实角色模式</small></div>'
         )
         mode = "static"
         state = "Avatar · 未连接"
     return f"""
-    <div class="hai-panel-heading">
-      <div><span>Companion</span><strong>Live2D Avatar</strong></div>
-      <span class="hai-stage-mode"><i></i>{state}</span>
+    <div class="hai-panel-head">
+      <div class="hai-panel-title"><span>Companion</span><strong>Live2D Avatar</strong></div>
+      <span class="hai-stage-state">{state}</span>
     </div>
     <div id="avatar-stage" class="hai-avatar-stage {mode}">
+      <div class="hai-stage-glow" aria-hidden="true"></div>
       {content}
+      <div class="hai-waveform {mode}" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
       <div class="hai-stage-caption"><span>我在，慢慢说。</span><small>表情 · 动作 · 口型</small></div>
     </div>
     """
@@ -114,46 +97,59 @@ def _avatar_stage_markup(settings: Settings) -> str:
 
 def _conversation_heading() -> str:
     return """
-    <div class="hai-panel-heading hai-conversation-heading">
-      <div><span>Conversation</span><strong>我们的对话</strong></div>
-      <span class="hai-private-note">短期上下文已开启</span>
+    <div class="hai-panel-head hai-conversation-heading">
+      <div class="hai-panel-title"><span>Conversation</span><strong>我们的对话</strong></div>
+      <span class="hai-privacy-chip">会话记忆 · 可随时清空</span>
     </div>
     """
 
 
-def _progress_html(stage: str = "idle") -> str:
+def _footer_band() -> str:
+    return """
+    <footer class="hai-footer" role="contentinfo">
+      <div class="hai-footer-brand">
+        <span class="hai-brand-mark" aria-hidden="true">H</span>
+        <div><b>HAI</b><small>安静的 AI 陪伴 · Emotion-aware companion</small></div>
+      </div>
+      <p class="hai-footer-note">清空会话会移除短期上下文；个性化资料会按系统设置保留。</p>
+    </footer>
+    """
+
+
+def _progress_html(stage: str = "idle", emotion: str = "") -> str:
     if stage == "error":
         return (
-            '<div class="hai-progress is-error" role="status" aria-live="polite">'
-            '<b>这轮回应没有完成</b><span>你的输入仍然保留，可以重新发送。</span></div>'
+            '<div class="hai-progress is-error" role="status" aria-live="polite" aria-busy="false">'
+            '<span class="hai-progress-dot" aria-hidden="true"></span>'
+            '<div class="hai-progress-copy"><b>这轮回应没有完成</b>'
+            '<span>你的输入仍然保留，可以重新发送。</span></div>'
+            '<div class="hai-progress-track"><i style="width:100%"></i></div></div>'
         )
-
     stage_names = [name for name, _, _ in _PROGRESS_STAGES]
     current_index = stage_names.index(stage) if stage in stage_names else -1
     is_complete = stage == "complete"
-    steps = []
-    for index, (name, label, _) in enumerate(_PROGRESS_STAGES):
-        classes = []
-        if is_complete or (current_index >= 0 and index < current_index):
-            classes.append("done")
-        elif index == current_index:
-            classes.append("active")
-        class_attr = f' class="{" ".join(classes)}"' if classes else ""
-        steps.append(
-            f'<li{class_attr}><i></i><span>{label}</span><small>{index + 1:02d}</small></li>'
-        )
-
+    total = len(_PROGRESS_STAGES)
     if is_complete:
         message = "这轮回应已经完成"
+        done_labels = [label for _, label, _ in _PROGRESS_STAGES]
+        percent = 100
     elif current_index >= 0:
         message = _PROGRESS_STAGES[current_index][2]
+        done_labels = [label for _, label, _ in _PROGRESS_STAGES[: current_index + 1]]
+        percent = int((current_index + 1) / total * 100)
     else:
         message = "准备好听你说"
+        done_labels = []
+        percent = 0
     busy = "true" if current_index >= 0 and not is_complete else "false"
+    # done 标记：complete 或已完成阶段用于测试断言与视觉
+    done_markup = "".join(f'<span class="done">{label}</span>' for label in done_labels)
+    emotion_class = f" emotion-{html.escape(emotion)}" if (is_complete and emotion) else ""
     return f"""
-    <div class="hai-progress" role="status" aria-live="polite" aria-busy="{busy}">
-      <div class="hai-progress-copy"><b>{message}</b><span>整轮处理，不伪装逐字流式</span></div>
-      <ol>{''.join(steps)}</ol>
+    <div class="hai-progress{emotion_class}" role="status" aria-live="polite" aria-busy="{busy}">
+      <span class="hai-progress-dot" aria-hidden="true"></span>
+      <div class="hai-progress-copy"><b>{message}</b><span class="hai-progress-stages">{done_markup}</span></div>
+      <div class="hai-progress-track"><i style="width:{percent}%"></i></div>
     </div>
     """
 
@@ -192,24 +188,6 @@ def _format_status_with_latency(cmd: AvatarCommand, latency_ms: float | None) ->
         for label, value in items
     )
     return f'<div class="hai-status-grid">{cells}</div>'
-
-
-def _story_markup() -> str:
-    return """
-    <section class="hai-story" aria-labelledby="hai-story-title">
-      <div class="hai-story-intro">
-        <span class="hai-eyebrow"><i></i> Designed for presence</span>
-        <h2 id="hai-story-title">回应，不止发生在文字里。</h2>
-        <p>同一次推理连接内容、声音和角色表现，让情绪表达保持一致。</p>
-      </div>
-      <div class="hai-story-list">
-        <article><small>01</small><div><b>理解你的语气</b><span>结合短期上下文与个性化信息，判断这句话需要怎样被回应。</span></div></article>
-        <article><small>02</small><div><b>让声音贴合内容</b><span>用语气、语速和停顿承接文字；语音失败时，文字依然完整保留。</span></div></article>
-        <article><small>03</small><div><b>把回应交给角色</b><span>表情、动作和口型在同一轮里协同，而不是额外播放的装饰。</span></div></article>
-      </div>
-    </section>
-    <footer class="hai-footer"><span>HAI · Human–AI Interaction Project</span><span>Emotion · Voice · Expression</span></footer>
-    """
 
 
 def _transcribe_audio(audio_path: str | None, settings: Settings) -> str:
@@ -251,7 +229,7 @@ class GradioApp:
         progress_callback=None,
     ):
         if not user_text or not user_text.strip():
-            return "", _initial_status(), _notice("请输入内容后再发送。", error=True), None
+            return "", _initial_status(), _notice("请输入内容后再发送。", error=True), None, "neutral"
         try:
             result = await self.service.process(
                 user_text,
@@ -259,16 +237,16 @@ class GradioApp:
                 progress_callback=progress_callback,
             )
         except PipelineError as exc:
-            return "", _initial_status(), _notice(str(exc), error=True), None
+            return "", _initial_status(), _notice(str(exc), error=True), None, "neutral"
         except Exception:
             logger.exception("Gradio request failed for session=%s", session_id)
-            return "", _initial_status(), _notice("请求处理失败，请稍后重试。", error=True), None
+            return "", _initial_status(), _notice("请求处理失败，请稍后重试。", error=True), None, "neutral"
         status = self._format_status_with_latency(
             result.avatar_command,
             result.latency_ms.get("end_to_end"),
         )
         warnings = _notice("；".join(result.warnings)) if result.warnings else ""
-        return result.reply_text, status, warnings, result.audio_path
+        return result.reply_text, status, warnings, result.audio_path, result.avatar_command.emotion.value
 
     def process(self, user_text: str):
         return self._loop.run_until_complete(self._process_async(user_text, "local-cli"))
@@ -324,27 +302,28 @@ class GradioApp:
                             prompt_two = gr.Button("陪我聊一会儿", size="sm")
                             prompt_three = gr.Button("帮我理清思路", size="sm")
 
-                        with gr.Accordion("使用语音输入", open=False, elem_id="voice-tools"):
-                            mic_btn = gr.Audio(
-                                sources=["microphone"],
-                                type="filepath",
-                                label="录音结束后自动转成文字",
-                                elem_id="voice-input",
-                            )
-
-                        audio_output = gr.Audio(
-                            label="本轮语音",
-                            type="filepath",
-                            autoplay=False,
-                            editable=False,
-                            buttons=["download"],
-                            visible=False,
-                            elem_id="reply-audio",
-                        )
                         warnings_output = gr.HTML("", elem_id="turn-warnings")
 
                         with gr.Row(elem_id="conversation-actions"):
                             clear_request = gr.Button("清空本次对话", size="sm", elem_id="clear-button")
+
+                with gr.Column(elem_id="voice-lane"):
+                    audio_output = gr.Audio(
+                        label="本轮语音",
+                        type="filepath",
+                        autoplay=False,
+                        editable=False,
+                        buttons=["download"],
+                        visible=False,
+                        elem_id="reply-audio",
+                    )
+                    with gr.Accordion("使用语音输入", open=False, elem_id="voice-tools"):
+                        mic_btn = gr.Audio(
+                            sources=["microphone"],
+                            type="filepath",
+                            label="录音结束后自动转成文字",
+                            elem_id="voice-input",
+                        )
 
                 with gr.Accordion("本轮表现 · 技术诊断", open=False, elem_id="turn-details"):
                     gr.HTML(
@@ -354,14 +333,14 @@ class GradioApp:
                     )
                     avatar_status = gr.HTML(_initial_status())
 
-            gr.HTML(_story_markup(), elem_id="story-section")
+                gr.HTML(_footer_band(), elem_id="footer-section")
 
             with gr.Group(visible=False, elem_id="clear-dialog") as clear_dialog:
                 gr.HTML(
                     """
                     <div class="hai-dialog-copy"><span>Clear conversation</span>
                     <h3>清空这次对话？</h3>
-                    <p>短期上下文、角色状态和动作冷却都会一起清除，此操作无法撤销。</p></div>
+                    <p>短期上下文、角色状态和动作冷却会一起清除；个性化资料仍会保留。</p></div>
                     """
                 )
                 with gr.Row(elem_id="clear-dialog-actions"):
@@ -426,14 +405,14 @@ class GradioApp:
                         "",
                     )
 
-                reply, status, warnings, audio = await task
+                reply, status, warnings, audio, emotion = await task
                 if reply and not reply_added:
                     next_history.append({"role": "assistant", "content": reply})
                     reply_added = True
                 final_stage = "complete" if reply else "error"
                 yield (
                     next_history,
-                    _progress_html(final_stage),
+                    _progress_html(final_stage, emotion=emotion if reply else ""),
                     status,
                     warnings,
                     gr.update(value=audio, visible=bool(audio)),
@@ -465,16 +444,26 @@ class GradioApp:
                 inputs=[user_input, chatbot],
                 outputs=send_outputs,
                 api_name="respond",
+            ).then(
+                fn=None, js="() => { const el=document.querySelector('#message-input textarea'); if(el) el.focus(); }",
             )
             user_input.submit(
                 fn=respond,
                 inputs=[user_input, chatbot],
                 outputs=send_outputs,
+            ).then(
+                fn=None, js="() => { const el=document.querySelector('#message-input textarea'); if(el) el.focus(); }",
             )
 
-            prompt_one.click(lambda: "最近有点累，想找个人说说。", outputs=user_input)
-            prompt_two.click(lambda: "可以陪我聊一会儿吗？", outputs=user_input)
-            prompt_three.click(lambda: "我脑子有点乱，能帮我理清思路吗？", outputs=user_input)
+            prompt_one.click(lambda: "最近有点累，想找个人说说。", outputs=user_input).then(
+                fn=None, js="() => { const el=document.querySelector('#message-input textarea'); if(el){ el.focus(); el.setSelectionRange(el.value.length, el.value.length);} }",
+            )
+            prompt_two.click(lambda: "可以陪我聊一会儿吗？", outputs=user_input).then(
+                fn=None, js="() => { const el=document.querySelector('#message-input textarea'); if(el){ el.focus(); el.setSelectionRange(el.value.length, el.value.length);} }",
+            )
+            prompt_three.click(lambda: "我脑子有点乱，能帮我理清思路吗？", outputs=user_input).then(
+                fn=None, js="() => { const el=document.querySelector('#message-input textarea'); if(el){ el.focus(); el.setSelectionRange(el.value.length, el.value.length);} }",
+            )
             mic_btn.stop_recording(
                 fn=transcribe,
                 inputs=mic_btn,
@@ -513,6 +502,19 @@ class GradioApp:
                     audio_output,
                     clear_dialog,
                 ],
+            )
+
+            demo.load(
+                fn=None,
+                js="""
+                () => {
+                  const focus = () => {
+                    const el = document.querySelector('#message-input textarea');
+                    if (el) el.focus({ preventScroll: true });
+                  };
+                  setTimeout(focus, 300);
+                }
+                """,
             )
 
         return demo.queue(default_concurrency_limit=1, max_size=16)
