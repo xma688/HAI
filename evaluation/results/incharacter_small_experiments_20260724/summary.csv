@@ -1,0 +1,12 @@
+experiment,group,metric,value,std,n
+bfi_repeats,aggregate,macro_mae,0.4913,0.0197,2
+bfi_repeats,playful,macro_mae,0.673,0.0507,2
+bfi_repeats,professional,macro_mae,0.3589,0.0149,2
+bfi_repeats,supportive,macro_mae,0.4422,0.095,2
+empathy,aggregate,macro_mae,0.5333,,
+empathy,supportive,macro_mae,0.6,,
+empathy,playful,macro_mae,0.7,,
+empathy,professional,macro_mae,0.3,,
+ablation,control_no_persona,macro_mae,1.4961,,44
+ablation,single_supportive,macro_mae,0.5094,,44
+ablation,multi_persona,macro_mae,0.5053,,132
