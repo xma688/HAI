@@ -1,8 +1,0 @@
-run:
-  name: eval_mvp
-  provider: mock
-  tts_provider: mock
-  avatar_provider: mock
-  max_scenarios: 3
-  max_profiles: 3
-  conditions: [none, full]
