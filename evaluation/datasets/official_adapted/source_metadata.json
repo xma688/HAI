@@ -28,7 +28,8 @@
     "repo": "https://github.com/Neph0s/InCharacter",
     "commit": "f554202a94d4a83dc5407245bb18981899e872e6",
     "files": [
-      "data/questionnaires/BFI.json"
+      "data/questionnaires/BFI.json",
+      "data/questionnaires/Empathy.json"
     ],
     "prepared_records": 44
   },
