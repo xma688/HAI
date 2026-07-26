@@ -14,6 +14,7 @@ from hai_avatar.app import build_pipeline
 from hai_avatar.config import PROJECT_ROOT, Settings, load_settings
 from hai_avatar.exceptions import PipelineError
 from hai_avatar.schemas import AvatarCommand
+from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
