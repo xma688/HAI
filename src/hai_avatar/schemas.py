@@ -7,6 +7,9 @@ from enum import Enum
 
 from pydantic import BaseModel, Field, field_validator
 
+MIN_SPEAKING_RATE = 0.9
+MAX_SPEAKING_RATE = 1.1
+
 
 class EmotionType(str, Enum):
     neutral = "neutral"
@@ -70,7 +73,7 @@ class LLMAvatarResponse(BaseModel):
     @field_validator("speaking_rate", mode="before")
     @classmethod
     def clamp_speaking_rate(cls, value: float) -> float:
-        return max(0.5, min(2.0, float(value)))
+        return max(MIN_SPEAKING_RATE, min(MAX_SPEAKING_RATE, float(value)))
 
     @field_validator("pause_before_speech_ms", mode="before")
     @classmethod
@@ -86,7 +89,7 @@ class AvatarCommand(BaseModel):
     gestures: list[GestureType] = Field(default_factory=lambda: [GestureType.idle])
     voice_style: VoiceStyleType
     gesture_intensity: float = Field(default=0.5, ge=0.0, le=1.0)
-    speaking_rate: float = Field(default=1.0, ge=0.5, le=2.0)
+    speaking_rate: float = Field(default=1.0, ge=MIN_SPEAKING_RATE, le=MAX_SPEAKING_RATE)
     pause_before_speech_ms: int = Field(default=0, ge=0, le=500)
 
 

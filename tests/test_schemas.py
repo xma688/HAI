@@ -42,7 +42,7 @@ def test_numeric_control_fields_are_clamped():
         '{"reply_text":"你好","gesture_intensity":1.5,"speaking_rate":4,"pause_before_speech_ms":999999}'
     )
     assert parsed.gesture_intensity == 1.0
-    assert parsed.speaking_rate == 2.0
+    assert parsed.speaking_rate == 1.1
     assert parsed.pause_before_speech_ms == 500
 
 

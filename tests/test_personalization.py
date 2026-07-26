@@ -131,7 +131,7 @@ def test_pace_adjusts_speaking_rate():
         speaking_rate=1.0,
     )
     adjusted = post.apply(command, profile)
-    assert adjusted.speaking_rate == 0.8
+    assert adjusted.speaking_rate == 0.95
 
 
 def test_profile_manager_creates_and_loads():

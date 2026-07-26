@@ -65,6 +65,8 @@ class PrometheusAvatarController(AvatarController):
             "model_url": self.model_url,
             "updated_at": None,
         }
+        self._playback_task: asyncio.Task[None] | None = None
+        self._reset_after_playback = False
         self._write_bridge()
 
     async def connect(self) -> None:
@@ -75,6 +77,7 @@ class PrometheusAvatarController(AvatarController):
         logger.info("Prometheus bridge ready at %s", self.html_path)
 
     async def set_reply_text(self, reply_text: str, voice_style: str = "neutral") -> None:
+        self._cancel_playback_task()
         self.state["turn_id"] = uuid.uuid4().hex
         self.state["reply_text"] = reply_text
         self.state["voice_style"] = voice_style
@@ -84,6 +87,7 @@ class PrometheusAvatarController(AvatarController):
         self.state["audio_url"] = None
         self.state["audio_duration_ms"] = 0
         self.state["speaking"] = False
+        self._reset_after_playback = False
         self._event("reply_text updated")
         self._write_bridge()
 
@@ -115,7 +119,11 @@ class PrometheusAvatarController(AvatarController):
         self._event(f"audio ready -> {destination.name}")
         self._write_bridge()
         if duration_ms:
-            await asyncio.sleep(duration_ms / 1000)
+            turn_id = self.state.get("turn_id")
+            self._playback_task = asyncio.create_task(
+                self._finish_playback(turn_id, duration_ms / 1000),
+                name=f"avatar-playback-{turn_id or 'unknown'}",
+            )
 
     async def start_speaking(self) -> None:
         self.state["speaking"] = True
@@ -123,22 +131,57 @@ class PrometheusAvatarController(AvatarController):
         self._write_bridge()
 
     async def stop_speaking(self) -> None:
+        if self._playback_task and not self._playback_task.done():
+            return
         self.state["speaking"] = False
         self._event("speaking stopped")
         self._write_bridge()
 
     async def reset_to_idle(self) -> None:
+        if self._playback_task and not self._playback_task.done():
+            self._reset_after_playback = True
+            return
+        self._apply_idle_state()
+        self._event("returned to idle")
+        self._write_bridge()
+
+    def _apply_idle_state(self) -> None:
         self.state["expression"] = "neutral"
         self.state["prometheus_emotion"] = "neutral"
         self.state["gestures"] = []
         self.state["gesture_intensity"] = 0.5
         self.state["speaking"] = False
-        self._event("returned to idle")
-        self._write_bridge()
+
+    async def _finish_playback(self, turn_id: str | None, duration_seconds: float) -> None:
+        """Finish browser playback without blocking the response request."""
+
+        try:
+            await asyncio.sleep(duration_seconds)
+            if self.state.get("turn_id") != turn_id:
+                return
+            self.state["speaking"] = False
+            self._event("speaking stopped")
+            if self._reset_after_playback:
+                self._apply_idle_state()
+                self._event("returned to idle")
+            self._write_bridge()
+        except asyncio.CancelledError:
+            return
+        finally:
+            if asyncio.current_task() is self._playback_task:
+                self._playback_task = None
+                self._reset_after_playback = False
+
+    def _cancel_playback_task(self) -> None:
+        if self._playback_task and not self._playback_task.done():
+            self._playback_task.cancel()
+        self._playback_task = None
+        self._reset_after_playback = False
 
     async def clear_session_state(self) -> None:
         """Remove reply and media state in addition to returning to idle."""
 
+        self._cancel_playback_task()
         self.state.update(
             {
                 "turn_id": None,
@@ -213,7 +256,7 @@ class PrometheusAvatarController(AvatarController):
   <style>
     :root { color-scheme: dark; font-family: Inter, "Microsoft YaHei", sans-serif; }
     body { margin: 0; min-height: 100vh; background: #101014; color: #f4f4f5; display: grid; grid-template-columns: minmax(420px, 1fr) 380px; }
-    #avatar { position: relative; width: 100%; height: 100vh; background: #08080b; overflow: hidden; transform-origin: 50% 70%; animation: idleFloat 4s ease-in-out infinite; }
+    #avatar { position: relative; width: 100%; height: 100vh; background: radial-gradient(circle at 50% 36%, #18213d 0, #0b0e1b 48%, #070912 100%); overflow: hidden; transform-origin: 50% 70%; animation: idleFloat 4s ease-in-out infinite; }
     #avatar canvas { display: block; width: 100%; height: 100%; }
     #avatarStatus { position: absolute; left: 16px; top: 16px; max-width: min(620px, calc(100% - 32px)); padding: 10px 12px; border: 1px solid #303038; border-radius: 8px; background: rgba(13,13,17,.86); color: #d4d4d8; font: 12px/1.45 ui-monospace, SFMono-Regular, Consolas, monospace; white-space: pre-wrap; pointer-events: none; }
     #avatarStatus.ok { color: #a7f3d0; }
@@ -236,12 +279,17 @@ class PrometheusAvatarController(AvatarController):
     .pill { display: inline-block; padding: 3px 8px; border: 1px solid #3f3f46; border-radius: 999px; margin: 2px; }
     button { border: 0; padding: 10px 14px; border-radius: 8px; background: #00d4aa; color: #07100e; font-weight: 700; cursor: pointer; }
     pre { white-space: pre-wrap; background: #0d0d11; padding: 10px; border-radius: 8px; color: #d4d4d8; }
+    html.embed body { display: block; overflow: hidden; }
+    html.embed aside { display: none; }
+    html.embed #avatarStatus { opacity: 0; transition: opacity .25s ease; }
+    html.embed #avatarStatus.error { opacity: 1; }
     @keyframes idleFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
     @keyframes nodMotion { 0%,100% { transform: rotate(0deg); } 35% { transform: rotate(2deg) translateY(10px); } 65% { transform: rotate(-1deg) translateY(-4px); } }
     @keyframes waveMotion { 0%,100% { transform: rotate(0deg); } 25% { transform: rotate(4deg); } 50% { transform: rotate(-4deg); } 75% { transform: rotate(3deg); } }
     @keyframes tiltMotion { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(-7deg); } }
     @keyframes explainMotion { 0%,100% { transform: translateX(0); } 35% { transform: translateX(10px); } 70% { transform: translateX(-6px); } }
   </style>
+  <script>if (new URLSearchParams(location.search).get('embed') === '1') document.documentElement.classList.add('embed');</script>
   <script src="./avatar-state.js"></script>
 </head>
 <body>
@@ -264,11 +312,16 @@ class PrometheusAvatarController(AvatarController):
     let lastUpdatedAt = '';
     let app = null;
     let model = null;
+    let modelBaseDimensions = null;
+    let resizeFrame = null;
+    let resizeObserver = null;
     let mouthTimer = null;
     let lipSyncActive = false;
     let lipSyncStartedAt = 0;
     let currentAudio = null;
+    let releaseCurrentAudio = null;
     let lastPlayedAudioUrl = '';
+    document.documentElement.dataset.audioState = 'idle';
     let gestureIntensity = .5;
     let gestureState = { type: null, startedAt: 0, duration: 0 };
     let gestureQueue = [];
@@ -300,6 +353,13 @@ class PrometheusAvatarController(AvatarController):
       initAvatar().catch(showError);
     });
 
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState !== 'visible') {
+        stopStateAudio(false);
+        window.speechSynthesis?.cancel();
+      }
+    });
+
     document.getElementById('speakBtn').onclick = async () => {
       if (!state.reply_text) return;
       setEmotion(state.prometheus_emotion || 'neutral');
@@ -323,7 +383,7 @@ class PrometheusAvatarController(AvatarController):
       app = new PIXI.Application({
         width: container.clientWidth,
         height: container.clientHeight,
-        backgroundColor: 0x08080b,
+        backgroundAlpha: 0,
         antialias: true,
         resolution: window.devicePixelRatio || 1,
         autoDensity: true,
@@ -333,6 +393,12 @@ class PrometheusAvatarController(AvatarController):
       model = await PIXI.live2d.Live2DModel.from(state.model_url);
       stripModelMotionSounds(model);
       app.stage.addChild(model);
+      const initialScaleX = Number(model.scale?.x) || 1;
+      const initialScaleY = Number(model.scale?.y) || 1;
+      modelBaseDimensions = {
+        width: model.width / initialScaleX,
+        height: model.height / initialScaleY,
+      };
       fitModel();
       try { model.motion?.('Idle', 0, { loop: true }); } catch (_) {}
       try { model.motion?.('idle', 0, { loop: true }); } catch (_) {}
@@ -341,11 +407,27 @@ class PrometheusAvatarController(AvatarController):
       animateGestures(state.gestures || [], true, state.gesture_intensity);
       setStatus(`model loaded: ${Math.round(model.width)}x${Math.round(model.height)}`, 'ok');
 
-      window.addEventListener('resize', () => {
-        if (!app) return;
-        app.renderer.resize(container.clientWidth, container.clientHeight);
-        fitModel();
-      });
+      const resizeAvatar = () => {
+        if (resizeFrame !== null) cancelAnimationFrame(resizeFrame);
+        resizeFrame = requestAnimationFrame(() => {
+          resizeFrame = null;
+          if (!app) return;
+          const nextWidth = Math.max(1, container.clientWidth);
+          const nextHeight = Math.max(1, container.clientHeight);
+          const screenWidth = app.screen?.width || 0;
+          const screenHeight = app.screen?.height || 0;
+          if (Math.abs(screenWidth - nextWidth) > .5 || Math.abs(screenHeight - nextHeight) > .5) {
+            app.renderer.resize(nextWidth, nextHeight);
+          }
+          fitModel();
+        });
+      };
+      window.addEventListener('resize', resizeAvatar);
+      if ('ResizeObserver' in window) {
+        resizeObserver = new ResizeObserver(resizeAvatar);
+        resizeObserver.observe(container);
+      }
+      resizeAvatar();
     }
 
     function renderState(nextState) {
@@ -379,17 +461,20 @@ class PrometheusAvatarController(AvatarController):
 
     function fitModel() {
       if (!app || !model) return;
-      const width = app.renderer.width / (window.devicePixelRatio || 1);
-      const height = app.renderer.height / (window.devicePixelRatio || 1);
-      const scale = Math.min(width / model.width, height / model.height) * 0.86;
+      const resolution = app.renderer.resolution || window.devicePixelRatio || 1;
+      const width = app.screen?.width || app.renderer.width / resolution;
+      const height = app.screen?.height || app.renderer.height / resolution;
+      const baseWidth = modelBaseDimensions?.width || model.width || 1;
+      const baseHeight = modelBaseDimensions?.height || model.height || 1;
+      const scale = Math.min(width / baseWidth, height / baseHeight) * 0.70;
       model.scale.set(scale);
       if (model.anchor) {
         model.anchor.set(0.5, 0.5);
         model.x = width / 2;
-        model.y = height / 2;
+        model.y = height * 0.52;
       } else {
         model.x = (width - model.width) / 2;
-        model.y = (height - model.height) / 2;
+        model.y = (height - model.height) / 2 + height * 0.02;
       }
     }
 
@@ -453,30 +538,87 @@ class PrometheusAvatarController(AvatarController):
 
     function playStateAudio(force = false) {
       if (!state.audio_url) return false;
-      if (!force && state.audio_url === lastPlayedAudioUrl) return true;
-      if (currentAudio) {
-        currentAudio.pause();
-        currentAudio = null;
+      if (!force && document.visibilityState !== 'visible') {
+        lastPlayedAudioUrl = state.audio_url;
+        document.documentElement.dataset.audioState = 'suppressed-hidden';
+        return true;
       }
-      lastPlayedAudioUrl = state.audio_url;
-      currentAudio = new Audio(`${state.audio_url}?turn=${encodeURIComponent(state.turn_id || '')}`);
-      currentAudio.onplay = startTextLipSync;
-      currentAudio.onended = stopTextLipSync;
-      currentAudio.onerror = stopTextLipSync;
-      currentAudio.play().catch((error) => {
-        stopTextLipSync();
-        setStatus(`audio autoplay blocked; use Speak latest reply (${error?.message || error})`, 'error');
-      });
+      if (!force && state.audio_url === lastPlayedAudioUrl) return true;
+      const audioUrl = state.audio_url;
+      const turnId = state.turn_id || '';
+      lastPlayedAudioUrl = audioUrl;
+      if (currentAudio) stopStateAudio(false);
+
+      const playExclusively = async () => {
+        if (!force && document.visibilityState !== 'visible') return;
+        await playAudioFile(audioUrl, turnId, force);
+      };
+      Promise.resolve().then(() => {
+        if (navigator.locks?.request) {
+          return navigator.locks.request(
+            'hai-avatar-audio-playback',
+            { mode: 'exclusive', ifAvailable: true },
+            async (lock) => {
+              if (!lock) {
+                document.documentElement.dataset.audioState = 'suppressed-locked';
+                if (force) setStatus('audio is already playing in another tab', 'error');
+                return;
+              }
+              await playExclusively();
+            },
+          );
+        }
+        return playExclusively();
+      }).catch(showAudioPlaybackError);
       return true;
     }
 
-    function stopStateAudio() {
+    async function playAudioFile(audioUrl, turnId, manualReplay = false) {
+      if (currentAudio) stopStateAudio(false);
+      const audio = new Audio(
+        `${audioUrl}?turn=${encodeURIComponent(turnId)}&manual=${manualReplay ? '1' : '0'}`,
+      );
+      currentAudio = audio;
+      await new Promise((resolve) => {
+        let finished = false;
+        const finish = () => {
+          if (finished) return;
+          finished = true;
+          if (currentAudio === audio) currentAudio = null;
+          if (releaseCurrentAudio === finish) releaseCurrentAudio = null;
+          document.documentElement.dataset.audioState = 'idle';
+          stopTextLipSync();
+          resolve();
+        };
+        releaseCurrentAudio = finish;
+        audio.onplay = () => {
+          document.documentElement.dataset.audioState = 'playing';
+          startTextLipSync();
+        };
+        audio.onended = finish;
+        audio.onerror = finish;
+        audio.play().catch((error) => {
+          showAudioPlaybackError(error);
+          finish();
+        });
+      });
+    }
+
+    function showAudioPlaybackError(error) {
+      stopTextLipSync();
+      setStatus(`audio autoplay blocked; use Speak latest reply (${error?.message || error})`, 'error');
+    }
+
+    function stopStateAudio(forgetLastPlayed = true) {
       if (currentAudio) {
         currentAudio.pause();
         currentAudio.currentTime = 0;
-        currentAudio = null;
       }
-      lastPlayedAudioUrl = '';
+      if (releaseCurrentAudio) releaseCurrentAudio();
+      currentAudio = null;
+      releaseCurrentAudio = null;
+      document.documentElement.dataset.audioState = 'idle';
+      if (forgetLastPlayed) lastPlayedAudioUrl = '';
       stopTextLipSync();
     }
 
