@@ -18,7 +18,7 @@ emotion_defaults:
     expression: concerned
     gestures: [small_bow]
   supportive:
-    expression: concerned
+    expression: soft_smile
     gestures: [nod]
 keyword_gestures:
   farewell:
