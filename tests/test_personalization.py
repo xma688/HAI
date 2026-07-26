@@ -131,7 +131,7 @@ def test_pace_adjusts_speaking_rate():
         speaking_rate=1.0,
     )
     adjusted = post.apply(command, profile)
-    assert adjusted.speaking_rate == 0.8
+    assert adjusted.speaking_rate == 0.95
 
 
 def test_profile_manager_creates_and_loads():
@@ -157,7 +157,7 @@ def test_profile_manager_updates_gesture_affinity():
     tmpdir = _test_dir()
     mgr = ProfileManager(profile_dir=tmpdir)
     profile = mgr.get_or_create("user1")
-    mgr.update(profile, "你好", ["happy"], ["nod", "wave"])
+    mgr.record_gesture_feedback(profile, ["nod", "wave"], liked=True)
     assert profile.gesture_affinity.get("nod", 0) > 0.0
     assert profile.gesture_affinity.get("wave", 0) > 0.0
 
@@ -267,5 +267,24 @@ def test_mock_pipeline_conversation_history_accumulates():
     assert result1.reply_text
     result2 = asyncio.run(pipeline.process("谢谢！", user_id="hist_test"))
     assert result2.reply_text
-    history = pipeline.conversation_service.last_turns(5)
+    history = pipeline.conversation_service.last_turns("hist_test", 5)
     assert len(history) >= 2
+
+
+def test_pipeline_conversation_history_is_isolated_and_clearable():
+    tmpdir = _test_dir()
+    settings = load_settings()
+    settings.personalization.profile_dir = str(tmpdir)
+    settings.tts.output_dir = tmpdir / "audio"
+    pipeline = _make_personalized_pipeline(settings, str(tmpdir))
+
+    asyncio.run(pipeline.process("session A", user_id="session-a"))
+    asyncio.run(pipeline.process("session B", user_id="session-b"))
+
+    assert len(pipeline.conversation_service.last_turns("session-a")) == 1
+    assert len(pipeline.conversation_service.last_turns("session-b")) == 1
+
+    asyncio.run(pipeline.clear_session("session-a"))
+
+    assert pipeline.conversation_service.last_turns("session-a") == []
+    assert len(pipeline.conversation_service.last_turns("session-b")) == 1

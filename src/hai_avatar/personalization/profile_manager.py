@@ -1,7 +1,9 @@
 """Load, persist, and update user profiles from JSON storage."""
 
+import hashlib
 import json
 import logging
+import re
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
@@ -73,7 +75,6 @@ class ProfileManager:
         profile.updated_at = datetime.now(timezone.utc)
 
         self._update_big_five_from_text(profile, user_text)
-        self._update_gesture_affinity(profile, gestures_used)
         self._update_preferences_from_accumulated(profile)
 
         self._save(profile)
@@ -96,7 +97,29 @@ class ProfileManager:
             logger.info("Deleted profile for user=%s", user_id)
 
     def _profile_path(self, user_id: str) -> Path:
-        return self._profile_dir / f"{user_id}.json"
+        if re.fullmatch(r"[A-Za-z0-9_.-]{1,128}", user_id) and user_id not in {".", ".."}:
+            filename = user_id
+        else:
+            digest = hashlib.sha256(user_id.encode("utf-8")).hexdigest()[:16]
+            filename = f"session-{digest}"
+        return self._profile_dir / f"{filename}.json"
+
+    def record_gesture_feedback(
+        self,
+        profile: UserProfile,
+        gestures: list[str],
+        liked: bool,
+    ) -> UserProfile:
+        """Update gesture affinity only from explicit user feedback."""
+
+        delta = 0.08 if liked else -0.12
+        for gesture in gestures:
+            if gesture == "idle":
+                continue
+            current = profile.gesture_affinity.get(gesture, 0.5)
+            profile.gesture_affinity[gesture] = round(max(0.0, min(1.0, current + delta)), 3)
+        self._save(profile)
+        return profile
 
     def _save(self, profile: UserProfile) -> None:
         self._profile_path(profile.user_id).write_text(

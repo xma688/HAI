@@ -21,9 +21,14 @@ class ActionPlanner:
         self.max_gestures = max_gestures
         self.enable_cooldown = enable_cooldown
         self.mapping = load_action_mapping()
-        self._last_gesture_at: dict[GestureType, float] = {}
+        self._last_gesture_at: dict[tuple[str, GestureType], float] = {}
 
-    def plan(self, llm_response: LLMAvatarResponse, user_text: str = "") -> tuple[AvatarCommand, list[str]]:
+    def plan(
+        self,
+        llm_response: LLMAvatarResponse,
+        user_text: str = "",
+        context_id: str = "default",
+    ) -> tuple[AvatarCommand, list[str]]:
         warnings: list[str] = []
         emotion = self._coerce_enum(EmotionType, llm_response.emotion, EmotionType.neutral, "emotion", warnings)
         expression = self._coerce_enum(
@@ -35,7 +40,7 @@ class ActionPlanner:
         gestures = self._normalize_gestures(llm_response.gestures, warnings)
 
         expression, gestures = self._apply_consistency_rules(emotion, expression, gestures, user_text, warnings)
-        gestures = self._apply_cooldown(gestures, warnings)
+        gestures = self._apply_cooldown(gestures, warnings, context_id)
         if not gestures:
             gestures = [GestureType.idle]
         command = AvatarCommand(
@@ -78,8 +83,8 @@ class ActionPlanner:
         warnings: list[str],
     ) -> tuple[ExpressionType, list[GestureType]]:
         if emotion == EmotionType.supportive and expression == ExpressionType.surprised:
-            warnings.append("supportive + surprised corrected to soft_smile.")
-            expression = ExpressionType.soft_smile
+            warnings.append("supportive + surprised corrected to concerned.")
+            expression = ExpressionType.concerned
         if emotion == EmotionType.serious and expression == ExpressionType.smile:
             warnings.append("serious + smile corrected to serious.")
             expression = ExpressionType.serious
@@ -94,6 +99,15 @@ class ActionPlanner:
             expression = ExpressionType.smile
 
         lowered = user_text.lower()
+        distress_keywords = [
+            "难过", "伤心", "悲伤", "焦虑", "害怕", "恐惧", "担心", "压力", "崩溃", "失望", "委屈",
+        ]
+        if (
+            emotion == EmotionType.supportive
+            and expression in (ExpressionType.smile, ExpressionType.soft_smile)
+            and any(keyword in lowered for keyword in distress_keywords)
+        ):
+            expression = ExpressionType.concerned
         if any(keyword in lowered for keyword in ["再见", "拜拜", "下次见", "回头见"]):
             gestures = self._prepend_unique(GestureType.wave, gestures)
         if any(keyword in lowered for keyword in ["解释", "说明", "概念", "为什么", "怎么"]):
@@ -101,7 +115,12 @@ class ActionPlanner:
 
         return expression, gestures[: self.max_gestures]
 
-    def _apply_cooldown(self, gestures: list[GestureType], warnings: list[str]) -> list[GestureType]:
+    def _apply_cooldown(
+        self,
+        gestures: list[GestureType],
+        warnings: list[str],
+        context_id: str,
+    ) -> list[GestureType]:
         if not self.enable_cooldown:
             return gestures
         now = time.monotonic()
@@ -109,7 +128,8 @@ class ActionPlanner:
         planned: list[GestureType] = []
         for gesture in gestures:
             seconds = float(cooldowns.get(gesture.value, 0))
-            last_seen = self._last_gesture_at.get(gesture)
+            cooldown_key = (context_id, gesture)
+            last_seen = self._last_gesture_at.get(cooldown_key)
             if seconds and last_seen is not None and now - last_seen < seconds:
                 replacement = GestureType.nod if gesture != GestureType.nod else GestureType.idle
                 warnings.append(f"Gesture '{gesture.value}' is cooling down; replaced by '{replacement.value}'.")
@@ -117,8 +137,13 @@ class ActionPlanner:
                 continue
             planned.append(gesture)
             if gesture != GestureType.idle:
-                self._last_gesture_at[gesture] = now
+                self._last_gesture_at[cooldown_key] = now
         return planned
+
+    def clear_context(self, context_id: str) -> None:
+        self._last_gesture_at = {
+            key: value for key, value in self._last_gesture_at.items() if key[0] != context_id
+        }
 
     def _prepend_unique(self, gesture: GestureType, gestures: list[GestureType]) -> list[GestureType]:
         return [gesture, *[item for item in gestures if item != gesture]]
