@@ -2,6 +2,7 @@
 
 from pathlib import Path
 
+from hai_avatar.avatar.petdex_controller import PetdexAvatarController
 from hai_avatar.avatar.base import AvatarController
 from hai_avatar.avatar.mock_controller import MockAvatarController
 from hai_avatar.avatar.prometheus_controller import PrometheusAvatarController
@@ -110,4 +111,12 @@ def _create_avatar_controller(provider_name: str, settings: Settings) -> AvatarC
             output_dir=output_dir,
             model_url=settings.avatar.prometheus_model_url,
         )
+    if provider_name == "petdex":
+        output_dir = settings.avatar.petdex_output_dir
+        if not output_dir.is_absolute():
+            output_dir = PROJECT_ROOT / output_dir
+        pet_dir = settings.avatar.petdex_pet_dir
+        if not pet_dir.is_absolute():
+            pet_dir = PROJECT_ROOT / pet_dir
+        return PetdexAvatarController(output_dir=output_dir, pet_dir=pet_dir)
     raise ValueError(f"Unknown Avatar provider: {provider_name}")

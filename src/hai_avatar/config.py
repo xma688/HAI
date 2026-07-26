@@ -47,6 +47,8 @@ class AvatarSettings(BaseModel):
         "https://cdn.jsdelivr.net/gh/Live2D/CubismWebSamples@develop/Samples/Resources/Mao/"
         "Mao.model3.json"
     )
+    petdex_output_dir: Path = Path("data/petdex_avatar")
+    petdex_pet_dir: Path = Path("assets/avatar/eve")
 
 
 class PlannerSettings(BaseModel):

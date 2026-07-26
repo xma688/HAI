@@ -8,6 +8,7 @@ from hai_avatar.schemas import (
     VoiceStyleType,
 )
 from hai_avatar.ui import gradio_app
+from hai_avatar.avatar.petdex_controller import PetdexAvatarController
 
 
 def test_progress_idle_has_root_class():
@@ -116,3 +117,28 @@ def test_progress_complete_carries_emotion_class():
 def test_progress_default_no_emotion_class():
     html = gradio_app._progress_html("understanding")
     assert "emotion-" not in html
+
+
+def test_petdex_avatar_stage_uses_bridge_iframe():
+    from hai_avatar.config import load_settings
+
+    settings = load_settings()
+    settings = settings.model_copy(deep=True)
+    settings.avatar.provider = "petdex"
+    html = gradio_app._avatar_stage_markup(settings)
+    assert "<iframe" in html
+    assert "?embed=1" in html
+    assert "hai-stage-empty" not in html
+
+
+def test_petdex_bridge_html_only_renders_avatar(tmp_path):
+    controller = PetdexAvatarController(
+        output_dir=tmp_path / "bridge",
+        pet_dir=tmp_path / "pet",
+    )
+    html = controller._html()
+    assert '<main id="stage">' in html
+    assert 'id="petRoot"' in html
+    assert "<aside" not in html
+    assert "speakBtn" not in html
+    assert "petStatus" not in html

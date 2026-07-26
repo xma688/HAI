@@ -20,6 +20,7 @@ logger = logging.getLogger(__name__)
 
 ILLUSTRATION_PATH = PROJECT_ROOT / "img.png"
 STYLES_PATH = Path(__file__).with_name("styles.css")
+BRIDGE_AVATAR_PROVIDERS = {"prometheus", "petdex"}
 
 _PROGRESS_STAGES = (
     ("understanding", "理解", "正在理解你的话"),
@@ -34,7 +35,7 @@ def _file_url(path: Path) -> str:
 
 
 def _brand_header(avatar_provider: str) -> str:
-    connected = avatar_provider == "prometheus"
+    connected = avatar_provider in BRIDGE_AVATAR_PROVIDERS
     status_class = "connected" if connected else "demo"
     status_text = "角色已连接" if connected else "演示模式"
     return f"""
@@ -65,7 +66,7 @@ def _welcome_markup() -> str:
 
 
 def _avatar_stage_markup(settings: Settings) -> str:
-    if settings.avatar.provider == "prometheus":
+    if settings.avatar.provider in BRIDGE_AVATAR_PROVIDERS:
         bridge_host = settings.avatar.bridge_host
         browser_host = "127.0.0.1" if bridge_host == "0.0.0.0" else bridge_host
         bridge_url = f"http://{browser_host}:{settings.avatar.bridge_port}/?embed=1"
@@ -520,10 +521,14 @@ class GradioApp:
         return demo.queue(default_concurrency_limit=1, max_size=16)
 
     def run(self, port: int | None = None) -> None:
-        if self.settings.avatar.provider == "prometheus":
+        if self.settings.avatar.provider in BRIDGE_AVATAR_PROVIDERS:
             from hai_avatar.avatar.bridge_server import start_avatar_bridge_server
 
-            output_dir = self.settings.avatar.prometheus_output_dir
+            output_dir = (
+                self.settings.avatar.petdex_output_dir
+                if self.settings.avatar.provider == "petdex"
+                else self.settings.avatar.prometheus_output_dir
+            )
             if not output_dir.is_absolute():
                 output_dir = PROJECT_ROOT / output_dir
             start_avatar_bridge_server(
