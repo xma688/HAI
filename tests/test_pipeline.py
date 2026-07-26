@@ -12,6 +12,11 @@ from hai_avatar.schemas import EmotionType, ExpressionType, VoiceStyleType
 from hai_avatar.tts.mock_provider import MockTTSProvider
 
 
+class FailingTTSProvider(MockTTSProvider):
+    async def synthesize(self, *args, **kwargs):
+        raise RuntimeError("synthetic TTS failure")
+
+
 class EmptyReplyLLMProvider(LLMProvider):
     async def generate(
         self,
@@ -47,6 +52,24 @@ def test_mock_pipeline_completes_one_turn():
     assert "end_to_end" in result.latency_ms
 
 
+def test_pipeline_reports_real_processing_stages_in_order():
+    pipeline = build_mock_pipeline()
+    stages: list[str] = []
+    reply_payloads: list[str] = []
+
+    async def collect(stage: str, payload: dict):
+        stages.append(stage)
+        if stage == "reply":
+            reply_payloads.append(payload["reply_text"])
+
+    result = asyncio.run(
+        pipeline.process("今天有点累。", progress_callback=collect)
+    )
+
+    assert stages == ["understanding", "reply", "voice", "performance", "complete"]
+    assert reply_payloads == [result.reply_text]
+
+
 def test_mock_pipeline_scenarios_complete():
     cases = [
         "你好！",
@@ -76,6 +99,20 @@ def test_empty_reply_text_uses_fallback():
     assert result.reply_text
     assert result.avatar_command.emotion == EmotionType.neutral
     assert any("empty reply_text" in warning for warning in result.warnings)
+
+
+def test_tts_failure_does_not_return_mock_beep():
+    settings = load_settings()
+    pipeline = PipelineService(
+        settings=settings,
+        llm_provider=EmptyReplyLLMProvider(),
+        tts_provider=FailingTTSProvider(),
+        avatar_controller=MockAvatarController(),
+        action_planner=ActionPlanner(enable_cooldown=False),
+    )
+    result = asyncio.run(pipeline.process("你好"))
+    assert result.audio_path is None
+    assert any("voice output is unavailable" in warning for warning in result.warnings)
 
 
 def test_build_pipeline_creates_mock_by_default():

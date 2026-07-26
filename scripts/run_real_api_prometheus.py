@@ -9,30 +9,14 @@ from hai_avatar.config import load_settings
 from hai_avatar.logging_config import configure_logging
 
 
-def _select_available_api_key_env() -> str | None:
-    for name in ("OPENCODE_GO_API_KEY", "DEEPSEEK_API_KEY", "OPENAI_API_KEY"):
-        if os.getenv(name):
-            return name
-    return None
-
-
 async def main_async(user_text: str) -> None:
     settings = load_settings()
     settings.llm.provider = "openai"
-    settings.tts.provider = "moss_tts" #os.getenv("TTS_PROVIDER", "mock")
     settings.avatar.provider = "prometheus"
 
-    api_key_name = _select_available_api_key_env() or settings.llm.api_key_env
-    settings.llm.api_key_env = api_key_name
+    api_key_name = settings.llm.api_key_env
     if not os.getenv(api_key_name):
-        raise SystemExit(
-            "Missing API key. Put one of OPENCODE_GO_API_KEY, DEEPSEEK_API_KEY, or OPENAI_API_KEY "
-            "in .env, then rerun this script."
-        )
-    if api_key_name != "OPENCODE_GO_API_KEY" and not os.getenv("LLM_BASE_URL"):
-        raise SystemExit(
-            f"{api_key_name} is set, but LLM_BASE_URL is not. Add the OpenAI-compatible endpoint to .env."
-        )
+        raise SystemExit(f"Missing API key. Set {api_key_name} in .env, then rerun this script.")
 
     pipeline = build_pipeline(settings)
     result = await pipeline.process(user_text)
@@ -40,7 +24,7 @@ async def main_async(user_text: str) -> None:
     print(f"reply: {result.reply_text}")
     print(f"command: {result.avatar_command.model_dump(mode='json')}")
     print(f"audio: {result.audio_path}")
-    print("open: http://127.0.0.1:8010")
+    print("To view the browser bridge, run: PYTHONPATH=src python scripts/run_gradio.py")
 
 
 if __name__ == "__main__":

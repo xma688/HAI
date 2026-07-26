@@ -31,7 +31,8 @@ class OpenAIProvider(LLMProvider):
             api_key=api_key,
             base_url=settings.llm.base_url,
             timeout=float(settings.llm.timeout_seconds),
-            max_retries=settings.llm.max_retries,
+            # PipelineService owns retry policy so attempts are not multiplied.
+            max_retries=0,
         )
         self._model = settings.llm.model
         self._temperature = settings.llm.temperature

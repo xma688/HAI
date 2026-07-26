@@ -15,6 +15,8 @@ class AppSettings(BaseModel):
     language: str = "zh-CN"
     max_input_chars: int = 500
     max_reply_chars: int = 500
+    server_name: str = "127.0.0.1"
+    server_port: int = 7860
 
 
 class LLMSettings(BaseModel):
@@ -39,6 +41,8 @@ class AvatarSettings(BaseModel):
     reset_after_speech: bool = True
     default_expression: str = "neutral"
     prometheus_output_dir: Path = Path("data/prometheus_avatar")
+    bridge_host: str = "127.0.0.1"
+    bridge_port: int = 7861
     prometheus_model_url: str = (
         "https://cdn.jsdelivr.net/gh/Live2D/CubismWebSamples@develop/Samples/Resources/Mao/"
         "Mao.model3.json"
@@ -93,6 +97,10 @@ def load_settings(config_path: Path | None = None) -> Settings:
         "Mao.model3.json",
     )
     env_updates = {
+        "app": {
+            "server_name": os.getenv("GRADIO_SERVER_NAME", data.get("app", {}).get("server_name", "127.0.0.1")),
+            "server_port": int(os.getenv("GRADIO_SERVER_PORT", data.get("app", {}).get("server_port", 7860))),
+        },
         "llm": {
             "provider": os.getenv("LLM_PROVIDER", data.get("llm", {}).get("provider", "mock")),
             "model": os.getenv("LLM_MODEL", data.get("llm", {}).get("model", "deepseek-v4-flash")),
@@ -103,6 +111,8 @@ def load_settings(config_path: Path | None = None) -> Settings:
         "avatar": {
             "provider": os.getenv("AVATAR_PROVIDER", data.get("avatar", {}).get("provider", "mock")),
             "prometheus_model_url": os.getenv("PROMETHEUS_MODEL_URL") or default_prometheus_model_url,
+            "bridge_host": os.getenv("AVATAR_BRIDGE_HOST", data.get("avatar", {}).get("bridge_host", "127.0.0.1")),
+            "bridge_port": int(os.getenv("AVATAR_BRIDGE_PORT", data.get("avatar", {}).get("bridge_port", 7861))),
         },
     }
     if os.getenv("PERSONALIZATION_ENABLED", "").lower() in ("true", "false"):

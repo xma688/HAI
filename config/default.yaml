@@ -2,6 +2,8 @@ app:
   language: zh-CN
   max_input_chars: 500
   max_reply_chars: 500
+  server_name: 127.0.0.1
+  server_port: 7860
 llm:
   provider: mock
   model: deepseek-v4-flash
@@ -20,6 +22,8 @@ avatar:
   reset_after_speech: true
   default_expression: neutral
   prometheus_output_dir: data/prometheus_avatar
+  bridge_host: 127.0.0.1
+  bridge_port: 7861
   prometheus_model_url: https://cdn.jsdelivr.net/gh/Live2D/CubismWebSamples@develop/Samples/Resources/Mao/Mao.model3.json
 planner:
   max_gestures: 2

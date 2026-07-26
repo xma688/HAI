@@ -2,12 +2,18 @@
 
 import logging
 
-from hai_avatar.schemas import AvatarCommand, GestureType, UserProfile
+from hai_avatar.schemas import (
+    MAX_SPEAKING_RATE,
+    MIN_SPEAKING_RATE,
+    AvatarCommand,
+    GestureType,
+    UserProfile,
+)
 
 logger = logging.getLogger(__name__)
 
 _GESTURE_FREQUENCY_CAPS = {"minimal": 1, "moderate": 2, "frequent": 3}
-_PACE_RATE_MAP = {"slow": 0.8, "moderate": 1.0, "fast": 1.25}
+_PACE_RATE_MAP = {"slow": 0.95, "moderate": 1.0, "fast": 1.05}
 
 
 class PostProcessor:
@@ -26,7 +32,7 @@ class PostProcessor:
             gestures = [GestureType.idle]
 
         rate = round(command.speaking_rate * _PACE_RATE_MAP.get(prefs.pace, 1.0), 3)
-        rate = max(0.5, min(2.0, rate))
+        rate = max(MIN_SPEAKING_RATE, min(MAX_SPEAKING_RATE, rate))
 
         adjusted = command.model_copy(
             update={
