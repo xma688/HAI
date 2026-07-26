@@ -142,3 +142,14 @@ def test_petdex_bridge_html_only_renders_avatar(tmp_path):
     assert "<aside" not in html
     assert "speakBtn" not in html
     assert "petStatus" not in html
+
+
+def test_petdex_bridge_consumes_full_gesture_sequence(tmp_path):
+    controller = PetdexAvatarController(
+        output_dir=tmp_path / "bridge",
+        pet_dir=tmp_path / "pet",
+    )
+    html = controller._html()
+    assert "const petSequence = activeGestures" in html
+    assert "playGestureSequence(petSequence)" in html
+    assert "playGestureSequence([petState])" not in html

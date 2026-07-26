@@ -373,8 +373,13 @@ class PetdexAvatarController(AvatarController):
       const gestures = nextState.gestures || ['idle'];
       const activeGestures = gestures.filter(g => g && g !== 'idle');
       const gesture = activeGestures.length > 0 ? activeGestures[activeGestures.length - 1] : 'idle';
+      const petSequence = activeGestures
+        .map(g => actionMap[g] || 'idle')
+        .filter(item => item && item !== 'idle');
       
-      let petState = nextState.petdex_state || actionMap[gesture] || 'idle';
+      let petState = petSequence.length > 0
+        ? petSequence[petSequence.length - 1]
+        : (nextState.petdex_state || actionMap[gesture] || 'idle');
       
       if (gesture === 'idle' && petState !== 'idle') {{
         petState = 'idle';
@@ -385,12 +390,13 @@ class PetdexAvatarController(AvatarController):
       document.body.dataset.expression = nextState.expression || 'neutral';
       document.body.dataset.speaking = nextState.speaking ? '1' : '0';
       
-      const signature = `${{nextState.updated_at || ''}}|${{petState}}|${{gesture}}`;
+      const sequenceSignature = petSequence.length > 0 ? petSequence.join('>') : 'idle';
+      const signature = `${{nextState.turn_id || nextState.updated_at || ''}}|${{sequenceSignature}}`;
       
       if (signature !== lastStateSignature) {{
         lastStateSignature = signature;
-        console.log('[Petdex] State changed:', {{ petState, gesture, signature }});
-        playGestureSequence([petState]);
+        console.log('[Petdex] State changed:', {{ petState, gesture, petSequence, signature }});
+        playGestureSequence(petSequence);
       }}
       if (nextState.speaking && nextState.audio_url) {{
         playStateAudio(nextState.audio_url, nextState.turn_id || '');
@@ -516,9 +522,9 @@ class PetdexAvatarController(AvatarController):
         const hasStateChanged = nextState.updated_at && 
                                nextState.updated_at !== state.updated_at;
         
-        const currentGesture = (state.gestures || []).filter(g => g !== 'idle').pop() || 'idle';
-        const newGesture = (nextState.gestures || []).filter(g => g !== 'idle').pop() || 'idle';
-        const hasGestureChanged = currentGesture !== newGesture;
+        const currentGestures = (state.gestures || []).filter(g => g && g !== 'idle').join('|');
+        const newGestures = (nextState.gestures || []).filter(g => g && g !== 'idle').join('|');
+        const hasGestureChanged = currentGestures !== newGestures;
         
         const hasPetStateChanged = nextState.petdex_state && 
                                   nextState.petdex_state !== state.petdex_state;
@@ -526,7 +532,7 @@ class PetdexAvatarController(AvatarController):
         if (hasStateChanged || hasGestureChanged || hasPetStateChanged) {{
           state = nextState;
           console.log('[Petdex] State refreshed:', {{
-            gesture: newGesture,
+            gestures: newGestures,
             petState: nextState.petdex_state,
             updatedAt: nextState.updated_at
           }});
