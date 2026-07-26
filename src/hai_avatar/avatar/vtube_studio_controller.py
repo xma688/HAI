@@ -13,7 +13,7 @@ class VTubeStudioController(AvatarController):
     async def set_expression(self, expression: str) -> None:
         raise AvatarConnectionError("VTubeStudioController is not implemented in Phase 0-2.")
 
-    async def trigger_gesture(self, gesture: str) -> None:
+    async def trigger_gesture(self, gesture: str, intensity: float = 0.5) -> None:
         raise AvatarConnectionError("VTubeStudioController is not implemented in Phase 0-2.")
 
     async def play_audio(self, audio_path: str) -> None:

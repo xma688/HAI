@@ -5,7 +5,8 @@ import logging
 import time
 import uuid
 from pathlib import Path
-from typing import Optional
+from collections.abc import Awaitable, Callable
+from typing import Any, Optional
 
 from hai_avatar.avatar.base import AvatarController
 from hai_avatar.config import Settings
@@ -21,6 +22,8 @@ from hai_avatar.services.conversation_service import ConversationService
 from hai_avatar.tts.base import TTSProvider
 
 logger = logging.getLogger(__name__)
+
+ProgressCallback = Callable[[str, dict[str, Any]], Awaitable[None]]
 
 
 class PipelineService:
@@ -48,8 +51,14 @@ class PipelineService:
         self.use_personalized_prompt = use_personalized_prompt
         self.use_post_processor = use_post_processor
         self._avatar_connected = False
+        self._avatar_lock = asyncio.Lock()
 
-    async def process(self, user_text: str, user_id: str = "default") -> PipelineResult:
+    async def process(
+        self,
+        user_text: str,
+        user_id: str = "default",
+        progress_callback: ProgressCallback | None = None,
+    ) -> PipelineResult:
         start = time.perf_counter()
         latency_ms: dict[str, float] = {}
         warnings: list[str] = []
@@ -60,6 +69,7 @@ class PipelineService:
             raise PipelineError(f"User text exceeds {self.settings.app.max_input_chars} characters.")
 
         logger.info("Pipeline request started; input_length=%s user_id=%s", len(clean_text), user_id)
+        await self._emit_progress(progress_callback, "understanding")
 
         if self._personalization_enabled:
             t0 = time.perf_counter()
@@ -71,7 +81,7 @@ class PipelineService:
             personalized_prompt = ""
 
         t0 = time.perf_counter()
-        history = self._build_conversation_history()
+        history = self._build_conversation_history(user_id)
         latency_ms["history_build"] = self._elapsed(t0)
 
         raw_response = ""
@@ -110,7 +120,11 @@ class PipelineService:
         latency_ms["json_parsing"] = self._elapsed(t0)
 
         t0 = time.perf_counter()
-        avatar_command, planner_warnings = self.planner.plan(llm_response, clean_text)
+        avatar_command, planner_warnings = self.planner.plan(
+            llm_response,
+            clean_text,
+            context_id=user_id,
+        )
         avatar_command_before_post = avatar_command
         warnings.extend(planner_warnings)
         latency_ms["action_planner"] = self._elapsed(t0)
@@ -122,66 +136,75 @@ class PipelineService:
         else:
             latency_ms["post_processor"] = 0
 
+        await self._emit_progress(
+            progress_callback,
+            "reply",
+            reply_text=llm_response.reply_text,
+        )
+
         audio_path: str | None = None
+        await self._emit_progress(progress_callback, "voice")
         t0 = time.perf_counter()
         try:
             output_path = self._next_audio_path(self.settings.tts.output_dir)
             tts_result = await self.tts_provider.synthesize(
-                llm_response.reply_text, avatar_command.voice_style.value, output_path
+                llm_response.reply_text,
+                avatar_command.voice_style.value,
+                output_path,
+                speaking_rate=avatar_command.speaking_rate,
             )
             audio_path = tts_result.audio_path
             logger.info("TTS wrote audio to %s", audio_path)
         except Exception as exc:
-            logger.exception("TTS failed; falling back to mock audio")
-            warnings.append(f"TTS failed; fallback mock audio used: {exc}")
-            try:
-                from hai_avatar.tts.mock_provider import MockTTSProvider
-
-                mock_tts = MockTTSProvider()
-                output_path = self._next_audio_path(self.settings.tts.output_dir)
-                fallback_result = await mock_tts.synthesize(
-                    llm_response.reply_text, avatar_command.voice_style.value, output_path
-                )
-                audio_path = fallback_result.audio_path
-            except Exception as fallback_exc:
-                logger.exception("Mock TTS fallback also failed")
-                warnings.append(f"Mock TTS fallback also failed: {fallback_exc}")
+            logger.exception("TTS failed; voice output disabled for this turn")
+            warnings.append(f"TTS failed; voice output is unavailable for this turn: {exc}")
         latency_ms["tts"] = self._elapsed(t0)
 
-        t0 = time.perf_counter()
-        try:
-            await self._ensure_avatar_connected()
-            set_reply_text = getattr(self.avatar, "set_reply_text", None)
-            if set_reply_text:
-                await set_reply_text(llm_response.reply_text, avatar_command.voice_style.value)
-            await self.avatar.set_expression(avatar_command.expression.value)
-            for gesture in avatar_command.gestures:
-                await self.avatar.trigger_gesture(gesture.value)
-        except Exception as exc:
-            logger.exception("Avatar preparation failed")
-            warnings.append(f"Avatar preparation failed: {exc}")
-        latency_ms["avatar_preparation"] = self._elapsed(t0)
+        await self._emit_progress(
+            progress_callback,
+            "performance",
+            audio_available=audio_path is not None,
+        )
+        async with self._avatar_lock:
+            t0 = time.perf_counter()
+            try:
+                await self._ensure_avatar_connected()
+                set_reply_text = getattr(self.avatar, "set_reply_text", None)
+                if set_reply_text:
+                    await set_reply_text(llm_response.reply_text, avatar_command.voice_style.value)
+                await self.avatar.set_expression(avatar_command.expression.value)
+                for gesture in avatar_command.gestures:
+                    await self.avatar.trigger_gesture(
+                        gesture.value,
+                        intensity=avatar_command.gesture_intensity,
+                    )
+            except Exception as exc:
+                logger.exception("Avatar preparation failed")
+                warnings.append(f"Avatar preparation failed: {exc}")
+            latency_ms["avatar_preparation"] = self._elapsed(t0)
 
-        t0 = time.perf_counter()
-        try:
-            if avatar_command.pause_before_speech_ms:
-                await asyncio.sleep(avatar_command.pause_before_speech_ms / 1000)
-            await self.avatar.start_speaking()
-            if audio_path:
-                await self.avatar.play_audio(audio_path)
-            await self.avatar.stop_speaking()
-            if self.settings.avatar.reset_after_speech:
-                await self.avatar.reset_to_idle()
-        except Exception as exc:
-            logger.exception("Avatar playback failed")
-            warnings.append(f"Avatar playback failed: {exc}")
-        latency_ms["audio_playback"] = self._elapsed(t0)
+            t0 = time.perf_counter()
+            try:
+                if avatar_command.pause_before_speech_ms:
+                    await asyncio.sleep(avatar_command.pause_before_speech_ms / 1000)
+                await self.avatar.start_speaking()
+                if audio_path:
+                    await self.avatar.play_audio(audio_path)
+                await self.avatar.stop_speaking()
+                if self.settings.avatar.reset_after_speech:
+                    await self.avatar.reset_to_idle()
+            except Exception as exc:
+                logger.exception("Avatar playback failed")
+                warnings.append(f"Avatar playback failed: {exc}")
+            latency_ms["audio_playback"] = self._elapsed(t0)
         latency_ms["end_to_end"] = self._elapsed(start)
 
         t0 = time.perf_counter()
-        self.conversation_service.add_turn(clean_text, llm_response.reply_text)
+        self.conversation_service.add_turn(user_id, clean_text, llm_response.reply_text)
         self._update_profile(user_profile, clean_text, avatar_command)
         latency_ms["state_update"] = self._elapsed(t0)
+
+        await self._emit_progress(progress_callback, "complete")
 
         return PipelineResult(
             user_text=clean_text,
@@ -195,12 +218,22 @@ class PipelineService:
             user_profile=user_profile,
         )
 
-    def _build_conversation_history(self) -> list[dict[str, str]]:
+    def _build_conversation_history(self, user_id: str) -> list[dict[str, str]]:
         history: list[dict[str, str]] = []
-        for user, assistant in self.conversation_service.last_turns(3):
+        for user, assistant in self.conversation_service.last_turns(user_id, 3):
             history.append({"role": "user", "content": user})
             history.append({"role": "assistant", "content": assistant})
         return history
+
+    async def clear_session(self, user_id: str) -> None:
+        """Clear short-term history, gesture cooldowns, and the active avatar state."""
+
+        self.conversation_service.clear(user_id)
+        self.planner.clear_context(user_id)
+        if not self._avatar_connected:
+            return
+        async with self._avatar_lock:
+            await self.avatar.clear_session_state()
 
     def _load_profile(self, user_id: str) -> UserProfile:
         if not self.profile_manager or not self._personalization_enabled:
@@ -234,3 +267,16 @@ class PipelineService:
 
     def _elapsed(self, started_at: float) -> float:
         return round((time.perf_counter() - started_at) * 1000, 3)
+
+    async def _emit_progress(
+        self,
+        callback: ProgressCallback | None,
+        stage: str,
+        **payload: Any,
+    ) -> None:
+        if callback is None:
+            return
+        try:
+            await callback(stage, payload)
+        except Exception:
+            logger.warning("Pipeline progress callback failed at stage=%s", stage, exc_info=True)

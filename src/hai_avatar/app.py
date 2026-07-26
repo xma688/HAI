@@ -5,7 +5,7 @@ from pathlib import Path
 from hai_avatar.avatar.base import AvatarController
 from hai_avatar.avatar.mock_controller import MockAvatarController
 from hai_avatar.avatar.prometheus_controller import PrometheusAvatarController
-from hai_avatar.config import PROJECT_ROOT, load_settings, Settings
+from hai_avatar.config import PROJECT_ROOT, Settings, load_settings
 from hai_avatar.llm.base import LLMProvider
 from hai_avatar.llm.mock_provider import MockLLMProvider
 from hai_avatar.llm.openai_provider import OpenAIProvider
@@ -20,7 +20,7 @@ from hai_avatar.tts.mock_provider import MockTTSProvider
 
 def build_mock_pipeline() -> PipelineService:
     """Create the complete mock pipeline from configuration."""
-    return _build_pipeline(force_provider="mock")
+    return _build_pipeline(force_mock=True)
 
 
 def build_pipeline(settings: Settings | None = None) -> PipelineService:
@@ -30,14 +30,21 @@ def build_pipeline(settings: Settings | None = None) -> PipelineService:
 
 def _build_pipeline(
     settings: Settings | None = None,
-    force_provider: str | None = None,
+    force_mock: bool = False,
 ) -> PipelineService:
     settings = settings or load_settings()
-    provider_name = force_provider or settings.llm.provider
+    if force_mock:
+        settings = settings.model_copy(deep=True)
+        settings.llm.provider = "mock"
+        settings.tts.provider = "mock"
+        settings.avatar.provider = "mock"
+    provider_name = "mock" if force_mock else settings.llm.provider
+    tts_provider_name = "mock" if force_mock else settings.tts.provider
+    avatar_provider_name = "mock" if force_mock else settings.avatar.provider
 
     llm_provider = _create_llm_provider(provider_name, settings)
-    tts_provider = _create_tts_provider(settings.tts.provider)
-    avatar_controller = _create_avatar_controller(settings.avatar.provider, settings)
+    tts_provider = _create_tts_provider(tts_provider_name, settings)
+    avatar_controller = _create_avatar_controller(avatar_provider_name, settings)
     conversation_service = ConversationService()
 
     planner = ActionPlanner(
@@ -75,16 +82,20 @@ def _create_llm_provider(provider_name: str, settings: Settings) -> LLMProvider:
     raise ValueError(f"Unknown LLM provider: {provider_name}")
 
 
-def _create_tts_provider(provider_name: str) -> TTSProvider:
+def _create_tts_provider(provider_name: str, settings: Settings) -> TTSProvider:
     if provider_name == "mock":
         return MockTTSProvider()
     if provider_name == "edge_tts":
         from hai_avatar.tts.edge_tts_provider import EdgeTTSProvider
 
-        return EdgeTTSProvider()
+        return EdgeTTSProvider(
+            voice=settings.tts.voice,
+            timeout_seconds=settings.tts.timeout_seconds,
+        )
     if provider_name == "moss_tts":
         from hai_avatar.tts.moss_tts_provider import MossTTSProvider
-        return MossTTSProvider()
+
+        return MossTTSProvider(timeout_seconds=max(120, settings.tts.timeout_seconds))
     raise ValueError(f"Unknown TTS provider: {provider_name}")
 
 

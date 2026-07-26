@@ -7,6 +7,9 @@ from enum import Enum
 
 from pydantic import BaseModel, Field, field_validator
 
+MIN_SPEAKING_RATE = 0.9
+MAX_SPEAKING_RATE = 1.1
+
 
 class EmotionType(str, Enum):
     neutral = "neutral"
@@ -54,18 +57,28 @@ class LLMAvatarResponse(BaseModel):
     """Raw structured response requested from an LLM provider."""
 
     reply_text: str
-    emotion: str
-    expression: str
+    emotion: str = "neutral"
+    expression: str = "neutral"
     gestures: list[str] = Field(default_factory=list)
-    voice_style: str
-    gesture_intensity: float = Field(default=0.5, ge=0.0, le=1.0)
-    speaking_rate: float = Field(default=1.0, ge=0.5, le=2.0)
+    voice_style: str = "neutral"
+    gesture_intensity: float = 0.5
+    speaking_rate: float = 1.0
     pause_before_speech_ms: int = 0
 
-    @field_validator("pause_before_speech_ms")
+    @field_validator("gesture_intensity", mode="before")
     @classmethod
-    def non_negative_pause(cls, value: int) -> int:
-        return max(0, value)
+    def clamp_gesture_intensity(cls, value: float) -> float:
+        return max(0.0, min(1.0, float(value)))
+
+    @field_validator("speaking_rate", mode="before")
+    @classmethod
+    def clamp_speaking_rate(cls, value: float) -> float:
+        return max(MIN_SPEAKING_RATE, min(MAX_SPEAKING_RATE, float(value)))
+
+    @field_validator("pause_before_speech_ms", mode="before")
+    @classmethod
+    def clamp_pause(cls, value: int) -> int:
+        return max(0, min(500, int(value)))
 
 
 class AvatarCommand(BaseModel):
@@ -76,8 +89,8 @@ class AvatarCommand(BaseModel):
     gestures: list[GestureType] = Field(default_factory=lambda: [GestureType.idle])
     voice_style: VoiceStyleType
     gesture_intensity: float = Field(default=0.5, ge=0.0, le=1.0)
-    speaking_rate: float = Field(default=1.0, ge=0.5, le=2.0)
-    pause_before_speech_ms: int = 0
+    speaking_rate: float = Field(default=1.0, ge=MIN_SPEAKING_RATE, le=MAX_SPEAKING_RATE)
+    pause_before_speech_ms: int = Field(default=0, ge=0, le=500)
 
 
 class TTSResult(BaseModel):

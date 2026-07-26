@@ -18,6 +18,7 @@ class MossTTSProvider(TTSProvider):
         prompt_audio: str | Path = "data/voice_prompts/default.wav",
         model_dir: str | Path = "third_party/models/MOSS-TTS-Nano/models/MOSS-TTS-Nano-100M-ONNX",
         backend: str = "onnx",
+        timeout_seconds: int = 120,
     ) -> None:
         from hai_avatar.config import PROJECT_ROOT
 
@@ -26,6 +27,7 @@ class MossTTSProvider(TTSProvider):
         self._prompt_audio = self._project_root / prompt_audio
         self._model_dir = self._project_root / model_dir
         self._backend = backend
+        self._timeout_seconds = timeout_seconds
 
         if not self._repo_path.exists():
             raise FileNotFoundError(f"MOSS repo not found: {self._repo_path}")
@@ -39,7 +41,14 @@ class MossTTSProvider(TTSProvider):
         logger.info("  prompt_audio: %s", self._prompt_audio)
         logger.info("  model_dir: %s", self._model_dir)
 
-    async def synthesize(self, text: str, voice_style: str, output_path: Path) -> TTSResult:
+    async def synthesize(
+        self,
+        text: str,
+        voice_style: str,
+        output_path: Path,
+        speaking_rate: float = 1.0,
+    ) -> TTSResult:
+        _ = voice_style, speaking_rate
         output_path.parent.mkdir(parents=True, exist_ok=True)
 
         await self._run_cli(text, output_path)
@@ -82,7 +91,15 @@ class MossTTSProvider(TTSProvider):
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE,
             )
-            _, stderr = await process.communicate()
+            try:
+                _, stderr = await asyncio.wait_for(
+                    process.communicate(),
+                    timeout=self._timeout_seconds,
+                )
+            except TimeoutError as exc:
+                process.terminate()
+                await process.wait()
+                raise RuntimeError(f"MOSS TTS timed out after {self._timeout_seconds}s") from exc
 
             if process.returncode != 0:
                 error_msg = stderr.decode("utf-8", errors="replace") if stderr else "Unknown error"
