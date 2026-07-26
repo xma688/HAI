@@ -7,7 +7,6 @@ import html
 import logging
 import mimetypes
 import os
-from pathlib import Path
 
 import gradio as gr
 
