@@ -283,6 +283,9 @@ class PetdexAvatarController(AvatarController):
     #petRoot {{ width: min(46vw, 360px); aspect-ratio: 192 / 208; display: grid; place-items: center; transform-origin: 50% 70%; animation: petIdle 3s ease-in-out infinite; }}
     #petFrame {{ width: 192px; height: 208px; overflow: hidden; transform: scale(var(--pet-scale, 1)); transform-origin: center; filter: drop-shadow(0 24px 36px rgba(0, 0, 0, .38)); }}
     #petSprite {{ width: 192px; height: 208px; background-image: url("{sprite_src}"); background-repeat: no-repeat; background-size: 1536px 1872px; background-position: 0 0; image-rendering: auto; }}
+    #audioUnlock {{ position: absolute; left: 50%; bottom: 22px; z-index: 4; transform: translateX(-50%); padding: 9px 15px; border: 2px solid #77e1c0; border-radius: 999px; color: #252a57; background: #ffe07e; box-shadow: 3px 3px 0 rgba(0,0,0,.25); cursor: pointer; font: 800 12px/1 Inter, "Microsoft YaHei", sans-serif; letter-spacing: .02em; }}
+    #audioUnlock:hover {{ background: #fff0ae; transform: translateX(-50%) translateY(-1px); }}
+    #audioUnlock[hidden] {{ display: none; }}
     
     body[data-pet-state="run_right"] #petRoot {{ animation: petRun 850ms ease-in-out infinite; }}
     body[data-pet-state="run_left"] #petRoot {{ animation: petRun 850ms ease-in-out infinite; }}
@@ -314,6 +317,7 @@ class PetdexAvatarController(AvatarController):
 <body data-pet-state="idle" data-gesture="idle" data-expression="neutral">
   <main id="stage">
     <div id="petRoot" aria-label="{pet_name}"><div id="petFrame"><div id="petSprite"></div></div></div>
+    <button id="audioUnlock" type="button" hidden>▶ 播放语音</button>
   </main>
   <script>
     let state = window.HAI_AVATAR_STATE || {{}};
@@ -322,6 +326,7 @@ class PetdexAvatarController(AvatarController):
     let idleTimer = null;
     let currentAudio = null;
     let lastPlayedAudioUrl = '';
+    let pendingAudio = null;
     const frameWidth = 192;
     const frameHeight = 208;
     const frameDelayMs = 220;
@@ -361,6 +366,7 @@ class PetdexAvatarController(AvatarController):
 
     document.addEventListener('DOMContentLoaded', () => {{
       fitPetFrame();
+      document.getElementById('audioUnlock')?.addEventListener('click', unlockAudio);
       setTimeout(() => {{
         renderState(state);
       }}, 100);
@@ -484,16 +490,33 @@ class PetdexAvatarController(AvatarController):
 
     function playStateAudio(audioUrl, turnId) {{
       if (!audioUrl || audioUrl === lastPlayedAudioUrl) return;
+      pendingAudio = null;
+      document.getElementById('audioUnlock')?.setAttribute('hidden', '');
       lastPlayedAudioUrl = audioUrl;
       stopStateAudio(false);
       const audio = new Audio(`${{audioUrl}}?turn=${{encodeURIComponent(turnId)}}`);
       currentAudio = audio;
       audio.onended = () => stopStateAudio(false);
-      audio.onerror = () => stopStateAudio(false);
+      audio.onerror = () => {{
+        pendingAudio = {{ audioUrl, turnId }};
+        document.getElementById('audioUnlock')?.removeAttribute('hidden');
+        stopStateAudio(false);
+      }};
       audio.play().catch((error) => {{
         console.warn('[Petdex] Audio autoplay failed:', error);
+        pendingAudio = {{ audioUrl, turnId }};
+        document.getElementById('audioUnlock')?.removeAttribute('hidden');
         stopStateAudio(false);
       }});
+    }}
+
+    function unlockAudio() {{
+      if (!pendingAudio) return;
+      const nextAudio = pendingAudio;
+      pendingAudio = null;
+      document.getElementById('audioUnlock')?.setAttribute('hidden', '');
+      lastPlayedAudioUrl = '';
+      playStateAudio(nextAudio.audioUrl, nextAudio.turnId);
     }}
 
     function stopStateAudio(forgetLastPlayed = true) {{

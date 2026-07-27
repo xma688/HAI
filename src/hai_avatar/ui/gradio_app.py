@@ -37,12 +37,12 @@ def _file_url(path: Path) -> str:
 def _brand_header(avatar_provider: str) -> str:
     connected = avatar_provider in BRIDGE_AVATAR_PROVIDERS
     status_class = "connected" if connected else "demo"
-    status_text = "角色已连接" if connected else "演示模式"
+    status_text = "宠物在线" if connected else "演示模式"
     return f"""
     <header class="hai-header" role="banner">
       <div class="hai-brand">
-        <span class="hai-brand-mark" aria-hidden="true">H</span>
-        <span class="hai-brand-copy"><b>HAI</b><small>AI 对话伙伴</small></span>
+        <span class="hai-brand-mark" aria-hidden="true">✦</span>
+        <span class="hai-brand-copy"><b>HAI</b><small>Petdex companion</small></span>
       </div>
       <span class="hai-status-chip {status_class}"><i class="hai-dot" aria-hidden="true"></i>{status_text}</span>
     </header>
@@ -54,12 +54,12 @@ def _welcome_markup() -> str:
     return f"""
     <div id="hai-welcome" class="hai-welcome" style="--hai-home-art:url('{illustration_url}')">
       <div class="hai-welcome-copy">
-        <span class="hai-welcome-eyebrow"><i aria-hidden="true"></i> AI conversation companion</span>
-        <h1 class="hai-welcome-line">有什么想聊的吗？</h1>
-        <p class="hai-welcome-note">输入文字或使用语音，开始一段对话。</p>
+        <span class="hai-welcome-eyebrow"><i aria-hidden="true"></i> PETDEX · HAI COMPANION</span>
+        <h1 class="hai-welcome-line">和 EVE 聊聊</h1>
+        <p class="hai-welcome-note">文字、语音和动作，都在这里。</p>
       </div>
       <div class="hai-welcome-meta" aria-label="体验能力">
-        <span>Live2D 实时陪伴</span><span>情绪感知</span><span>自然语音</span>
+        <span><i>✦</i>实时互动</span><span><i>◌</i>情绪回应</span><span><i>↗</i>动作反馈</span>
       </div>
     </div>
     """
@@ -70,28 +70,33 @@ def _avatar_stage_markup(settings: Settings) -> str:
         bridge_host = settings.avatar.bridge_host
         browser_host = "127.0.0.1" if bridge_host == "0.0.0.0" else bridge_host
         bridge_url = f"http://{browser_host}:{settings.avatar.bridge_port}/?embed=1"
-        content = (
-            f'<iframe title="HAI Live2D 虚拟角色" src="{bridge_url}" allow="autoplay"></iframe>'
-        )
+        is_petdex = settings.avatar.provider == "petdex"
+        avatar_name = "EVE" if is_petdex else "Live2D Avatar"
+        avatar_kind = "PETDEX PET" if is_petdex else "LIVE2D AVATAR"
+        content = f'<iframe title="HAI {avatar_name}" src="{bridge_url}" allow="autoplay"></iframe>'
         mode = "live"
-        state = "Live2D · 已连接"
+        state = "在线 · 已连接"
     else:
         content = (
             '<div class="hai-stage-empty"><span class="hai-stage-moon" aria-hidden="true">☾</span>'
             '<span>Live2D Avatar</span><small>请启用真实角色模式</small></div>'
         )
         mode = "static"
-        state = "Avatar · 未连接"
+        state = "离线 · 未连接"
+        is_petdex = False
+        avatar_name = "Live2D Avatar"
+        avatar_kind = "LIVE2D AVATAR"
     return f"""
     <div class="hai-panel-head">
-      <div class="hai-panel-title"><span>Companion</span><strong>Live2D Avatar</strong></div>
+      <div class="hai-panel-title"><span>{avatar_kind}</span><strong>{avatar_name}</strong></div>
       <span class="hai-stage-state">{state}</span>
     </div>
-    <div id="avatar-stage" class="hai-avatar-stage {mode}">
+    <div id="avatar-stage" class="hai-avatar-stage {mode} {'petdex' if is_petdex else 'prometheus'}">
       <div class="hai-stage-glow" aria-hidden="true"></div>
+      <div class="hai-stage-grid" aria-hidden="true"></div>
       {content}
       <div class="hai-waveform {mode}" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-      <div class="hai-stage-caption"><span>AI 伙伴已就绪</span><small>表情 · 动作 · 口型</small></div>
+      <div class="hai-stage-caption"><span>{avatar_name} 已就绪</span><small>表情 · 动作 · 反馈</small></div>
     </div>
     """
 
@@ -99,8 +104,8 @@ def _avatar_stage_markup(settings: Settings) -> str:
 def _conversation_heading() -> str:
     return """
     <div class="hai-panel-head hai-conversation-heading">
-      <div class="hai-panel-title"><span>Conversation</span><strong>我们的对话</strong></div>
-      <span class="hai-privacy-chip">会话记忆 · 可随时清空</span>
+      <div class="hai-panel-title"><span>CHAT ROOM</span><strong>和 EVE 的对话</strong></div>
+      <span class="hai-privacy-chip">短期记忆开启 · 可随时清空</span>
     </div>
     """
 
@@ -109,10 +114,10 @@ def _footer_band() -> str:
     return """
     <footer class="hai-footer" role="contentinfo">
       <div class="hai-footer-brand">
-        <span class="hai-brand-mark" aria-hidden="true">H</span>
-        <div><b>HAI</b><small>支持文字 · 语音 · Live2D</small></div>
+        <span class="hai-brand-mark" aria-hidden="true">✦</span>
+        <div><b>HAI</b><small>PETDEX COMPANION</small></div>
       </div>
-      <p class="hai-footer-note">清空会话会移除短期上下文；个性化资料会按系统设置保留。</p>
+      <p class="hai-footer-note">个性化资料按系统设置保留 · 文字 · 语音 · 表情 · 动作</p>
     </footer>
     """
 
@@ -310,9 +315,9 @@ class GradioApp:
 
                 with gr.Column(elem_id="voice-lane"):
                     audio_output = gr.Audio(
-                        label="本轮语音",
+                        label="EVE 语音",
                         type="filepath",
-                        autoplay=False,
+                        autoplay=True,
                         editable=False,
                         buttons=["download"],
                         visible=False,
