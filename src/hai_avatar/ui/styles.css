@@ -1273,3 +1273,656 @@ summary {
     transition: none !important;
   }
 }
+
+/* ─────────────────────────────────────────────────────────────
+   Petdex companion skin
+   The avatar is a bright, game-like sprite, so the shell follows the
+   same language: dark indigo canvas, candy accents, chunky borders,
+   and compact sans-serif UI instead of the previous editorial serif tone.
+   ───────────────────────────────────────────────────────────── */
+:root {
+  --canvas: #14162f;
+  --surface-soft: #20234a;
+  --surface-card: #f7f7ff;
+  --surface-cream-strong: #e9e9ff;
+  --surface-dark: #101126;
+  --surface-dark-elevated: #242754;
+  --surface-dark-soft: #1a1d3c;
+  --ink: #202342;
+  --body-strong: #2d315c;
+  --body: #4a4e76;
+  --muted: #8f94bd;
+  --muted-soft: #aeb2d2;
+  --on-primary: #161833;
+  --on-dark: #f9f9ff;
+  --on-dark-soft: #aeb2d2;
+  --primary: #ffd15c;
+  --primary-active: #f3af3e;
+  --primary-disabled: #53577f;
+  --primary-glow: rgba(255, 209, 92, .24);
+  --teal: #77e1c0;
+  --amber: #ffd15c;
+  --success: #79e5b4;
+  --warning: #ffb96a;
+  --error: #ff7f8c;
+  --hairline: rgba(255,255,255,.14);
+  --hairline-soft: rgba(255,255,255,.09);
+  --hairline-dark: rgba(20,22,47,.12);
+  --font-display: "Noto Sans SC", "Inter", sans-serif;
+  --font-body: "Noto Sans SC", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --shadow-sm: 0 4px 0 rgba(8, 9, 27, .20);
+  --shadow-md: 0 10px 0 rgba(8, 9, 27, .20), 0 18px 38px rgba(8, 9, 27, .18);
+  --shadow-lg: 0 16px 0 rgba(8, 9, 27, .24), 0 24px 60px rgba(8, 9, 27, .26);
+}
+
+html,
+body,
+.gradio-container,
+.gradio-container main,
+.gradio-container .main {
+  background: var(--canvas) !important;
+  color: var(--on-dark) !important;
+  font-family: var(--font-body) !important;
+}
+
+body {
+  background-image:
+    radial-gradient(circle at 8% 12%, rgba(119,225,192,.12) 0 2px, transparent 3px),
+    radial-gradient(circle at 87% 18%, rgba(255,209,92,.16) 0 2px, transparent 3px),
+    radial-gradient(circle at 76% 82%, rgba(164,142,255,.12) 0 1px, transparent 2px) !important;
+  background-size: 140px 140px, 220px 220px, 180px 180px !important;
+}
+
+#brand-header,
+#experience-shell {
+  width: min(100%, 1240px) !important;
+  margin-inline: auto !important;
+}
+
+.hai-header {
+  position: relative !important;
+  top: auto !important;
+  padding: 18px 30px !important;
+  border-bottom: 1px solid var(--hairline) !important;
+  background: rgba(20,22,47,.86) !important;
+  backdrop-filter: blur(14px);
+}
+
+.hai-brand {
+  gap: 11px !important;
+}
+
+.hai-brand-mark {
+  width: 38px !important;
+  height: 38px !important;
+  border: 3px solid #fff !important;
+  border-radius: 12px !important;
+  color: var(--on-primary) !important;
+  background: var(--primary) !important;
+  box-shadow: 3px 3px 0 rgba(119,225,192,.7) !important;
+  font-family: var(--font-body) !important;
+  font-size: 20px !important;
+}
+
+.hai-brand-copy b {
+  color: var(--on-dark) !important;
+  font-family: var(--font-body) !important;
+  font-weight: 800 !important;
+  letter-spacing: .08em !important;
+}
+
+.hai-brand-copy small {
+  color: var(--muted-soft) !important;
+  font-size: 10px !important;
+  letter-spacing: .1em !important;
+  text-transform: uppercase;
+}
+
+.hai-status-chip {
+  border: 2px solid var(--hairline) !important;
+  border-radius: 12px !important;
+  color: var(--on-dark-soft) !important;
+  background: rgba(255,255,255,.06) !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+}
+
+.hai-status-chip.connected {
+  color: var(--success) !important;
+  border-color: rgba(121,229,180,.42) !important;
+}
+
+.hai-welcome {
+  min-height: 184px !important;
+  padding: 30px 30px 26px !important;
+  border-bottom: 0 !important;
+  align-items: center !important;
+  background: transparent !important;
+}
+
+.hai-welcome::before {
+  display: none !important;
+}
+
+.hai-welcome::after {
+  inset: 22px 30px !important;
+  border: 2px solid rgba(255,255,255,.10) !important;
+  border-radius: 26px !important;
+  background:
+    linear-gradient(115deg, rgba(68,72,146,.78), rgba(43,47,103,.46) 58%, rgba(119,225,192,.13)),
+    radial-gradient(circle at 84% 30%, rgba(255,209,92,.26), transparent 22%) !important;
+  z-index: -1 !important;
+}
+
+.hai-welcome-copy {
+  padding-left: 18px !important;
+  border-left: 5px solid var(--primary) !important;
+}
+
+.hai-welcome-eyebrow {
+  color: var(--teal) !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  letter-spacing: .16em !important;
+}
+
+.hai-welcome-eyebrow i {
+  display: none !important;
+}
+
+.hai-welcome-line {
+  margin: 7px 0 3px !important;
+  color: #fff !important;
+  font-family: var(--font-body) !important;
+  font-size: clamp(30px, 4vw, 46px) !important;
+  font-weight: 850 !important;
+  letter-spacing: -.05em !important;
+}
+
+.hai-welcome-note {
+  color: #d2d5f3 !important;
+  font-size: 14px !important;
+}
+
+.hai-welcome-meta {
+  max-width: 390px !important;
+  justify-content: flex-end !important;
+  gap: 8px !important;
+}
+
+.hai-welcome-meta span {
+  padding: 8px 11px !important;
+  border: 2px solid rgba(255,255,255,.16) !important;
+  border-radius: 12px !important;
+  color: #fff !important;
+  background: rgba(20,22,47,.40) !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+}
+
+.hai-welcome-meta span i {
+  margin-right: 5px;
+  color: var(--primary);
+  font-style: normal;
+}
+
+#experience-shell {
+  padding: 4px 30px 34px !important;
+}
+
+#workspace {
+  grid-template-columns: minmax(0, 1.05fr) minmax(360px, .95fr) !important;
+  gap: 18px !important;
+  overflow: visible !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+#avatar-panel,
+#chat-panel {
+  min-width: 0 !important;
+  height: auto !important;
+  align-self: stretch !important;
+  border: 2px solid var(--hairline) !important;
+  border-radius: 24px !important;
+  box-shadow: var(--shadow-md) !important;
+}
+
+#avatar-panel {
+  padding: 20px !important;
+  background: linear-gradient(145deg, #292d66, #1d2048) !important;
+}
+
+#chat-panel {
+  padding: 20px !important;
+  background: var(--surface-card) !important;
+  color: var(--ink) !important;
+  border-color: rgba(255,255,255,.70) !important;
+  box-shadow: 0 10px 0 rgba(8,9,27,.22), 0 18px 38px rgba(8,9,27,.22) !important;
+}
+
+#chat-panel {
+  flex-wrap: nowrap !important;
+}
+
+.hai-panel-head {
+  gap: 10px !important;
+}
+
+.hai-panel-title span {
+  color: var(--teal) !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
+  letter-spacing: .16em !important;
+}
+
+#chat-panel .hai-panel-title span {
+  color: #777bb0 !important;
+}
+
+.hai-panel-title strong {
+  color: #fff !important;
+  font-family: var(--font-body) !important;
+  font-size: 20px !important;
+  font-weight: 850 !important;
+}
+
+#chat-panel .hai-panel-title strong {
+  color: var(--ink) !important;
+}
+
+.hai-stage-state,
+.hai-privacy-chip {
+  border: 2px solid rgba(255,255,255,.17) !important;
+  border-radius: 10px !important;
+  color: var(--primary) !important;
+  background: rgba(255,255,255,.07) !important;
+  font-size: 10px !important;
+  font-weight: 800 !important;
+}
+
+.hai-privacy-chip {
+  border-color: #dedff4 !important;
+  color: #7479a9 !important;
+  background: #fff !important;
+}
+
+#avatar-stage {
+  min-height: 505px !important;
+  margin-top: 2px !important;
+  border: 2px solid rgba(255,255,255,.10) !important;
+  border-radius: 19px !important;
+  background:
+    radial-gradient(circle at 50% 37%, rgba(119,225,192,.18), transparent 27%),
+    linear-gradient(180deg, #343a82 0%, #202454 70%, #1a1d40 100%) !important;
+  box-shadow: inset 0 -70px 0 rgba(8,9,27,.12) !important;
+}
+
+#avatar-stage.petdex {
+  background:
+    radial-gradient(circle at 50% 36%, rgba(255,209,92,.27), transparent 21%),
+    linear-gradient(180deg, #3d438f 0%, #24285d 72%, #1b1e43 100%) !important;
+}
+
+.hai-stage-grid {
+  position: absolute;
+  inset: 0;
+  opacity: .18;
+  background-image: linear-gradient(rgba(255,255,255,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.08) 1px, transparent 1px);
+  background-size: 32px 32px;
+  mask-image: linear-gradient(to bottom, transparent, #000 30%, #000 78%, transparent);
+  pointer-events: none;
+}
+
+#avatar-stage iframe {
+  position: absolute !important;
+  inset: 32px 10px 46px !important;
+  z-index: 2 !important;
+  width: calc(100% - 20px) !important;
+  height: calc(100% - 78px) !important;
+  border: 0 !important;
+  background: transparent !important;
+}
+
+.hai-stage-caption {
+  z-index: 4 !important;
+  right: 18px !important;
+  bottom: 16px !important;
+  left: 18px !important;
+  color: #fff !important;
+}
+
+.hai-stage-caption span,
+#avatar-stage .hai-stage-caption > span {
+  color: #fff !important;
+  font-size: 12px !important;
+  font-weight: 850 !important;
+}
+
+.hai-stage-caption small {
+  color: #bfc4e7 !important;
+  font-size: 10px !important;
+}
+
+.hai-waveform {
+  z-index: 4 !important;
+  bottom: 44px !important;
+  right: 18px !important;
+  left: auto !important;
+}
+
+.hai-waveform i {
+  background: var(--primary) !important;
+}
+
+#conversation {
+  border-top: 2px solid #e9e9f8 !important;
+  border-bottom: 2px solid #e9e9f8 !important;
+  background: #fdfdff !important;
+}
+
+#composer-row {
+  padding: 6px !important;
+  border-radius: 17px !important;
+  background: #f7f7ff !important;
+}
+
+#conversation .message-row .message {
+  border: 2px solid #e5e6f6 !important;
+  border-radius: 17px !important;
+  color: var(--body-strong) !important;
+  background: #f2f3ff !important;
+  font-size: 14px !important;
+  line-height: 1.6 !important;
+}
+
+#conversation .user .message,
+#conversation [data-testid="user"] {
+  border-color: #bdeedd !important;
+  color: #214b4b !important;
+  background: #dcfaef !important;
+}
+
+.hai-progress {
+  border: 2px solid #e4e5f5 !important;
+  border-radius: 13px !important;
+  background: #fff !important;
+}
+
+.hai-progress-dot {
+  background: var(--teal) !important;
+}
+
+.hai-progress-copy b {
+  color: var(--body-strong) !important;
+}
+
+.hai-progress-track {
+  background: #e4e5f5 !important;
+}
+
+.hai-progress-track i {
+  background: linear-gradient(90deg, var(--teal), #94a5ff) !important;
+}
+
+#message-input textarea {
+  border: 2px solid #e1e2f2 !important;
+  border-radius: 15px !important;
+  color: var(--ink) !important;
+  background: #fff !important;
+}
+
+#message-input textarea:focus {
+  border-color: #8d91e8 !important;
+  box-shadow: 0 0 0 3px rgba(141,145,232,.18) !important;
+}
+
+#send-button {
+  min-width: 92px !important;
+  border: 2px solid #fff !important;
+  border-radius: 15px !important;
+  color: var(--on-primary) !important;
+  background: var(--primary) !important;
+  box-shadow: 3px 3px 0 rgba(99,76,21,.25) !important;
+  font-weight: 850 !important;
+}
+
+#send-button:hover {
+  background: #ffe07e !important;
+  transform: translateY(-2px) !important;
+}
+
+#quick-prompts button,
+#clear-button {
+  min-height: 36px !important;
+  border: 2px solid #dfe0f1 !important;
+  border-radius: 12px !important;
+  color: #666b9c !important;
+  background: #fff !important;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+}
+
+#quick-prompts button:hover,
+#clear-button:hover {
+  border-color: #9a9fe7 !important;
+  color: #343966 !important;
+  background: #f2f3ff !important;
+}
+
+#voice-lane {
+  margin-top: 18px !important;
+}
+
+#voice-tools,
+#turn-details,
+#reply-audio,
+#voice-input {
+  border: 2px solid rgba(255,255,255,.12) !important;
+  border-radius: 14px !important;
+  color: var(--on-dark-soft) !important;
+  background: rgba(31,34,71,.84) !important;
+}
+
+#voice-tools summary,
+#turn-details summary,
+#voice-tools button,
+#turn-details button {
+  color: #c2c6e7 !important;
+  font-weight: 700 !important;
+}
+
+.hai-status-item {
+  border: 2px solid #e5e6f5 !important;
+  border-radius: 12px !important;
+  background: #fff !important;
+}
+
+.hai-status-item small {
+  color: #8589b1 !important;
+}
+
+.hai-status-item strong {
+  color: var(--ink) !important;
+}
+
+.hai-runtime {
+  color: #aeb2d2 !important;
+}
+
+.hai-footer {
+  margin-top: 22px !important;
+  padding: 18px 2px 0 !important;
+  border-top: 2px solid rgba(255,255,255,.10) !important;
+}
+
+.hai-footer .hai-brand-mark {
+  border-width: 2px !important;
+  box-shadow: 2px 2px 0 rgba(119,225,192,.7) !important;
+}
+
+.hai-footer-brand b {
+  color: #fff !important;
+  font-family: var(--font-body) !important;
+  font-weight: 850 !important;
+}
+
+.hai-footer-brand small,
+.hai-footer-note {
+  color: #9fa4ca !important;
+}
+
+@media (max-width: 900px) {
+  .hai-welcome {
+    min-height: 200px !important;
+    align-items: flex-start !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    gap: 16px !important;
+  }
+
+  .hai-welcome-meta {
+    justify-content: flex-start !important;
+  }
+
+  #workspace {
+    grid-template-columns: 1fr !important;
+  }
+
+  #avatar-stage {
+    min-height: 400px !important;
+  }
+}
+
+@media (max-width: 600px) {
+  .hai-header,
+  #experience-shell {
+    padding-right: 16px !important;
+    padding-left: 16px !important;
+  }
+
+  .hai-header {
+    padding-top: 13px !important;
+    padding-bottom: 13px !important;
+  }
+
+  .hai-welcome {
+    min-height: 178px !important;
+    padding: 22px 16px !important;
+  }
+
+  .hai-welcome::after {
+    inset: 12px 16px !important;
+  }
+
+  .hai-welcome-copy {
+    padding-left: 12px !important;
+  }
+
+  .hai-welcome-line {
+    font-size: 31px !important;
+  }
+
+  .hai-welcome-meta span {
+    padding: 7px 8px !important;
+    font-size: 10px !important;
+  }
+
+  #experience-shell {
+    padding-top: 0 !important;
+  }
+
+  #avatar-panel,
+  #chat-panel {
+    padding: 14px !important;
+    border-radius: 19px !important;
+  }
+
+  #avatar-stage {
+    min-height: 340px !important;
+  }
+
+  #avatar-stage iframe {
+    inset: 24px 4px 40px !important;
+    width: calc(100% - 8px) !important;
+    height: calc(100% - 64px) !important;
+  }
+
+  .hai-panel-title strong {
+    font-size: 17px !important;
+  }
+
+  .hai-stage-state,
+  .hai-privacy-chip {
+    padding: 5px 7px !important;
+    font-size: 9px !important;
+  }
+
+  #quick-prompts {
+    gap: 5px !important;
+  }
+
+  #quick-prompts button,
+  #clear-button {
+    padding-inline: 6px !important;
+    font-size: 10px !important;
+  }
+}
+
+/* Gradio 6 nests two structural `.message` wrappers around the actual
+   data-testid bubble.  Painting every layer creates an off-centre triple
+   border, so keep the wrappers transparent and skin only the content node. */
+#conversation .message.bot,
+#conversation .message.user,
+#conversation .message.bot > .message.panel-full-width,
+#conversation .message.user > .message.panel-full-width {
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+#conversation .message.bot,
+#conversation .message.user {
+  max-width: 86% !important;
+}
+
+#conversation [data-testid="bot"],
+#conversation [data-testid="user"] {
+  padding: 11px 14px !important;
+  border-radius: 15px !important;
+  overflow-wrap: anywhere !important;
+}
+
+#conversation [data-testid="bot"] {
+  background: #fff !important;
+  color: #252a57 !important;
+  border: 2px solid #e4e5f4 !important;
+  box-shadow: 4px 4px 0 rgba(52, 57, 102, .08) !important;
+}
+
+#conversation [data-testid="user"] {
+  background: #dff8ef !important;
+  color: #253b51 !important;
+  border: 2px solid #aee8d3 !important;
+  box-shadow: 4px 4px 0 rgba(52, 57, 102, .07) !important;
+}
+
+#conversation .message.bot :is(.prose, .markdown, p, li, strong, em, code, pre),
+#conversation .message.user :is(.prose, .markdown, p, li, strong, em, code, pre),
+.message.bot :is(.prose, .markdown, p, li, strong, em, code, pre),
+.message.user :is(.prose, .markdown, p, li, strong, em, code, pre) {
+  color: inherit !important;
+}
+
+#conversation .message.bot code,
+#conversation .message.bot pre {
+  background: #f1f2fb !important;
+  color: #30365f !important;
+}
+
+#conversation .message.bot a {
+  color: #5660c9 !important;
+}
